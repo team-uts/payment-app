@@ -5,7 +5,7 @@ spring:
         poolName: source-pool
         driverClassName: com.mysql.cj.jdbc.Driver
         jdbcUrl: jdbc:mysql://localhost:3306/payment?characterEncoding=utf8&serverTimezone=UTC
-        username: payment
+        username: root
         password: payment
         maximumPoolSize: 5
         minimumIdle: 5
@@ -14,7 +14,7 @@ spring:
         poolName: replica-pool
         driverClassName: com.mysql.cj.jdbc.Driver
         jdbcUrl: jdbc:mysql://localhost:3307/payment?characterEncoding=utf8&serverTimezone=UTC
-        username: payment
+        username: root
         password: payment
         maximumPoolSize: 5
         minimumIdle: 5

@@ -1,25 +1,28 @@
+import extensions.pluginId
+
 plugins {
     java
-    id("org.springframework.boot") version "4.1.0"
-    id("io.spring.dependency-management") version "1.1.7"
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependencyManagement)
 }
+
+val projectLibs = rootProject.libs
 
 allprojects {
     group = "dev.teamuts.payment"
-    version = "0.0.1-SNAPSHOT"
     description = "payment-app"
 }
 
 subprojects {
     apply {
         plugin("java")
-        plugin("org.springframework.boot")
-        plugin("io.spring.dependency-management")
+        plugin(projectLibs.plugins.spring.boot.pluginId())
+        plugin(projectLibs.plugins.spring.dependencyManagement.pluginId())
     }
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(projectLibs.versions.java.get())
         }
     }
 
