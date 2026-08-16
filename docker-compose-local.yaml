@@ -1,0 +1,29 @@
+name: "payment-db"
+services:
+  source-db:
+    image: mysql:8.0.41
+    container_name: payment-source-db
+    restart: "no"
+    volumes:
+      - ${DB_SETUP_DIR}/source/data:/var/lib/mysql:rw
+      - ${DB_SETUP_DIR}/source/log:/var/log/mysql
+      - ${DB_SETUP_DIR}/source/my-local.cnf:/etc/my.cnf
+    user: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+
+  replica-db:
+    image: mysql:8.0.41
+    container_name: payment-replica-db
+    restart: "no"
+    volumes:
+      - ${DB_SETUP_DIR}/replica/data:/var/lib/mysql:rw
+      - ${DB_SETUP_DIR}/replica/log:/var/log/mysql
+      - ${DB_SETUP_DIR}/replica/my-local.cnf:/etc/my.cnf
+    user: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
