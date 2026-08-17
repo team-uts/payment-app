@@ -4,8 +4,13 @@ java = "21"
 spring-boot = "4.1.0"
 spring-dependency-management = "1.1.7"
 
+flywaydb = "13.2.0"
+
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependencyManagement = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+flyway = { id = "org.flywaydb.flyway", version.ref = "flywaydb" }
 
 [libraries]
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywaydb" }
+flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flywaydb" }
