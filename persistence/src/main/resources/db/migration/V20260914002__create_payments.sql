@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS ecommerce.payments
+CREATE TABLE IF NOT EXISTS `payments`
 (
     id                      BIGINT UNSIGNED     NOT NULL AUTO_INCREMENT    PRIMARY  KEY,
     order_id                BIGINT UNSIGNED     NOT NULL COMMENT 'order ID',
@@ -18,5 +18,5 @@ CREATE TABLE IF NOT EXISTS ecommerce.payments
     updated_at              DATETIME(6)         NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX ix_payments_orderid ON ecommerce.payments (order_id);
-CREATE INDEX ix_payments_memberid ON ecommerce.payments (member_id);
+CREATE INDEX ix_payments_orderid ON payments (order_id);
+CREATE INDEX ix_payments_memberid ON payments (member_id);

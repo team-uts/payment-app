@@ -4,7 +4,6 @@ import task.BuildProfile
 
 class FlywayManager(
     private val activeProfile: BuildProfile,
-    private val databaseType: DatabaseType,
 ) {
     companion object {
         private const val MIGRATION_DIR = "migration"
@@ -15,8 +14,7 @@ class FlywayManager(
 
         fun init(): FlywayManager {
             return FlywayManager(
-                activeProfile = BuildProfile.init(),
-                databaseType = DatabaseType.init()
+                activeProfile = BuildProfile.init()
             )
         }
     }
@@ -46,5 +44,5 @@ class FlywayManager(
         return System.getProperty(DB_PASSWORD)
     }
 
-    private fun directoryPrefix(): String = "${MIGRATION_PATH}/${databaseType.name.lowercase()}"
+    private fun directoryPrefix(): String = "${MIGRATION_PATH}"
 }

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS ecommerce.orders
+CREATE TABLE IF NOT EXISTS `orders`
 (
     id                  BIGINT UNSIGNED     NOT NULL AUTO_INCREMENT    PRIMARY  KEY,
     order_no            VARCHAR(64)         NOT NULL COMMENT 'display order number',
@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS ecommerce.orders
     updated_at          DATETIME(6)         NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX ix_o_orderno ON ecommerce.orders (order_no);
-CREATE INDEX ix_o_memberid ON ecommerce.orders (member_id);
+CREATE INDEX ix_o_orderno ON orders (order_no);
+CREATE INDEX ix_o_memberid ON orders (member_id);

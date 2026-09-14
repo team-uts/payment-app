@@ -25,5 +25,7 @@ you will see the following output if everything is up and running:
 ## DB Migration
 
 ```shell
-$ ./gradlew :persistence:flywayMigrate
+$ ./gradlew :persistence:flywayMigrate -Dprofile=local
+$ ./gradlew :persistence:flywayInfo -Dprofile=local
+$ ./gradlew :persistence:flywayValidate -Dprofile=local
 ```
