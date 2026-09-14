@@ -7,17 +7,23 @@
 
 ### Database
 - generate and validate the final docker compose configuration for 'local' profile.
-```bash
+```shell
 docker-compose --env-file .env.local -f docker-compose-local.yaml config
 ```
 - Start the database services:
-```bash
+```shell
 docker-compose --env-file .env.local -f docker-compose-local.yaml up -d         
 ```
 you will see the following output if everything is up and running:
-```bash
+```shell
 [+] up 3/3
  ✔ Network payment-db_default   Created                                                                                                                              0.0s
  ✔ Container payment-source-db  Started                                                                                                                              0.1s
  ✔ Container payment-replica-db Started
+```
+
+## DB Migration
+
+```shell
+$ ./gradlew :persistence:flywayMigrate
 ```
