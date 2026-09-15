@@ -18,5 +18,5 @@ CREATE TABLE IF NOT EXISTS `payments`
     updated_at              DATETIME(6)         NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX ix_payments_orderid ON payments (order_id);
-CREATE INDEX ix_payments_memberid ON payments (member_id);
+CREATE INDEX ix_p_orderid ON payments (order_id);
+CREATE INDEX ix_p_memberid ON payments (member_id);
