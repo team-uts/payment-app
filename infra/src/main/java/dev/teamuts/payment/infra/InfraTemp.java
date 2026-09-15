@@ -1,5 +1,3 @@
 package dev.teamuts.payment.infra;
 
-public class InfraTemp {
-
-}
+public class InfraTemp {}

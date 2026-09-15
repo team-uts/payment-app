@@ -1,15 +1,20 @@
+import com.diffplug.gradle.spotless.SpotlessCheck
+
 afterEvaluate {
+    val multiModules = listOf(
+        ":domain",
+        ":shared",
+        ":persistence",
+        ":infra"
+    )
     project.tasks.apply {
         // depends on sub-modules test tasks
         this.withType<Test> {
-            dependsOn(
-                listOf(
-                    ":domain",
-                    ":shared",
-                    ":persistence",
-                    ":infra"
-                ).map { "$it:test" }
-            )
+            dependsOn(multiModules.map { "$it:test" })
+        }
+        // spotless checking for all sub-modules
+        this.withType<SpotlessCheck> {
+            dependsOn(multiModules.map { "$it:spotlessCheck" })
         }
     }
 }

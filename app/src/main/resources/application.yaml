@@ -1,3 +1,11 @@
 spring:
   application:
     name: payment-app
+  profiles:
+    active: local
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s # default 30s (graceful shutdown)
+
+server:
+  shutdown: graceful

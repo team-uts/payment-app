@@ -19,9 +19,17 @@ buildscript {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":shared"))
 
     implementation(libs.flyway.core)
     implementation(libs.flyway.mysql)
+
+    implementation("org.springframework.boot:spring-boot-h2console")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    runtimeOnly("com.mysql:mysql-connector-j")
+    testRuntimeOnly("com.h2database:h2")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }
 
 flyway {

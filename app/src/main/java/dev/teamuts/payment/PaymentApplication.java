@@ -1,4 +1,4 @@
-package dev.teamuts.payment.app;
+package dev.teamuts.payment;
 
 import dev.teamuts.payment.shared.config.AppModule;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,10 +9,7 @@ public class PaymentApplication {
 
   public static void main(String[] args) {
     new SpringApplicationBuilder(PaymentApplication.class)
-        .properties(
-            "spring.config.name=%s".formatted(AppModule.getApplicationModuleNames())
-        )
+        .properties("spring.config.name=%s".formatted(AppModule.getApplicationModuleNames()))
         .run(args);
   }
-
 }

@@ -3,13 +3,16 @@ package dev.teamuts.payment.shared.config;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public enum AppModule {
   DEFAULT(""),
   DOMAIN("domain"),
   INFRA("infra"),
-  PERSISTENCE("persistence");
+  PERSISTENCE("persistence"),
+  SHARED("shared");
 
   private final String moduleName;
 
@@ -17,17 +20,25 @@ public enum AppModule {
     this.moduleName = moduleName;
   }
 
-  private static final String APPLICATION_MODULE_PREFIX = "application-";
+  private static final String APPLICATION_MODULE_PREFIX = "application";
 
   public static List<AppModule> getApplicationModules() {
     return List.of(DEFAULT, DOMAIN, INFRA, PERSISTENCE);
   }
 
   public static String getApplicationModuleNames() {
-    return getApplicationModules().stream()
-        .map(AppModule::getModuleName)
-        .map(name -> APPLICATION_MODULE_PREFIX + name)
-        .collect(Collectors.joining(","));
-  }
+    String collect =
+        getApplicationModules().stream()
+            .map(AppModule::getModuleName)
+            .map(
+                name ->
+                    name.isEmpty()
+                        ? APPLICATION_MODULE_PREFIX
+                        : "%s-%s".formatted(APPLICATION_MODULE_PREFIX, name))
+            .collect(Collectors.joining(","));
 
+    log.info("Application module names: {}", collect);
+
+    return collect;
+  }
 }
