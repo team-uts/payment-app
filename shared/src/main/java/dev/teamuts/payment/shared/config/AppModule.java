@@ -27,18 +27,13 @@ public enum AppModule {
   }
 
   public static String getApplicationModuleNames() {
-    String collect =
-        getApplicationModules().stream()
-            .map(AppModule::getModuleName)
-            .map(
-                name ->
-                    name.isEmpty()
-                        ? APPLICATION_MODULE_PREFIX
-                        : "%s-%s".formatted(APPLICATION_MODULE_PREFIX, name))
-            .collect(Collectors.joining(","));
-
-    log.info("Application module names: {}", collect);
-
-    return collect;
+    return getApplicationModules().stream()
+        .map(AppModule::getModuleName)
+        .map(
+            name ->
+                name.isEmpty()
+                    ? APPLICATION_MODULE_PREFIX
+                    : "%s-%s".formatted(APPLICATION_MODULE_PREFIX, name))
+        .collect(Collectors.joining(","));
   }
 }
