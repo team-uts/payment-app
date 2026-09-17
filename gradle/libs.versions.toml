@@ -4,6 +4,8 @@ java = "21"
 spring-boot = "4.1.0"
 spring-dependency-management = "1.1.7"
 
+mapstruct = "1.6.3"
+
 flywaydb = "13.2.0"
 
 spotless = "8.10.2"
@@ -17,3 +19,6 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 [libraries]
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywaydb" }
 flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flywaydb" }
+
+mapstruct-core = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
