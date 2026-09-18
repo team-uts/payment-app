@@ -13,12 +13,13 @@ public class SetupPaymentMethodRegistrationUseCase {
   private final PGAccountService pgAccountService;
 
   public String execute(SetupPaymentMethodCommand command) {
-    PGAccount pgAccount = pgAccountService
-        .findPGAccountByMemberId(command.memberId())
-        .orElseGet(
-            () ->
-                pgAccountService.createPGAccount(
-                    command.memberId(), command.email(), PGProviderType.STRIPE));
+    PGAccount pgAccount =
+        pgAccountService
+            .findPGAccountByMemberId(command.memberId())
+            .orElseGet(
+                () ->
+                    pgAccountService.createPGAccount(
+                        command.memberId(), command.email(), PGProviderType.STRIPE));
 
     return "";
   }

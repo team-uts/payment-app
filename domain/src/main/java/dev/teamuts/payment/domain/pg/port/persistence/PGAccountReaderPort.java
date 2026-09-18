@@ -4,5 +4,5 @@ import dev.teamuts.payment.domain.pg.model.PGAccount;
 import java.util.Optional;
 
 public interface PGAccountReaderPort {
-  Optional<PGAccount> retrievePGAccountOptionalByMemberId(Long memberId);;
+  Optional<PGAccount> retrievePGAccountOptionalByMemberId(Long memberId);
 }
