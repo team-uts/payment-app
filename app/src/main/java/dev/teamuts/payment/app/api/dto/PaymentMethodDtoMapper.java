@@ -1,6 +1,6 @@
 package dev.teamuts.payment.app.api.dto;
 
-import dev.teamuts.payment.domain.paymentmethod.dto.PaymentMethodCommand;
+import dev.teamuts.payment.domain.paymentmethod.command.SetupPaymentMethodCommand;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -11,5 +11,5 @@ import org.mapstruct.ReportingPolicy;
     injectionStrategy = InjectionStrategy.CONSTRUCTOR,
     unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface PaymentMethodDtoMapper {
-  PaymentMethodCommand.SetupPaymentMethod of(SetupPaymentMethodRequestDto requestDto);
+  SetupPaymentMethodCommand of(SetupPaymentMethodRequestDto requestDto);
 }

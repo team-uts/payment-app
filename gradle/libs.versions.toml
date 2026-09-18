@@ -10,6 +10,8 @@ flywaydb = "13.2.0"
 
 spotless = "8.10.2"
 
+stripe = "33.4.0"
+
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependencyManagement = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
@@ -22,3 +24,4 @@ flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flywaydb" 
 
 mapstruct-core = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
 mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+stripe-java = { module = "com.stripe:stripe-java", version.ref = "stripe" }

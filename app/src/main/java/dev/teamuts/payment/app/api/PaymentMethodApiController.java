@@ -2,8 +2,8 @@ package dev.teamuts.payment.app.api;
 
 import dev.teamuts.payment.app.api.dto.PaymentMethodDtoMapper;
 import dev.teamuts.payment.app.api.dto.SetupPaymentMethodRequestDto;
-import dev.teamuts.payment.domain.payment.usecase.SetupPaymentMethodRegistrationUseCase;
-import dev.teamuts.payment.domain.paymentmethod.dto.PaymentMethodCommand;
+import dev.teamuts.payment.domain.paymentmethod.command.SetupPaymentMethodCommand;
+import dev.teamuts.payment.domain.paymentmethod.usecase.SetupPaymentMethodRegistrationUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +21,7 @@ public class PaymentMethodApiController {
   @PostMapping("/setup")
   public ResponseEntity<String> setupPaymentMethod(
       @RequestBody SetupPaymentMethodRequestDto request) {
-    PaymentMethodCommand.SetupPaymentMethod command = mapper.of(request);
+    SetupPaymentMethodCommand command = mapper.of(request);
 
     String result = setupPaymentMethodUseCase.execute(command);
 
