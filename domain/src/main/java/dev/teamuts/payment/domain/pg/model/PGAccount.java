@@ -2,12 +2,15 @@ package dev.teamuts.payment.domain.pg.model;
 
 import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
+@Getter
 public class PGAccount {
   private Long id;
   private Long memberId;
@@ -15,11 +18,11 @@ public class PGAccount {
   private PGProviderType pgProvider;
   private PGAccountStatus status;
 
-  public static PGAccount activateNew(Long memberId, String pgAccountId, PGProviderType provider) {
+  public static PGAccount activateNew(ExtPGAccountDto extPGAccount) {
     return PGAccount.builder()
-        .memberId(memberId)
-        .pgAccountId(pgAccountId)
-        .pgProvider(provider)
+        .memberId(extPGAccount.getMemberId())
+        .pgAccountId(extPGAccount.getPgAccountId())
+        .pgProvider(extPGAccount.getPgProvider())
         .status(PGAccountStatus.ACTIVATED)
         .build();
   }

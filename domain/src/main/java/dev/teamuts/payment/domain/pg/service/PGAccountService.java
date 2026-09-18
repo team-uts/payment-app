@@ -1,9 +1,11 @@
 package dev.teamuts.payment.domain.pg.service;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.dto.CreateExtPGAccountRequestDto;
+import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.port.infra.PGAccountProviderApiPort;
+import dev.teamuts.payment.domain.pg.port.infra.ExtPaymentGatewayApiPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
+import dev.teamuts.payment.domain.pg.port.persistence.PGAccountStorePort;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,15 +14,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PGAccountService {
   private final PGAccountReaderPort pgAccountReaderPort;
-  private final PGAccountProviderApiPort pgAccountProviderApiPort;
+  private final PGAccountStorePort pgAccountStorePort;
+  private final ExtPaymentGatewayApiPort extPaymentGatewayApiPort;
 
   public Optional<PGAccount> findPGAccountByMemberId(Long memberId) {
     return pgAccountReaderPort.retrievePGAccountOptionalByMemberId(memberId);
   }
 
-  public PGAccount createPGAccount(Long memberId, String email, PGProviderType providerType) {
-    String pgAccountId = pgAccountProviderApiPort.createNewAccount(memberId, email, providerType);
+  public PGAccount createPGAccount(CreateExtPGAccountRequestDto request) {
+    ExtPGAccountDto extPGAccount = extPaymentGatewayApiPort.createNewAccount(request);
 
-    return PGAccount.activateNew(memberId, pgAccountId, providerType);
+    PGAccount newPGAccount = PGAccount.activateNew(extPGAccount);
+
+    return pgAccountStorePort.storeNew(newPGAccount);
   }
 }

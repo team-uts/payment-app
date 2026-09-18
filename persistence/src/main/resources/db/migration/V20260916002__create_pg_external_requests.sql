@@ -6,7 +6,8 @@ CREATE TABLE if not exists `pg_external_requests`
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
-    request_type            VARCHAR(32)         NOT NULL COMMENT 'PAYMENT_METHOD/ACCOUNT',
+    request_type            VARCHAR(32)         NOT NULL COMMENT 'PAYMENT_METHOD/PAYMENT',
+    pg_object_name          VARCHAR(32)         NOT NULL COMMENT 'specific api object name of PG provider',
 
     provider_secret         VARCHAR(255)        NOT NULL COMMENT 'secret token for request (client_secret)',
 

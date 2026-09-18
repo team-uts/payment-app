@@ -14,4 +14,9 @@ public class PGAccountConverter {
         entity.getPgProvider(),
         entity.getStatus());
   }
+
+  public PGAccountJpaEntity covertToJpaEntity(PGAccount model) {
+    return PGAccountJpaEntity.newEntity(
+        model.getMemberId(), model.getPgAccountId(), model.getPgProvider(), model.getStatus());
+  }
 }
