@@ -5,16 +5,16 @@ import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import lombok.Getter;
 
 @Getter
-public enum ExtPGApiType {
+public enum ExtPGOperationType {
   CREATE_ACCOUNT_V2(PGProviderType.STRIPE, PGRequestType.ACCOUNT, "user_id"),
-  CREATE_SETUP_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT_METHOD, null),
+  CREATE_SETUP_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT_METHOD, "user_id"),
   CREATE_PAYMENT_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT, null);
 
   private final PGProviderType pgProvider;
   private final PGRequestType requestType;
   private final String metadataKey;
 
-  ExtPGApiType(PGProviderType pgProvider, PGRequestType requestType, String metadataKey) {
+  ExtPGOperationType(PGProviderType pgProvider, PGRequestType requestType, String metadataKey) {
     this.pgProvider = pgProvider;
     this.requestType = requestType;
     this.metadataKey = metadataKey;

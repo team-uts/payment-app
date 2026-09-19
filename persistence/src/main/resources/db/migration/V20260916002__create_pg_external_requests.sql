@@ -7,11 +7,11 @@ CREATE TABLE if not exists `pg_external_requests`
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
     request_type            VARCHAR(32)         NOT NULL COMMENT 'PAYMENT_METHOD/PAYMENT',
-    pg_object_name          VARCHAR(32)         NOT NULL COMMENT 'specific api object name of PG provider',
+    ext_operation           VARCHAR(32)         NOT NULL COMMENT 'specific operation of PG provider',
 
-    provider_secret         VARCHAR(255)        NOT NULL COMMENT 'secret token for request (client_secret)',
+    ext_provider_secret     VARCHAR(255)        NOT NULL COMMENT 'secret token for request (client_secret)',
 
-    status                  VARCHAR(32)         NOT NULL COMMENT 'SUCCESS/PENDING/FAILED',
+    status                  VARCHAR(32)         NOT NULL COMMENT 'INIT/SUCCESS/PENDING/FAILED',
 
     created_at              DATETIME(6)         NOT NULL,
     created_by              VARCHAR(30)         NOT NULL COMMENT 'creator',

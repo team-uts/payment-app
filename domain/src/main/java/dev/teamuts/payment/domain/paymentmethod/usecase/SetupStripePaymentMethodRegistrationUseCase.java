@@ -4,6 +4,7 @@ import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.paymentmethod.dto.SetupPaymentMethodCommand;
 import dev.teamuts.payment.domain.pg.dto.CreateExtPGAccountRequestDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
 import dev.teamuts.payment.domain.pg.service.PGExternalRequestService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,10 @@ public class SetupStripePaymentMethodRegistrationUseCase {
                 // if not present, create new PG Account in both pgProvider and database
                 () ->
                     pgAccountService.createPGAccount(CreateExtPGAccountRequestDto.stripe(command)));
+
+    // initialize payment method setup with PG and store the request in database
+//    PGExternalRequest pgExternalRequest =
+//        pgExternalRequestService.initializePaymentMethodRequest(pgAccount);
 
     return "";
   }

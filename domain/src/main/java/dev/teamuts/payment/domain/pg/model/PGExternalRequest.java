@@ -3,6 +3,7 @@ package dev.teamuts.payment.domain.pg.model;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
+import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,18 @@ public class PGExternalRequest {
   private PGRequestType requestType;
   private String providerSecret;
   private PGRequestStatus status;
+
+  public static PGExternalRequest initPaymentMethodSetup(
+      ExtPGPaymentMethodOperationDto paymentMethodOperation) {
+    return PGExternalRequest.builder()
+        .pgRequestId(paymentMethodOperation.getPgOperationId())
+        .memberId(paymentMethodOperation.getMemberId())
+        .pgProvider(paymentMethodOperation.getPgProvider())
+        .requestType(PGRequestType.PAYMENT_METHOD)
+        .providerSecret(paymentMethodOperation.getPgProviderSecret())
+        .status(PGRequestStatus.INIT)
+        .build();
+  }
 
   public static PGExternalRequest fromDatabase(
       Long id,

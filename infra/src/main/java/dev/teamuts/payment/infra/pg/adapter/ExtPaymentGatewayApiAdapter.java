@@ -2,11 +2,14 @@ package dev.teamuts.payment.infra.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.dto.CreateExtPGAccountRequestDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
+import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExtPaymentGatewayApiPort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
 import dev.teamuts.payment.infra.pg.clients.PGApiClientServiceProvider;
+import dev.teamuts.payment.infra.pg.dto.BaseExtPGResponse;
 import dev.teamuts.payment.infra.pg.dto.ExtPGAccountResponse;
+import dev.teamuts.payment.infra.pg.dto.ExtPaymentMethodProcessResponse;
 import lombok.RequiredArgsConstructor;
 
 @PGAdapter
@@ -16,19 +19,33 @@ public class ExtPaymentGatewayApiAdapter implements ExtPaymentGatewayApiPort {
 
   @Override
   public ExtPGAccountDto createNewAccount(CreateExtPGAccountRequestDto request) {
-    ExtPGAccountResponse extPGAccountResponse =
+    ExtPGAccountResponse response =
         pgClientProvider.getInstance(request.getPgProvider()).createAccount(request).orElseThrow();
 
     return ExtPGAccountDto.builder()
-        .memberId(extPGAccountResponse.getMemberId())
-        .pgAccountId(extPGAccountResponse.getPgAccountId())
-        .pgProvider(extPGAccountResponse.getPgProvider())
+        .memberId(response.getMemberId())
+        .pgAccountId(response.getPgAccountId())
+        .pgProvider(response.getPgProvider())
         .build();
   }
 
   @Override
-  public void setupPaymentMethodRequest(PGAccount pgAccount) {
-    pgClientProvider.getInstance(pgAccount.getPgProvider());
+  public ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PGAccount pgAccount) {
+    BaseExtPGResponse<ExtPaymentMethodProcessResponse> extBaseResponse =
+        pgClientProvider
+            .getInstance(pgAccount.getPgProvider())
+            .initializePaymentMethodSetup(pgAccount);
+
+    ExtPaymentMethodProcessResponse response = extBaseResponse.orElseThrow();
+
+    return ExtPGPaymentMethodOperationDto.builder()
+        .memberId(response.getMemberId())
+        .pgOperationId(response.getPgOperationId())
+        .pgOperationName(extBaseResponse.getOperationType().name())
+        .pgAccountId(response.getPgAccountId())
+        .pgProvider(response.getPgProvider())
+        .pgProviderSecret(response.getPgProviderSecret())
+        .build();
   }
 
   @Override
