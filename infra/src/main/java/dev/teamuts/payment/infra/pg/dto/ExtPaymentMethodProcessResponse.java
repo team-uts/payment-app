@@ -19,7 +19,7 @@ public class ExtPaymentMethodProcessResponse {
       SetupIntent setupIntent, String userId) {
     return new ExtPaymentMethodProcessResponse(
         Long.parseLong(userId),
-        setupIntent.getCustomerAccount(),
+        setupIntent.getCustomer(),
         PGProviderType.STRIPE,
         setupIntent.getId(),
         setupIntent.getClientSecret());

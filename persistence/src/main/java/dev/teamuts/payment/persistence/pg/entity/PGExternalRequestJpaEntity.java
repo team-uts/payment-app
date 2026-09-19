@@ -32,7 +32,7 @@ public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
   @Column(name = "pg_request_id", nullable = false, unique = true)
   private String pgRequestId;
 
-  @Column(name = "member_id", nullable = false, unique = true)
+  @Column(name = "member_id", nullable = false)
   private Long memberId;
 
   @Column(name = "pg_provider", nullable = false)

@@ -15,4 +15,4 @@ CREATE TABLE if not exists `pg_accounts`
     updated_by              VARCHAR(30)         NULL COMMENT 'updater'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX ix_pga_memberid ON pg_accounts (member_id);
+CREATE UNIQUE INDEX ux_pga_memberid ON pg_accounts (member_id);

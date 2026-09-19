@@ -4,4 +4,4 @@ import dev.teamuts.payment.persistence.pg.entity.PGExternalRequestJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PGExternalRequestRepository
-    extends JpaRepository<PGExternalRequestJpaEntity, Integer> {}
+    extends JpaRepository<PGExternalRequestJpaEntity, Long> {}

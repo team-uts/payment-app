@@ -6,6 +6,7 @@ import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExtPaymentGatewayApiPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountStorePort;
+import dev.teamuts.payment.shared.data.AppTransactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class PGAccountService {
     return pgAccountReaderPort.retrievePGAccountOptionalByMemberId(memberId);
   }
 
+  @AppTransactional
   public PGAccount createPGAccount(CreateExtPGAccountRequestDto request) {
     ExtPGAccountDto extPGAccount = extPaymentGatewayApiPort.createNewAccount(request);
 
