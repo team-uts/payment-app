@@ -19,7 +19,11 @@ public class BaseExtPGResponse<T> {
 
   public static <T> BaseExtPGResponse<T> failed(
       ExtPGOperationType operationType, String errorMessage) {
-    return new BaseExtPGResponse<>(null, ExtPGResponseStatus.FAILED, operationType, errorMessage);
+    return new BaseExtPGResponse<>(
+        null,
+        ExtPGResponseStatus.FAILED,
+        operationType,
+        "Failed [%s]: %s".formatted(operationType.name(), errorMessage));
   }
 
   public <X extends Throwable> T orElseThrow() {

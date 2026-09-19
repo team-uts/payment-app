@@ -45,8 +45,7 @@ public class StripePGApiClientService implements PGApiClientService {
       log.error(e.getMessage());
 
       return BaseExtPGResponse.failed(
-          operationType,
-          "Failed to [%s] (memberId: %d)".formatted(operationType.name(), request.getMemberId()));
+          operationType, "memberId: %d".formatted(request.getMemberId()));
     }
   }
 
@@ -72,9 +71,10 @@ public class StripePGApiClientService implements PGApiClientService {
       return BaseExtPGResponse.succeeded(
           ExtPaymentMethodProcessResponse.stripeSetupIntent(setupIntent, userId), operationType);
     } catch (Exception e) {
+      log.error(e.getMessage());
+
       return BaseExtPGResponse.failed(
-          operationType,
-          "Failed to [%s] (memberId: %d)".formatted(operationType.name(), pgAccount.getMemberId()));
+          operationType, "memberId: %d".formatted(pgAccount.getMemberId()));
     }
   }
 
