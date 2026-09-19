@@ -1,5 +1,6 @@
 package dev.teamuts.payment.domain.pg.model;
 
+import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+@DomainModel
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 @Getter

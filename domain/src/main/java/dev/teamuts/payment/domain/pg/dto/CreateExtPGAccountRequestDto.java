@@ -14,8 +14,8 @@ public class CreateExtPGAccountRequestDto {
   String email;
   PGProviderType pgProvider;
 
-  public static CreateExtPGAccountRequestDto stripe(SetupPaymentMethodCommand command) {
+  public static CreateExtPGAccountRequestDto of(SetupPaymentMethodCommand command) {
     return new CreateExtPGAccountRequestDto(
-        command.memberId(), command.email(), PGProviderType.STRIPE);
+        command.memberId(), command.email(), command.pgProvider());
   }
 }

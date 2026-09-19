@@ -1,11 +1,10 @@
 package dev.teamuts.payment.infra.pg.clients;
 
 import com.stripe.StripeClient;
+import com.stripe.model.Customer;
 import com.stripe.model.SetupIntent;
-import com.stripe.model.v2.core.Account;
+import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.SetupIntentCreateParams;
-import com.stripe.param.v2.core.AccountCreateParams;
-import com.stripe.param.v2.core.AccountCreateParams.Identity.EntityType;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.dto.CreateExtPGAccountRequestDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
@@ -26,47 +25,28 @@ public class StripePGApiClientService implements PGApiClientService {
   @Override
   public BaseExtPGResponse<ExtPGAccountResponse> createAccount(
       CreateExtPGAccountRequestDto request) {
-    ExtPGOperationType operationType = ExtPGOperationType.CREATE_ACCOUNT_V2;
+    ExtPGOperationType operationType = ExtPGOperationType.CREATE_CUSTOMER;
 
-    AccountCreateParams params =
-        AccountCreateParams.builder()
-            .setContactEmail(request.getEmail())
-            .setIdentity(
-                AccountCreateParams.Identity.builder()
-                    .setCountry("au")
-                    .setEntityType(EntityType.INDIVIDUAL)
-                    .build())
-            .setConfiguration(
-                AccountCreateParams.Configuration.builder()
-                    .setCustomer(
-                        AccountCreateParams.Configuration.Customer.builder()
-                            .setCapabilities(
-                                AccountCreateParams.Configuration.Customer.Capabilities.builder()
-                                    .setAutomaticIndirectTax(
-                                        AccountCreateParams.Configuration.Customer.Capabilities
-                                            .AutomaticIndirectTax.builder()
-                                            .setRequested(true)
-                                            .build())
-                                    .build())
-                            .build())
-                    .build())
-            .addInclude(AccountCreateParams.Include.CONFIGURATION__CUSTOMER)
+    // AccountV2 is not supported by Stripe for sandbox.
+    CustomerCreateParams params =
+        CustomerCreateParams.builder()
+            .setEmail(request.getEmail())
+            .setName(request.getMemberId().toString())
             .putMetadata(operationType.getMetadataKey(), request.getMemberId().toString())
             .build();
 
     try {
-      Account account = stripeClient.v2().core().accounts().create(params);
-      String userId = account.getMetadata().get(operationType.getMetadataKey());
+      Customer customer = stripeClient.v1().customers().create(params);
+      String userId = customer.getName();
 
       return BaseExtPGResponse.succeeded(
-          ExtPGAccountResponse.stripeAccountV2(account, userId),
-          ExtPGOperationType.CREATE_ACCOUNT_V2);
+          ExtPGAccountResponse.stripeAccountV2(customer, userId), operationType);
     } catch (Exception e) {
       log.error(e.getMessage());
 
       return BaseExtPGResponse.failed(
-          ExtPGOperationType.CREATE_ACCOUNT_V2,
-          "Failed to create Stripe Account (memberId: %d)".formatted(request.getMemberId()));
+          operationType,
+          "Failed to [%s] (memberId: %d)".formatted(operationType.name(), request.getMemberId()));
     }
   }
 
@@ -75,11 +55,11 @@ public class StripePGApiClientService implements PGApiClientService {
       PGAccount pgAccount) {
     ExtPGOperationType operationType = ExtPGOperationType.CREATE_SETUP_INTENT;
 
-    // Parms: Stripe Account ID
+    // Parms: **Stripe Customer ID** (not AccountV2 ID)
     // Parms: Member ID (for metadata)
     SetupIntentCreateParams params =
         SetupIntentCreateParams.builder()
-            .setCustomerAccount(pgAccount.getPgAccountId())
+            .setCustomer(pgAccount.getPgAccountId())
             .setAutomaticPaymentMethods(
                 SetupIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build())
             .putMetadata(operationType.getMetadataKey(), pgAccount.getMemberId().toString())
@@ -92,7 +72,9 @@ public class StripePGApiClientService implements PGApiClientService {
       return BaseExtPGResponse.succeeded(
           ExtPaymentMethodProcessResponse.stripeSetupIntent(setupIntent, userId), operationType);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      return BaseExtPGResponse.failed(
+          operationType,
+          "Failed to [%s] (memberId: %d)".formatted(operationType.name(), pgAccount.getMemberId()));
     }
   }
 

@@ -1,3 +1,6 @@
 package dev.teamuts.payment.app.api.dto;
 
-public record SetupPaymentMethodRequestDto(Long memberId, String email) {}
+import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+
+public record SetupPaymentMethodRequestDto(
+    Long memberId, String email, PGProviderType pgProvider) {}

@@ -43,8 +43,11 @@ public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
   @Enumerated(EnumType.STRING)
   private PGRequestType requestType;
 
-  @Column(name = "provider_secret", nullable = false)
-  private String providerSecret;
+  @Column(name = "ext_operation", nullable = false)
+  private String extOperation;
+
+  @Column(name = "ext_provider_secret", nullable = false)
+  private String extProviderSecret;
 
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -55,6 +58,7 @@ public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
       Long memberId,
       PGProviderType pgProvider,
       PGRequestType requestType,
+      String extOperation,
       String providerSecret,
       PGRequestStatus status) {
     return PGExternalRequestJpaEntity.builder()
@@ -62,7 +66,8 @@ public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
         .memberId(memberId)
         .pgProvider(pgProvider)
         .requestType(requestType)
-        .providerSecret(providerSecret)
+        .extOperation(extOperation)
+        .extProviderSecret(providerSecret)
         .status(status)
         .build();
   }

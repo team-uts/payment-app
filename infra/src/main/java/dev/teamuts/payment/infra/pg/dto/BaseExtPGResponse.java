@@ -17,7 +17,8 @@ public class BaseExtPGResponse<T> {
     return new BaseExtPGResponse<>(data, ExtPGResponseStatus.SUCCESS, operationType, null);
   }
 
-  public static <T> BaseExtPGResponse<T> failed(ExtPGOperationType operationType, String errorMessage) {
+  public static <T> BaseExtPGResponse<T> failed(
+      ExtPGOperationType operationType, String errorMessage) {
     return new BaseExtPGResponse<>(null, ExtPGResponseStatus.FAILED, operationType, errorMessage);
   }
 

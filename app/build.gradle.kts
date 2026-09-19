@@ -28,4 +28,7 @@ dependencies {
     // mapstruct for dto mapping (https://mapstruct.org/documentation/reference-guide/)
     implementation(libs.mapstruct.core)
     annotationProcessor(libs.mapstruct.processor)
+
+    // swagger
+    implementation(libs.springdoc.openapi.webmvc)
 }

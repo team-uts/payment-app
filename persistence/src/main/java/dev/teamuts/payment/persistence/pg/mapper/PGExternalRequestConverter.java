@@ -13,7 +13,8 @@ public class PGExternalRequestConverter {
         entity.getMemberId(),
         entity.getPgProvider(),
         entity.getRequestType(),
-        entity.getProviderSecret(),
+        entity.getExtOperation(),
+        entity.getExtProviderSecret(),
         entity.getStatus());
   }
 
@@ -23,6 +24,7 @@ public class PGExternalRequestConverter {
         model.getMemberId(),
         model.getPgProvider(),
         model.getRequestType(),
+        model.getExtOperation(),
         model.getProviderSecret(),
         model.getStatus());
   }
