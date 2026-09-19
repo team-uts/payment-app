@@ -4,6 +4,7 @@ import static dev.teamuts.payment.persistence.common.constant.DataSourceConstant
 import static dev.teamuts.payment.persistence.common.constant.JpaConstants.APP_ENTITY_MANAGER;
 import static dev.teamuts.payment.shared.data.TransactionConstants.APP_TRANSACTION_MANAGER;
 
+import java.util.Optional;
 import java.util.Properties;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.boot.jpa.autoconfigure.JpaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -22,7 +24,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 @Configuration(proxyBeanMethods = false)
 @EnableJpaAuditing
 @EnableJpaRepositories(
-    basePackages = "dev.teamuts.payment.**.repository",
+    basePackages = "dev.teamuts.payment.persistence.**.repository",
     entityManagerFactoryRef = APP_ENTITY_MANAGER,
     transactionManagerRef = APP_TRANSACTION_MANAGER)
 @RequiredArgsConstructor
@@ -49,8 +51,13 @@ public class JpaConfig {
         this.setJpaProperties(mergedJpaProperties);
         this.setDataSource(applicationDataSource);
         this.setPersistenceUnitName("paymentApp");
-        this.setPackagesToScan("dev.teamuts.payment.persistence.db.*.entity");
+        this.setPackagesToScan("dev.teamuts.payment.persistence.*.entity");
       }
     };
+  }
+
+  @Bean
+  public AuditorAware<String> auditorProvider() {
+    return () -> Optional.of("system");
   }
 }

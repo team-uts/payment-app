@@ -8,4 +8,7 @@ jar.enabled = true
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":shared"))
+
+    implementation(libs.stripe.java)
 }
