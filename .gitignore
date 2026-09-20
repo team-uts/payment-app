@@ -1,4 +1,6 @@
 .env.local
+**/main/generated
+.DS_Store
 
 .gradle
 build/
