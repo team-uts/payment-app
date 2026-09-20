@@ -14,7 +14,7 @@ CREATE TABLE if not exists `payment_methods`
     card_expiry_month       TINYINT             NULL COMMENT 'card expiry month',
     card_expiry_year        SMALLINT            NULL COMMENT 'card expiry year',
 
-    is_default              TINYINT(1)          NOT NULL COMMENT '1: default method, 0: not default',
+    is_default              TINYINT             NOT NULL COMMENT '1: default method, 0: not default',
 
     status                  VARCHAR(32)         NOT NULL COMMENT 'ACTIVE/INACTIVE/EXPIRED',
 

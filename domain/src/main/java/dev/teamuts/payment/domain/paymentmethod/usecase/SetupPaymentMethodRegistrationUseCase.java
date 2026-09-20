@@ -16,6 +16,7 @@ public class SetupPaymentMethodRegistrationUseCase {
   private final PGAccountService pgAccountService;
   private final PGExternalRequestService pgExternalRequestService;
 
+  // TODO: add Locking mechanism to prevent concurrent setup requests for the same memberId
   public SetupPaymentMethodInfo execute(SetupPaymentMethodCommand command) {
     // get PG Account from database
     PGAccount pgAccount =

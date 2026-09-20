@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS `members`
     updated_at              DATETIME(6)         NULL,
     updated_by              VARCHAR(30)         NULL COMMENT 'updater'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE UNIQUE INDEX ux_m_email ON members (email);
