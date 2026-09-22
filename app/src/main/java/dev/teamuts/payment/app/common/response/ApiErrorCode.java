@@ -1,3 +1,5 @@
 package dev.teamuts.payment.app.common.response;
 
-public enum ApiErrorCode {}
+public enum ApiErrorCode {
+  INTERNAL_SERVER_ERROR
+}
