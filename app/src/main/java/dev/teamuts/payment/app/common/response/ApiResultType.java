@@ -1,0 +1,6 @@
+package dev.teamuts.payment.app.common.response;
+
+public enum ApiResultType {
+  SUCCESS,
+  FAILURE
+}
