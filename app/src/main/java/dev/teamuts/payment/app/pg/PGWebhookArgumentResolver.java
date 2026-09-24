@@ -26,7 +26,6 @@ public class PGWebhookArgumentResolver implements HandlerMethodArgumentResolver 
 
     PGWebhookPayload annotation = parameter.getParameterAnnotation(PGWebhookPayload.class);
 
-
     return null;
   }
 }

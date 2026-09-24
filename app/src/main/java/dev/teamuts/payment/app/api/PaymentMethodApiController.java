@@ -5,8 +5,10 @@ import static dev.teamuts.payment.domain.pg.dto.PGExtRequestInfo.*;
 import dev.teamuts.payment.app.api.dto.PaymentMethodDtoMapper;
 import dev.teamuts.payment.app.api.dto.SetupPaymentMethodRequestDto;
 import dev.teamuts.payment.app.common.response.ApiResponse;
-import dev.teamuts.payment.domain.paymentmethod.dto.SetupPaymentMethodCommand;
-import dev.teamuts.payment.domain.paymentmethod.usecase.SetupPaymentMethodRegistrationUseCase;
+import dev.teamuts.payment.domain.payment.dto.PaymentMethodInfo;
+import dev.teamuts.payment.domain.payment.dto.SetupPaymentMethodCommand;
+import dev.teamuts.payment.domain.payment.usecase.GetPaymentMethodListUseCase;
+import dev.teamuts.payment.domain.payment.usecase.SetupPaymentMethodRegistrationUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PaymentMethodApiController {
   private final SetupPaymentMethodRegistrationUseCase setupPaymentMethodUseCase;
+  private final GetPaymentMethodListUseCase getPaymentMethodListUseCase;
   private final PaymentMethodDtoMapper mapper;
 
   @Operation(
@@ -38,8 +41,9 @@ public class PaymentMethodApiController {
   }
 
   @GetMapping
-  public ApiResponse<String> getPaymentMethodList() {
-    // TODO : implement getPaymentMethodList
-    return ApiResponse.success("ok");
+  public ApiResponse<PaymentMethodInfo> getPaymentMethodList() {
+    PaymentMethodInfo paymentMethodInfo = getPaymentMethodListUseCase.execute(1L);
+
+    return ApiResponse.success(paymentMethodInfo);
   }
 }

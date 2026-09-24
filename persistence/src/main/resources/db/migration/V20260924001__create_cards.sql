@@ -1,15 +1,14 @@
-CREATE TABLE if not exists `payment_methods`
+CREATE TABLE if not exists `cards`
 (
     id                      BIGINT UNSIGNED     NOT NULL AUTO_INCREMENT    PRIMARY  KEY,
 
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
+    pay_method_id           BIGINT UNSIGNED     NOT NULL COMMENT 'payment method ID',
 
-    pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
-    method_type             VARCHAR(32)         NOT NULL COMMENT 'CARD/PAYPAL/APPLEPAY',
-
-    provider_token          VARCHAR(256)        NULL COMMENT 'PG payment method token (encryption)',
-
-    is_default              TINYINT             NOT NULL COMMENT '1: default method, 0: not default',
+    brand                   VARCHAR(32)         NULL COMMENT 'VISA/MASTERCARD',
+    last_four               VARCHAR(4)          NULL COMMENT 'last 4 digits of the card',
+    expiry_month            TINYINT             NULL COMMENT 'card expiry month',
+    expiry_year             SMALLINT            NULL COMMENT 'card expiry year',
 
     status                  VARCHAR(32)         NOT NULL COMMENT 'ACTIVE/INACTIVE/EXPIRED',
 
@@ -19,4 +18,4 @@ CREATE TABLE if not exists `payment_methods`
     updated_by              VARCHAR(30)         NULL COMMENT 'updater'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX ix_pm_memberid ON payment_methods (member_id);
+CREATE INDEX ix_c_paymethodid ON cards (pay_method_id);

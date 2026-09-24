@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.pg.dto;
 
-import dev.teamuts.payment.domain.paymentmethod.dto.SetupPaymentMethodCommand;
+import dev.teamuts.payment.domain.payment.dto.SetupPaymentMethodCommand;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
