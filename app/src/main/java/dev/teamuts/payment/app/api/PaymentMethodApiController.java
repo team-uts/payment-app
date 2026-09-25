@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Payment Method API", description = "Payment Method Domain")
@@ -41,9 +42,13 @@ public class PaymentMethodApiController {
     return ApiResponse.success(result);
   }
 
+  // TODO: member authentication should be added to this API
+  @Operation(
+      summary = "Get Payment Method List",
+      description = "Get the list of payment methods for a member")
   @GetMapping
-  public ApiResponse<List<PaymentMethodInfo>> getPaymentMethodList() {
-    List<PaymentMethodInfo> paymentMethods = getPaymentMethodListUseCase.execute(1L);
+  public ApiResponse<List<PaymentMethodInfo>> getPaymentMethodList(@RequestParam Long memberId) {
+    List<PaymentMethodInfo> paymentMethods = getPaymentMethodListUseCase.execute(memberId);
 
     return ApiResponse.success(paymentMethods);
   }

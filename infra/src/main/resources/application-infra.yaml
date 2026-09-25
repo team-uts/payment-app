@@ -2,3 +2,8 @@ spring:
   config:
     import:
       - optional:file:.env.${spring.profiles.active}[.properties]
+
+stripe:
+  webhook:
+    secret:
+      setup-intent: ${STRIPE_WEBHOOK_SECRET_SETUP_INTENT}

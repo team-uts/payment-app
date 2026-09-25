@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/webhook/stripe")
 public class StripeWebhookController {
   @PostMapping("/payment-methods")
-  public String StripeWebhook(@RequestBody String payload) {
+  public String stripeWebhook(@RequestBody String payload) {
     return "ok";
   }
 }
