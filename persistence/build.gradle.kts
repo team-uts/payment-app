@@ -26,9 +26,12 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-h2console")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(variantOf(libs.querydsl.jpa) { classifier("jakarta") })
+    annotationProcessor(variantOf(libs.querydsl.apt) { classifier("jakarta") })
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
     runtimeOnly("com.mysql:mysql-connector-j")
     testRuntimeOnly("com.h2database:h2")
-
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 }
 

@@ -21,6 +21,7 @@ public class PaymentMethod {
   private PaymentMethodType methodType;
   private Boolean defaultMethod;
   private PaymentMethodStatus status;
+  private Card card;
 
   public static PaymentMethod fromDatabase(
       Long id,
@@ -29,7 +30,8 @@ public class PaymentMethod {
       String providerToken,
       PaymentMethodType methodType,
       Boolean defaultMethod,
-      PaymentMethodStatus status) {
+      PaymentMethodStatus status,
+      Card card) {
     return PaymentMethod.builder()
         .id(id)
         .memberId(memberId)
@@ -38,6 +40,7 @@ public class PaymentMethod {
         .methodType(methodType)
         .defaultMethod(defaultMethod)
         .status(status)
+        .card(card)
         .build();
   }
 }

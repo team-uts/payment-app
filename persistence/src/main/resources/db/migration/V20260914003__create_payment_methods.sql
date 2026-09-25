@@ -9,7 +9,7 @@ CREATE TABLE if not exists `payment_methods`
 
     provider_token          VARCHAR(256)        NULL COMMENT 'PG payment method token (encryption)',
 
-    is_default              TINYINT             NOT NULL COMMENT '1: default method, 0: not default',
+    default_method          TINYINT(1)          NOT NULL COMMENT '1: default method, 0: not default',
 
     status                  VARCHAR(32)         NOT NULL COMMENT 'ACTIVE/INACTIVE/EXPIRED',
 

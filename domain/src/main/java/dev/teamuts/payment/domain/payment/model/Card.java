@@ -14,21 +14,21 @@ import lombok.Getter;
 public class Card {
   private Long id;
   private Long memberId;
-  private String payMethodId;
+  private Long payMethodId;
   private String last4;
   private String brand;
-  private String expMonth;
-  private String expYear;
+  private Integer expMonth;
+  private Integer expYear;
   private CardStatus status;
 
   public static Card fromDatabase(
       Long id,
       Long memberId,
-      String payMethodId,
+      Long payMethodId,
       String last4,
       String brand,
-      String expMonth,
-      String expYear,
+      Integer expMonth,
+      Integer expYear,
       CardStatus status) {
     return Card.builder()
         .id(id)

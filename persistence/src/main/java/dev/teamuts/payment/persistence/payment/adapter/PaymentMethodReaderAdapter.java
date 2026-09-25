@@ -3,7 +3,7 @@ package dev.teamuts.payment.persistence.payment.adapter;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodReaderPort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
-import dev.teamuts.payment.persistence.payment.entity.PaymentMethodJpaEntity;
+import dev.teamuts.payment.persistence.payment.dto.PaymentMethodListRow;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentMethodConverter;
 import dev.teamuts.payment.persistence.payment.repository.PaymentMethodRepository;
 import java.util.List;
@@ -17,8 +17,8 @@ public class PaymentMethodReaderAdapter implements PaymentMethodReaderPort {
 
   @Override
   public List<PaymentMethod> retrievePaymentMethodsByMemberId(Long memberId) {
-    List<PaymentMethodJpaEntity> entities = paymentMethodRepository.findListByMemberId(memberId);
+    List<PaymentMethodListRow> rows = paymentMethodRepository.findListByMemberIdJoin(memberId);
 
-    return entities.stream().map(paymentMethodConverter::covertToDomainModel).toList();
+    return rows.stream().map(paymentMethodConverter::convertToDomainModel).toList();
   }
 }

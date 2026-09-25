@@ -11,6 +11,7 @@ import dev.teamuts.payment.domain.payment.usecase.GetPaymentMethodListUseCase;
 import dev.teamuts.payment.domain.payment.usecase.SetupPaymentMethodRegistrationUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,9 +42,9 @@ public class PaymentMethodApiController {
   }
 
   @GetMapping
-  public ApiResponse<PaymentMethodInfo> getPaymentMethodList() {
-    PaymentMethodInfo paymentMethodInfo = getPaymentMethodListUseCase.execute(1L);
+  public ApiResponse<List<PaymentMethodInfo>> getPaymentMethodList() {
+    List<PaymentMethodInfo> paymentMethods = getPaymentMethodListUseCase.execute(1L);
 
-    return ApiResponse.success(paymentMethodInfo);
+    return ApiResponse.success(paymentMethods);
   }
 }

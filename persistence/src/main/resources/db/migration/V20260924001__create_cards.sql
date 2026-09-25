@@ -7,8 +7,8 @@ CREATE TABLE if not exists `cards`
 
     brand                   VARCHAR(32)         NULL COMMENT 'VISA/MASTERCARD',
     last_four               VARCHAR(4)          NULL COMMENT 'last 4 digits of the card',
-    expiry_month            TINYINT             NULL COMMENT 'card expiry month',
-    expiry_year             SMALLINT            NULL COMMENT 'card expiry year',
+    expiry_month            INT                 NULL COMMENT 'card expiry month',
+    expiry_year             INT                 NULL COMMENT 'card expiry year',
 
     status                  VARCHAR(32)         NOT NULL COMMENT 'ACTIVE/INACTIVE/EXPIRED',
 

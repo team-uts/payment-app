@@ -12,9 +12,9 @@ import lombok.RequiredArgsConstructor;
 public class GetPaymentMethodListUseCase {
   private final PaymentMethodService paymentMethodService;
 
-  public PaymentMethodInfo execute(Long memberId) {
+  public List<PaymentMethodInfo> execute(Long memberId) {
     List<PaymentMethod> paymentMethods = paymentMethodService.getPaymentMethodList(memberId);
 
-    return null;
+    return paymentMethods.stream().map(PaymentMethodInfo::of).toList();
   }
 }

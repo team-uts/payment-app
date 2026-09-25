@@ -2,8 +2,11 @@ package dev.teamuts.payment.persistence.common.config;
 
 import static dev.teamuts.payment.persistence.common.constant.DataSourceConstants.APPLICATION_DATA_SOURCE;
 import static dev.teamuts.payment.persistence.common.constant.JpaConstants.APP_ENTITY_MANAGER;
+import static dev.teamuts.payment.persistence.common.constant.JpaConstants.APP_JPA_QUERY_FACTORY;
 import static dev.teamuts.payment.shared.data.TransactionConstants.APP_TRANSACTION_MANAGER;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import java.util.Properties;
 import javax.sql.DataSource;
@@ -29,7 +32,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
     transactionManagerRef = APP_TRANSACTION_MANAGER)
 @RequiredArgsConstructor
 public class JpaConfig {
-
   private final JpaProperties jpaProperties;
   private final HibernateProperties hibernateProperties;
 
@@ -54,6 +56,12 @@ public class JpaConfig {
         this.setPackagesToScan("dev.teamuts.payment.persistence.*.entity");
       }
     };
+  }
+
+  @Bean(APP_JPA_QUERY_FACTORY)
+  public JPAQueryFactory jpaQueryFactory(
+      @Qualifier(APP_ENTITY_MANAGER) EntityManager appEntityManager) {
+    return new JPAQueryFactory(appEntityManager);
   }
 
   @Bean

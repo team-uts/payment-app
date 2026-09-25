@@ -44,7 +44,7 @@ public class PaymentMethodJpaEntity extends BaseAuditableEntity {
   @Column(name = "provider_token", nullable = false)
   private String providerToken;
 
-  @Column(name = "is_default", nullable = false)
+  @Column(name = "default_method", nullable = false)
   private Boolean defaultMethod;
 
   @Column(name = "status", nullable = false)

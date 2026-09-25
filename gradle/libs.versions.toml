@@ -4,13 +4,11 @@ java = "21"
 spring-boot = "4.1.0"
 spring-dependency-management = "1.1.7"
 
-
+querydsl = "5.1.0"
 mapstruct = "1.6.3"
-
 flywaydb = "13.2.0"
 
 spotless = "8.10.2"
-
 stripe = "33.4.0"
 
 [plugins]
@@ -25,6 +23,10 @@ flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flywaydb" 
 
 mapstruct-core = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
 mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
-stripe-java = { module = "com.stripe:stripe-java", version.ref = "stripe" }
+
+querydsl-jpa = { module = "com.querydsl:querydsl-jpa", version.ref = "querydsl" }
+querydsl-apt = { module = "com.querydsl:querydsl-apt", version.ref = "querydsl" }
 
 springdoc-openapi-webmvc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version = "3.1.1" }
+
+stripe-java = { module = "com.stripe:stripe-java", version.ref = "stripe" }
