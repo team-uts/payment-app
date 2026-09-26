@@ -5,8 +5,12 @@ import static dev.teamuts.payment.infra.pg.constant.ExtPGOperationType.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public enum StripeWebhookEventType implements PGWebhookEventNamed {
+@Getter
+@RequiredArgsConstructor
+public enum StripeWebhookEventType {
   SETUP_INTENT_SUCCEEDED(WEBHOOK_SETUP_INTENT, "setup_intent.succeeded"),
   SETUP_INTENT_SETUP_FAILED(WEBHOOK_SETUP_INTENT, "setup_intent.setup_failed"),
   PAYMENT_INTENT_SUCCEEDED(WEBHOOK_PAYMENT_INTENT, "payment_intent.succeeded"),
@@ -14,11 +18,6 @@ public enum StripeWebhookEventType implements PGWebhookEventNamed {
 
   private final ExtPGOperationType operationType;
   private final String eventTypeName;
-
-  StripeWebhookEventType(ExtPGOperationType operationType, String eventTypeName) {
-    this.operationType = operationType;
-    this.eventTypeName = eventTypeName;
-  }
 
   private static final Map<String, StripeWebhookEventType> EVENT_TYPE_NAME_MAP =
       Arrays.stream(values())
@@ -32,10 +31,5 @@ public enum StripeWebhookEventType implements PGWebhookEventNamed {
     }
 
     return eventType;
-  }
-
-  @Override
-  public String getEventTypeName() {
-    return eventTypeName;
   }
 }

@@ -120,6 +120,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
       Event event = stripeClient.constructEvent(payload, secret, endpointSecret);
       StripeWebhookEventType eventType = StripeWebhookEventType.fromEventTypeName(event.getType());
 
+      // convert to StripeWebhookPayload based on the StripeWebhookEventType
       StripeWebhookPayload stripePayload =
           webhookEventMapperProvider.getInstance(eventType).convert(event);
 
@@ -127,13 +128,19 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
           .pgProvider(PG_PROVIDER)
           .requestType(requestType)
           .memberId(stripePayload.getMemberId())
-          .pgRequestId(stripePayload.getPgOperationId())
-          .pgProviderToken(stripePayload.getPgProviderTokenId())
+          .pgRequestId(stripePayload.getPgOperationId()) // e.g., SetupIntent, PaymentIntent ID
+          .pgProviderToken(stripePayload.getPgProviderTokenId()) // e.g., Stripe PaymentMethod ID
+          .pgOperationName(eventType.getOperationType().name())
+          .pgDetailedMessage(eventType.getEventTypeName()) // e.g., setup_intent.succeeded, ...
           .build();
     } catch (SignatureVerificationException e) {
       log.error(e.getMessage());
 
       throw new RuntimeException("[%s] Webhook verification failed".formatted(PG_PROVIDER));
+    } catch (Exception e) {
+      log.error(e.getMessage());
+
+      throw new RuntimeException("[%s] Webhook payload parsing failed".formatted(PG_PROVIDER));
     }
   }
 }

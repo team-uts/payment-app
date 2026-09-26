@@ -25,5 +25,7 @@ public class PGExtOperationInfo {
     private Long memberId;
     private String pgRequestId;
     private String pgProviderToken; // e.g., PaymentMethod ID in SetupIntent
+    private String pgOperationName;
+    private String pgDetailedMessage;
   }
 }
