@@ -4,6 +4,7 @@ import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
+import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.shared.provider.ProviderService;
 
@@ -16,5 +17,9 @@ public interface ExternalPGServicePort extends ProviderService<PGProviderType> {
 
   void confirmPaymentRequest();
 
-  String getWebhookSecret(PGRequestType requestType, PGProviderType pgProvider);
+  String getWebhookSecretValue(PGRequestType requestType);
+
+  String getWebhookHeaderName();
+
+  WebhookEventInfo parseWebhookEvent(String payload, String secret);
 }

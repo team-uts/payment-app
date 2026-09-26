@@ -2,7 +2,7 @@ package dev.teamuts.payment.domain.payment.usecase;
 
 import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.payment.dto.SetupPaymentMethodCommand;
-import dev.teamuts.payment.domain.pg.dto.PGExtRequestInfo.SetupPaymentMethodInfo;
+import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.SetupPaymentMethodInfo;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;

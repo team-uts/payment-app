@@ -1,6 +1,6 @@
 package dev.teamuts.payment.app.api;
 
-import static dev.teamuts.payment.domain.pg.dto.PGExtRequestInfo.*;
+import static dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.*;
 
 import dev.teamuts.payment.app.api.dto.PaymentMethodDtoMapper;
 import dev.teamuts.payment.app.api.dto.SetupPaymentMethodRequestDto;

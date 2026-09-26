@@ -30,7 +30,7 @@ public class PGExternalRequest {
         .pgRequestId(paymentMethodOperation.getPgOperationId())
         .memberId(paymentMethodOperation.getMemberId())
         .pgProvider(paymentMethodOperation.getPgProvider())
-        .requestType(PGRequestType.PAYMENT_METHOD)
+        .requestType(PGRequestType.PAYMENT_METHOD_SETUP)
         .extOperation(paymentMethodOperation.getPgOperationName())
         .providerSecret(paymentMethodOperation.getPgProviderSecret())
         .status(PGRequestStatus.INIT)

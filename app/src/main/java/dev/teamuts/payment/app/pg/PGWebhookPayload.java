@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface PGWebhookPayload {
   PGRequestType requestType();
 
-  PGProviderType pgProvider() default PGProviderType.STRIPE;
+  PGProviderType pgProvider();
 }

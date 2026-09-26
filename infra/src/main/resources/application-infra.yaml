@@ -7,3 +7,4 @@ stripe:
   webhook:
     secret:
       setup-intent: ${STRIPE_WEBHOOK_SECRET_SETUP_INTENT}
+      payment-intent: ${STRIPE_WEBHOOK_SECRET_PAYMENT_INTENT}

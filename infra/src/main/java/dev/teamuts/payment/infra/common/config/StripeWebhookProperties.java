@@ -12,7 +12,8 @@ public class StripeWebhookProperties {
 
   @Getter
   @AllArgsConstructor
-  private static class Secret {
+  public static class Secret {
     private String setupIntent;
+    private String paymentIntent;
   }
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ExtPGOperationType {
   CREATE_CUSTOMER(PGProviderType.STRIPE, PGRequestType.ACCOUNT, "user_id"),
-  CREATE_SETUP_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT_METHOD, "user_id"),
+  CREATE_SETUP_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT_METHOD_SETUP, "user_id"),
   CREATE_PAYMENT_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT, null);
 
   private final PGProviderType pgProvider;

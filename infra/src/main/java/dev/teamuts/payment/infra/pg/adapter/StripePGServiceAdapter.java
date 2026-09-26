@@ -9,10 +9,12 @@ import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
+import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
 import dev.teamuts.payment.infra.pg.constant.ExtPGOperationType;
+import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,8 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class StripePGServiceAdapter implements ExternalPGServicePort {
   private static final PGProviderType PG_PROVIDER = PGProviderType.STRIPE;
+  private static final String WEBHOOK_HEADER_NAME = "Stripe-Signature";
 
   private final StripeClient stripeClient;
+  private final StripeWebhookSecretManager webhookSecretManager;
 
   @Override
   public boolean supports(PGProviderType key) {
@@ -97,7 +101,18 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
   public void confirmPaymentRequest() {}
 
   @Override
-  public String getWebhookSecret(PGRequestType requestType, PGProviderType pgProvider) {
-    return "";
+  public String getWebhookSecretValue(PGRequestType requestType) {
+    return webhookSecretManager.getEndpointSecret(requestType);
+  }
+
+  @Override
+  public String getWebhookHeaderName() {
+    return WEBHOOK_HEADER_NAME;
+  }
+
+  @Override
+  public WebhookEventInfo parseWebhookEvent(String payload, String secret) {
+    // TODO: Implement Stripe webhook event parsing logic here.
+    return null;
   }
 }
