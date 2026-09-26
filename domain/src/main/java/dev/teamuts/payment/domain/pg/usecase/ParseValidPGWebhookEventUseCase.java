@@ -15,6 +15,8 @@ public class ParseValidPGWebhookEventUseCase {
   public WebhookEventInfo execute(
       PGRequestType requestType, PGProviderType pgProvider, String secret, String payload) {
 
-    return pgServiceProvider.getInstance(pgProvider).parseWebhookEvent(payload, secret);
+    return pgServiceProvider
+        .getInstance(pgProvider)
+        .parseWebhookEvent(requestType, payload, secret);
   }
 }

@@ -3,6 +3,8 @@ package dev.teamuts.payment.domain.pg.dto;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
+import lombok.Builder;
+import lombok.Getter;
 
 public class PGExtOperationInfo {
   public record SetupPaymentMethodInfo(
@@ -15,10 +17,13 @@ public class PGExtOperationInfo {
     }
   }
 
-  public record WebhookEventInfo(
-      PGProviderType pgProvider,
-      PGRequestType requestType,
-      Long memberId,
-      String pgRequestId,
-      String pgProviderToken) {}
+  @Getter
+  @Builder
+  public static class WebhookEventInfo {
+    private PGProviderType pgProvider;
+    private PGRequestType requestType;
+    private Long memberId;
+    private String pgRequestId;
+    private String pgProviderToken; // e.g., PaymentMethod ID in SetupIntent
+  }
 }

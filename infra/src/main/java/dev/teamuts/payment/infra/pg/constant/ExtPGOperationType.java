@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum ExtPGOperationType {
   CREATE_CUSTOMER(PGProviderType.STRIPE, PGRequestType.ACCOUNT, "user_id"),
   CREATE_SETUP_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT_METHOD_SETUP, "user_id"),
-  CREATE_PAYMENT_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT, null);
+  CREATE_PAYMENT_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT, null),
+  WEBHOOK_SETUP_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT_METHOD_SETUP, "user_id"),
+  WEBHOOK_PAYMENT_INTENT(PGProviderType.STRIPE, PGRequestType.PAYMENT, null);
 
   private final PGProviderType pgProvider;
   private final PGRequestType requestType;

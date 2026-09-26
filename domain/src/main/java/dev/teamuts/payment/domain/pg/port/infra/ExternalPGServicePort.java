@@ -17,9 +17,7 @@ public interface ExternalPGServicePort extends ProviderService<PGProviderType> {
 
   void confirmPaymentRequest();
 
-  String getWebhookSecretValue(PGRequestType requestType);
-
   String getWebhookHeaderName();
 
-  WebhookEventInfo parseWebhookEvent(String payload, String secret);
+  WebhookEventInfo parseWebhookEvent(PGRequestType requestType, String payload, String secret);
 }

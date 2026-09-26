@@ -1,7 +1,9 @@
 package dev.teamuts.payment.infra.pg.adapter;
 
 import com.stripe.StripeClient;
+import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Customer;
+import com.stripe.model.Event;
 import com.stripe.model.SetupIntent;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.SetupIntentCreateParams;
@@ -14,7 +16,10 @@ import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
 import dev.teamuts.payment.infra.pg.constant.ExtPGOperationType;
+import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
+import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
+import dev.teamuts.payment.infra.pg.webhook.stripe.StripeWebhookEventMapperProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +32,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
 
   private final StripeClient stripeClient;
   private final StripeWebhookSecretManager webhookSecretManager;
+  private final StripeWebhookEventMapperProvider webhookEventMapperProvider;
 
   @Override
   public boolean supports(PGProviderType key) {
@@ -101,18 +107,33 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
   public void confirmPaymentRequest() {}
 
   @Override
-  public String getWebhookSecretValue(PGRequestType requestType) {
-    return webhookSecretManager.getEndpointSecret(requestType);
-  }
-
-  @Override
   public String getWebhookHeaderName() {
     return WEBHOOK_HEADER_NAME;
   }
 
   @Override
-  public WebhookEventInfo parseWebhookEvent(String payload, String secret) {
-    // TODO: Implement Stripe webhook event parsing logic here.
-    return null;
+  public WebhookEventInfo parseWebhookEvent(
+      PGRequestType requestType, String payload, String secret) {
+    String endpointSecret = webhookSecretManager.getEndpointSecret(requestType);
+
+    try {
+      Event event = stripeClient.constructEvent(payload, secret, endpointSecret);
+      StripeWebhookEventType eventType = StripeWebhookEventType.fromEventTypeName(event.getType());
+
+      StripeWebhookPayload stripePayload =
+          webhookEventMapperProvider.getInstance(eventType).convert(event);
+
+      return WebhookEventInfo.builder()
+          .pgProvider(PG_PROVIDER)
+          .requestType(requestType)
+          .memberId(stripePayload.getMemberId())
+          .pgRequestId(stripePayload.getPgOperationId())
+          .pgProviderToken(stripePayload.getPgProviderTokenId())
+          .build();
+    } catch (SignatureVerificationException e) {
+      log.error(e.getMessage());
+
+      throw new RuntimeException("[%s] Webhook verification failed".formatted(PG_PROVIDER));
+    }
   }
 }
