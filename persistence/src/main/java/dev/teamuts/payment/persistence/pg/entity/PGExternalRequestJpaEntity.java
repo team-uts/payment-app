@@ -46,7 +46,10 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
   @Column(name = "ext_operation", nullable = false)
   private String extOperation;
 
-  @Column(name = "ext_provider_secret", nullable = false)
+  @Column(name = "ext_detailed_message")
+  private String extDetailedMessage;
+
+  @Column(name = "ext_provider_secret")
   private String extProviderSecret;
 
   @Column(name = "status", nullable = false)
@@ -59,6 +62,7 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
       PGProviderType pgProvider,
       PGRequestType requestType,
       String extOperation,
+      String extDetailedMessage,
       String providerSecret,
       PGRequestStatus status) {
     return PGExternalRequestJpaEntity.builder()
@@ -67,6 +71,7 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
         .pgProvider(pgProvider)
         .requestType(requestType)
         .extOperation(extOperation)
+        .extDetailedMessage(extDetailedMessage)
         .extProviderSecret(providerSecret)
         .status(status)
         .build();

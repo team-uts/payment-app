@@ -5,6 +5,7 @@ import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
+import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class PGExternalRequest {
   private PGProviderType pgProvider;
   private PGRequestType requestType;
   private String extOperation;
+  private String extDetailedMessage;
   private String providerSecret;
   private PGRequestStatus status;
 
@@ -37,6 +39,18 @@ public class PGExternalRequest {
         .build();
   }
 
+  public static PGExternalRequest completeWebhookEvent(WebhookEventInfo webhookEvent) {
+    return PGExternalRequest.builder()
+        .pgRequestId(webhookEvent.getPgRequestId())
+        .memberId(webhookEvent.getMemberId())
+        .pgProvider(webhookEvent.getPgProvider())
+        .requestType(webhookEvent.getRequestType())
+        .extOperation(webhookEvent.getPgOperationName())
+        .extDetailedMessage(webhookEvent.getPgDetailedMessage())
+        .status(PGRequestStatus.COMPLETED)
+        .build();
+  }
+
   public static PGExternalRequest fromDatabase(
       Long id,
       String pgRequestId,
@@ -44,6 +58,7 @@ public class PGExternalRequest {
       PGProviderType pgProvider,
       PGRequestType requestType,
       String extOperation,
+      String extDetailedMessage,
       String providerSecret,
       PGRequestStatus status) {
     return PGExternalRequest.builder()
@@ -53,6 +68,7 @@ public class PGExternalRequest {
         .pgProvider(pgProvider)
         .requestType(requestType)
         .extOperation(extOperation)
+        .extDetailedMessage(extDetailedMessage)
         .providerSecret(providerSecret)
         .status(status)
         .build();

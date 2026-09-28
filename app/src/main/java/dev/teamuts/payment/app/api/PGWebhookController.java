@@ -28,7 +28,7 @@ public class PGWebhookController {
   @PostMapping("/payment-methods")
   public ApiResponse<String> processWebhookEvent(
       @PGWebhookPayload(
-              requestType = PGRequestType.PAYMENT_METHOD,
+              requestType = PGRequestType.PAYMENT_METHOD_SETUP,
               pgProvider = PGProviderType.STRIPE)
           WebhookEventInfo event) {
     processPGWebhookEventUseCase.execute(event);

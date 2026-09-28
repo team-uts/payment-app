@@ -13,6 +13,7 @@ import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
 import dev.teamuts.payment.infra.pg.constant.ExtPGOperationType;
@@ -20,6 +21,7 @@ import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
 import dev.teamuts.payment.infra.pg.webhook.stripe.StripeWebhookEventMapperProvider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -111,6 +113,13 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
     return WEBHOOK_HEADER_NAME;
   }
 
+  /**
+   * Parses a webhook event from the Stripe API based on the {@link StripeWebhookEventType}.
+   *
+   * @param requestType The type of request that the webhook event corresponds to.
+   * @param payload The raw payload from the webhook.
+   * @param secret The signature from the webhook header.
+   */
   @Override
   public WebhookEventInfo parseWebhookEvent(
       PGRequestType requestType, String payload, String secret) {
@@ -142,5 +151,22 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
 
       throw new RuntimeException("[%s] Webhook payload parsing failed".formatted(PG_PROVIDER));
     }
+  }
+
+  @Override
+  public PGExternalRequest findBaseExternalRequestForWebhook(
+      List<PGExternalRequest> pgExternalRequests, PGRequestType requestType) {
+    // Find the base operation type for the given request type
+    ExtPGOperationType baseOperationType =
+        ExtPGOperationType.getBaseOperationTypeFromRequestType(requestType);
+
+    return pgExternalRequests.stream()
+        .filter(req -> baseOperationType.name().equals(req.getExtOperation()))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "[%s] No base external request found for request type: %s"
+                        .formatted(PG_PROVIDER, requestType)));
   }
 }
