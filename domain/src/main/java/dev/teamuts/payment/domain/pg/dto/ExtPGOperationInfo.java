@@ -2,11 +2,12 @@ package dev.teamuts.payment.domain.pg.dto;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
+import dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import lombok.Builder;
 import lombok.Getter;
 
-public class PGExtOperationInfo {
+public class ExtPGOperationInfo {
   public record SetupPaymentMethodInfo(
       Long memberId, PGProviderType pgProvider, String providerToken) {
     public static SetupPaymentMethodInfo of(PGExternalRequest pgExternalRequest) {
@@ -27,5 +28,6 @@ public class PGExtOperationInfo {
     private String pgProviderToken; // e.g., PaymentMethod ID in SetupIntent
     private String pgOperationName;
     private String pgDetailedMessage;
+    private PGWebhookEventStatus status;
   }
 }

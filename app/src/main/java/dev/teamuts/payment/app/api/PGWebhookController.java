@@ -4,7 +4,7 @@ import dev.teamuts.payment.app.common.response.ApiResponse;
 import dev.teamuts.payment.app.pg.PGWebhookPayload;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
+import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.usecase.ProcessPGWebhookEventUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +30,7 @@ public class PGWebhookController {
       @PGWebhookPayload(
               requestType = PGRequestType.PAYMENT_METHOD_SETUP,
               pgProvider = PGProviderType.STRIPE)
-          WebhookEventInfo event) {
+          ExtPGWebhookEventDto event) {
     processPGWebhookEventUseCase.execute(event);
 
     return ApiResponse.success("ok");

@@ -1,20 +1,36 @@
 package dev.teamuts.payment.infra.pg.dto;
 
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
+import dev.teamuts.payment.domain.pg.port.infra.PGWebhookPayloadParsable;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class StripeWebhookPayload {
-  private Long memberId;
+public class StripeWebhookPayload implements PGWebhookPayloadParsable {
+  private Long userId;
 
   /** associated to {@link PGExternalRequest#getPgRequestId()} */
-  private String pgOperationId;
+  private String originObjectId;
 
   private StripeWebhookEventType eventType;
 
   /** Stripe PaymentMethod ID, Payment ID, ... */
-  private String pgProviderTokenId;
+  private String associatedObjectId;
+
+  @Override
+  public Long getMemberId() {
+    return userId;
+  }
+
+  @Override
+  public String getPGRequestId() {
+    return originObjectId;
+  }
+
+  @Override
+  public String getPGProviderToken() {
+    return associatedObjectId;
+  }
 }

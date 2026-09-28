@@ -11,7 +11,7 @@ import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
-import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
+import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
@@ -69,6 +69,13 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
     }
   }
 
+  /**
+   * Sets up a payment method request for the given PG account.
+   *
+   * @param pgAccount The PG account for which to set up the payment method. It is managed in the
+   *     database and contains the "Stripe Customer ID" (not using AccountV2).
+   * @return The result of the payment method setup.
+   */
   @Override
   public ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PGAccount pgAccount) {
     ExtPGOperationType operationType = ExtPGOperationType.CREATE_SETUP_INTENT;
@@ -121,7 +128,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
    * @param secret The signature from the webhook header.
    */
   @Override
-  public WebhookEventInfo parseWebhookEvent(
+  public ExtPGWebhookEventDto parseWebhookEvent(
       PGRequestType requestType, String payload, String secret) {
     String endpointSecret = webhookSecretManager.getEndpointSecret(requestType);
 
@@ -133,15 +140,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
       StripeWebhookPayload stripePayload =
           webhookEventMapperProvider.getInstance(eventType).convert(event);
 
-      return WebhookEventInfo.builder()
-          .pgProvider(PG_PROVIDER)
-          .requestType(requestType)
-          .memberId(stripePayload.getMemberId())
-          .pgRequestId(stripePayload.getPgOperationId()) // e.g., SetupIntent, PaymentIntent ID
-          .pgProviderToken(stripePayload.getPgProviderTokenId()) // e.g., Stripe PaymentMethod ID
-          .pgOperationName(eventType.getOperationType().name())
-          .pgDetailedMessage(eventType.getEventTypeName()) // e.g., setup_intent.succeeded, ...
-          .build();
+      return ExtPGWebhookEventDto.of(PG_PROVIDER, requestType, stripePayload, eventType);
     } catch (SignatureVerificationException e) {
       log.error(e.getMessage());
 
@@ -157,12 +156,14 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
   public PGExternalRequest findBaseExternalRequestForWebhook(
       List<PGExternalRequest> pgExternalRequests, PGRequestType requestType) {
     // Find the base operation type for the given request type
+    // e.g., for PAYMENT_METHOD_SETUP, the base operation type is CREATE_SETUP_INTENT
     ExtPGOperationType baseOperationType =
         ExtPGOperationType.getBaseOperationTypeFromRequestType(requestType);
 
+    // After filtering the list, it should have exactly a single element.
     return pgExternalRequests.stream()
         .filter(req -> baseOperationType.name().equals(req.getExtOperation()))
-        .findFirst()
+        .findFirst() // It's going to only use the element.
         .orElseThrow(
             () ->
                 new RuntimeException(

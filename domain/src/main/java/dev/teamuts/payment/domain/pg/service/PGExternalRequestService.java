@@ -1,8 +1,9 @@
 package dev.teamuts.payment.domain.pg.service;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
-import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
+import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
@@ -38,9 +39,13 @@ public class PGExternalRequestService {
         pgProvider, memberId, pgRequestId);
   }
 
-  public PGExternalRequest storeNewPGExternalRequestForWebhook(WebhookEventInfo webhookEvent) {
-    PGExternalRequest newPgExternalRequest = PGExternalRequest.completeWebhookEvent(webhookEvent);
+  public PGExternalRequest storeNewPGExternalRequestForWebhook(
+      ExtPGWebhookEventDto webhookEvent, boolean processResult) {
+    PGExternalRequest newPgExternalRequest =
+        PGExternalRequest.newWebhookEvent(webhookEvent, processResult);
 
     return pgExternalRequestStorePort.storeNew(newPgExternalRequest);
   }
+
+  public void updateStatus(PGExternalRequest pgExternalRequest, PGRequestStatus status) {}
 }

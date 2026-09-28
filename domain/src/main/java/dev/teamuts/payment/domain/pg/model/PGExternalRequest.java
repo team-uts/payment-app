@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
-import dev.teamuts.payment.domain.pg.dto.PGExtOperationInfo.WebhookEventInfo;
+import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,7 +39,8 @@ public class PGExternalRequest {
         .build();
   }
 
-  public static PGExternalRequest completeWebhookEvent(WebhookEventInfo webhookEvent) {
+  public static PGExternalRequest newWebhookEvent(
+      ExtPGWebhookEventDto webhookEvent, boolean processResult) {
     return PGExternalRequest.builder()
         .pgRequestId(webhookEvent.getPgRequestId())
         .memberId(webhookEvent.getMemberId())
@@ -47,7 +48,7 @@ public class PGExternalRequest {
         .requestType(webhookEvent.getRequestType())
         .extOperation(webhookEvent.getPgOperationName())
         .extDetailedMessage(webhookEvent.getPgDetailedMessage())
-        .status(PGRequestStatus.COMPLETED)
+        .status(processResult ? PGRequestStatus.COMPLETED : PGRequestStatus.FAILED)
         .build();
   }
 

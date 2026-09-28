@@ -34,10 +34,10 @@ public class SetupIntentWebhookEventMapper extends StripeWebhookEventMapper {
     // TODO: Check whether the card information can be retrieved here from
     //  setupIntent.getPaymentMethodObject()
     return StripeWebhookPayload.builder()
-        .memberId(metadataValue != null ? Long.parseLong(metadataValue) : null)
-        .pgOperationId(setupIntent.getId())
+        .userId(metadataValue != null ? Long.parseLong(metadataValue) : null)
+        .originObjectId(setupIntent.getId())
         .eventType(eventType)
-        .pgProviderTokenId(setupIntent.getPaymentMethod())
+        .associatedObjectId(setupIntent.getPaymentMethod())
         .build();
   }
 }
