@@ -2,19 +2,15 @@ package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @DomainModel
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
+@SuperBuilder
 @Getter
-public class Card {
+public class Card extends PaymentMethodDetail {
   private Long id;
   private Long memberId;
-  private Long payMethodId;
   private String last4;
   private String brand;
   private Integer expMonth;

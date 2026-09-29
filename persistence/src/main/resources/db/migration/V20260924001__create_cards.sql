@@ -3,7 +3,7 @@ CREATE TABLE if not exists `cards`
     id                      BIGINT UNSIGNED     NOT NULL AUTO_INCREMENT    PRIMARY  KEY,
 
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
-    pay_method_id           BIGINT UNSIGNED     NOT NULL COMMENT 'payment method ID',
+    payment_method_id       BIGINT UNSIGNED     NOT NULL COMMENT 'payment method ID',
 
     brand                   VARCHAR(32)         NULL COMMENT 'VISA/MASTERCARD',
     last_four               VARCHAR(4)          NULL COMMENT 'last 4 digits of the card',

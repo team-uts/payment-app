@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.pg.facade;
 
+import dev.teamuts.payment.domain.payment.facade.PaymentMethodFacade;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
-import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
@@ -10,14 +10,16 @@ import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvid
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
 import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class PaymentMethodSetupPGEventProcessor extends BasePGWebhookEventProcessor {
+public class PaymentMethodSetupWebhookEventProcessor extends BasePGWebhookEventProcessor {
   private final ExternalPGServiceProvider pgServiceProvider;
-  private final PaymentMethodService paymentMethodService;
+  private final PaymentMethodFacade paymentMethodFacade;
   private final PGAccountService pgAccountService;
 
   @Override
@@ -52,6 +54,9 @@ public class PaymentMethodSetupPGEventProcessor extends BasePGWebhookEventProces
             .retrievePGPaymentMethod(pgAccount, pgPaymentMethodId);
 
     // Store new PaymentMethod
-    paymentMethodService.storeNewPaymentMethod(extPGPaymentMethod);
+    PaymentMethod paymentMethod =
+        paymentMethodFacade.registerPaymentMethodWithDetail(extPGPaymentMethod);
+
+    log.info("PaymentMethod successfully stored: {}", paymentMethod.getId());
   }
 }

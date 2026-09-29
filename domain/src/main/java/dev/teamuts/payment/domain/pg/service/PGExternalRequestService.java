@@ -40,7 +40,7 @@ public class PGExternalRequestService {
   }
 
   @AppTransactional
-  public PGExternalRequest storeNewPGExternalRequestForWebhook(
+  public PGExternalRequest registerNewPGExternalRequestForWebhook(
       ExtPGWebhookEventDto webhookEvent, boolean processResult) {
     PGExternalRequest newPgExternalRequest =
         PGExternalRequest.newWebhookEvent(webhookEvent, processResult);

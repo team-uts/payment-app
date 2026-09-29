@@ -20,6 +20,7 @@ import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
 import dev.teamuts.payment.infra.pg.constant.ExtPGOperationType;
+import dev.teamuts.payment.infra.pg.constant.StripePaymentMethodType;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
@@ -181,24 +182,40 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
                         .formatted(PG_PROVIDER, requestType)));
   }
 
+  /**
+   * Retrieves a payment method from Stripe using the given PG account and payment method ID.
+   *
+   * <p>Here, we can check the payment method type (e.g., card, bank account).
+   *
+   * @param pgAccount The PG account containing the Stripe Customer ID.
+   * @param pgPaymentMethodId The ID of the payment method to retrieve.
+   * @return The retrieved payment method DTO.
+   */
   @Override
   public ExtPGPaymentMethodDto retrievePGPaymentMethod(
       PGAccount pgAccount, String pgPaymentMethodId) {
     try {
-      PaymentMethod pgPaymentMethod =
+      PaymentMethod stripePaymentMethod =
           stripeClient
               .v1()
               .customers()
               .paymentMethods()
               .retrieve(pgAccount.getPgAccountId(), pgPaymentMethodId);
 
+      StripePaymentMethodType stripePaymentMethodType =
+          StripePaymentMethodType.fromTypeName(stripePaymentMethod.getType());
+
+      return ExtPGPaymentMethodDto.builder()
+          .memberId(pgAccount.getMemberId())
+          .pgPaymentMethodId(stripePaymentMethod.getId())
+          .pgProvider(PG_PROVIDER)
+          .detail(stripePaymentMethodType.getConverter().apply(stripePaymentMethod))
+          .build();
     } catch (StripeException e) {
       log.error(e.getMessage());
 
       throw new RuntimeException(
           "[%s] %s - failed".formatted(PG_PROVIDER, "Retrieve Payment Method"));
     }
-
-    return null;
   }
 }

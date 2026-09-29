@@ -4,6 +4,7 @@ import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,20 @@ public class PaymentMethod {
   private PaymentMethodType methodType;
   private Boolean defaultMethod;
   private PaymentMethodStatus status;
-  private Card card;
+  private PaymentMethodDetail detail;
+
+  public static PaymentMethod newActiveMethod(ExtPGPaymentMethodDto extPGPaymentMethod) {
+    PaymentMethodBuilder builder =
+        PaymentMethod.builder()
+            .memberId(extPGPaymentMethod.getMemberId())
+            .pgProvider(extPGPaymentMethod.getPgProvider())
+            .providerToken(extPGPaymentMethod.getPgPaymentMethodId())
+            .methodType(extPGPaymentMethod.getDetail().methodType())
+            .defaultMethod(true) // TODO: Set defaultMethod based on business logic
+            .status(PaymentMethodStatus.ACTIVE);
+
+    return builder.build();
+  }
 
   public static PaymentMethod fromDatabase(
       Long id,
@@ -31,7 +45,7 @@ public class PaymentMethod {
       PaymentMethodType methodType,
       Boolean defaultMethod,
       PaymentMethodStatus status,
-      Card card) {
+      PaymentMethodDetail detail) {
     return PaymentMethod.builder()
         .id(id)
         .memberId(memberId)
@@ -40,7 +54,11 @@ public class PaymentMethod {
         .methodType(methodType)
         .defaultMethod(defaultMethod)
         .status(status)
-        .card(card)
+        .detail(detail)
         .build();
+  }
+
+  public void updateDetail(PaymentMethodDetail newDetail) {
+    this.detail = newDetail;
   }
 }

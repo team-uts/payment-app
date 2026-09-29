@@ -2,6 +2,7 @@ package dev.teamuts.payment.persistence.payment.entity;
 
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
+import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
 import jakarta.persistence.Column;
@@ -50,4 +51,16 @@ public class PaymentMethodJpaEntity extends BaseAuditableEntity {
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
   private PaymentMethodStatus status;
+
+  public static PaymentMethodJpaEntity fromDomain(PaymentMethod paymentMethod) {
+    return PaymentMethodJpaEntity.builder()
+        .id(paymentMethod.getId())
+        .memberId(paymentMethod.getMemberId())
+        .pgProvider(paymentMethod.getPgProvider())
+        .providerToken(paymentMethod.getProviderToken())
+        .methodType(paymentMethod.getMethodType())
+        .defaultMethod(paymentMethod.getDefaultMethod())
+        .status(paymentMethod.getStatus())
+        .build();
+  }
 }

@@ -32,7 +32,7 @@ public class PGAccountService {
     ExtPGAccountDto extPGAccount =
         pgServiceProvider.getInstance(pgProvider).createNewAccount(memberId, email);
 
-    PGAccount newPGAccount = PGAccount.activateNew(extPGAccount);
+    PGAccount newPGAccount = PGAccount.newActivated(extPGAccount);
 
     return pgAccountStorePort.storeNew(newPGAccount);
   }

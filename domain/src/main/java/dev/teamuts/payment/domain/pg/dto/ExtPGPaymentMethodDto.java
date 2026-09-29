@@ -8,26 +8,48 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ExtPGPaymentMethodDto {
+  private Long memberId;
   private String pgPaymentMethodId;
   private PGProviderType pgProvider;
-  private PaymentMethodType methodType;
+  private ExtPGPaymentMethodDetail detail;
 
+  public sealed interface ExtPGPaymentMethodDetail {
+    PaymentMethodType methodType();
+  }
+
+  /**
+   * @see <a href="https://docs.stripe.com/api/cards/object">Stripe Card object API</a>
+   */
   @Getter
   @Builder
-  private static class ExtPGCardDto {
+  public static final class ExtPGCardDetail implements ExtPGPaymentMethodDetail {
     private String brand;
     private String last4;
     private Integer expMonth;
     private Integer expYear;
+
+    @Override
+    public PaymentMethodType methodType() {
+      return PaymentMethodType.CARD;
+    }
   }
 
   /**
-   * TODO: Add more fields for bank account details if needed. In this demonstration, we are not
-   * going to use bank account details.
+   * TODO: Add more fields for bank account details if needed.
+   *
+   * @see <a href="https://docs.stripe.com/api/customer_bank_accounts/object">Stripe Bank Account
+   *     object API</a>
    */
-  private static class ExtPGBankAccountDto {
+  @Getter
+  @Builder
+  public static final class ExtPGBankAccountDetail implements ExtPGPaymentMethodDetail {
     private String bankName;
     private String accountNumber;
     private String routingNumber;
+
+    @Override
+    public PaymentMethodType methodType() {
+      return PaymentMethodType.BANK_ACCOUNT;
+    }
   }
 }

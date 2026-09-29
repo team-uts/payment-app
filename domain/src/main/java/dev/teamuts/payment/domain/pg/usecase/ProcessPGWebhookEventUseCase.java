@@ -36,7 +36,7 @@ public class ProcessPGWebhookEventUseCase {
         webhookEventProcessorProvider.getInstance(event.getRequestType()).processEvent(event);
 
     // store new PGExternalWebhookRequest for the webhook event
-    pgExternalRequestService.storeNewPGExternalRequestForWebhook(event, isProcessSuccess);
+    pgExternalRequestService.registerNewPGExternalRequestForWebhook(event, isProcessSuccess);
 
     // update the base PGExternalRequest status to COMPLETED
     pgExternalRequestService.updateStatus(basePGExtRequest, PGRequestStatus.COMPLETED);
