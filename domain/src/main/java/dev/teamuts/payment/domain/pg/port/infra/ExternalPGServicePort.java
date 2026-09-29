@@ -3,6 +3,7 @@ package dev.teamuts.payment.domain.pg.port.infra;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
+import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
@@ -25,4 +26,6 @@ public interface ExternalPGServicePort extends ProviderService<PGProviderType> {
 
   PGExternalRequest findBaseExternalRequestForWebhook(
       List<PGExternalRequest> pgExternalRequests, PGRequestType requestType);
+
+  ExtPGPaymentMethodDto retrievePGPaymentMethod(PGAccount pgAccount, String pgPaymentMethodId);
 }

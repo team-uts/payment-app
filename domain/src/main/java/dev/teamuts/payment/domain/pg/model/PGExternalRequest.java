@@ -74,4 +74,13 @@ public class PGExternalRequest {
         .status(status)
         .build();
   }
+
+  public void updateStatusFromInit(PGRequestStatus newStatus) {
+    if (this.status != PGRequestStatus.INIT) {
+      throw new IllegalStateException(
+          "Cannot update status from " + this.status + " to " + newStatus);
+    }
+
+    this.status = newStatus;
+  }
 }

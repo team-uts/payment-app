@@ -3,7 +3,6 @@ package dev.teamuts.payment.domain.pg.dto;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus;
-import dev.teamuts.payment.domain.pg.port.infra.PGWebhookEventStatusMappable;
 import dev.teamuts.payment.domain.pg.port.infra.PGWebhookPayloadParsable;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,20 +21,16 @@ public class ExtPGWebhookEventDto {
   private PGWebhookEventStatus status;
 
   public static ExtPGWebhookEventDto of(
-      PGProviderType pgProvider,
-      PGRequestType requestType,
-      PGWebhookPayloadParsable payload,
-      PGWebhookEventStatusMappable statusMappable) {
+      PGProviderType pgProvider, PGRequestType requestType, PGWebhookPayloadParsable payload) {
     return ExtPGWebhookEventDto.builder()
         .pgProvider(pgProvider)
         .requestType(requestType)
         .memberId(payload.getMemberId())
         .pgRequestId(payload.getPGRequestId()) // e.g., SetupIntent, PaymentIntent ID
         .pgProviderToken(payload.getPGProviderToken()) // e.g., Stripe PaymentMethod ID
-        .pgOperationName(statusMappable.getPGOperationName())
-        .pgDetailedMessage(
-            statusMappable.getPGDetailedMessage()) // e.g., setup_intent.succeeded, ...
-        .status(statusMappable.getWebhookEventStatus())
+        .pgOperationName(payload.getPGOperationName())
+        .pgDetailedMessage(payload.getPGDetailedMessage()) // e.g., setup_intent.succeeded, ...
+        .status(payload.getWebhookEventStatus())
         .build();
   }
 

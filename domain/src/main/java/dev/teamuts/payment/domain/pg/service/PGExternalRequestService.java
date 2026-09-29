@@ -39,6 +39,7 @@ public class PGExternalRequestService {
         pgProvider, memberId, pgRequestId);
   }
 
+  @AppTransactional
   public PGExternalRequest storeNewPGExternalRequestForWebhook(
       ExtPGWebhookEventDto webhookEvent, boolean processResult) {
     PGExternalRequest newPgExternalRequest =
@@ -47,5 +48,6 @@ public class PGExternalRequestService {
     return pgExternalRequestStorePort.storeNew(newPgExternalRequest);
   }
 
+  @AppTransactional
   public void updateStatus(PGExternalRequest pgExternalRequest, PGRequestStatus status) {}
 }

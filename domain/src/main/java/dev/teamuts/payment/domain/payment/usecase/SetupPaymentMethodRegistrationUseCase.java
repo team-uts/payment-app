@@ -2,7 +2,7 @@ package dev.teamuts.payment.domain.payment.usecase;
 
 import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.payment.dto.SetupPaymentMethodCommand;
-import dev.teamuts.payment.domain.pg.dto.ExtPGOperationInfo.SetupPaymentMethodInfo;
+import dev.teamuts.payment.domain.pg.dto.info.ExtPGOperationInfo.SetupPaymentMethodInfo;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
@@ -20,11 +20,11 @@ public class SetupPaymentMethodRegistrationUseCase {
     // get PG Account from database
     PGAccount pgAccount =
         pgAccountService
-            .findPGAccountByMemberId(command.memberId())
+            .getPGAccountByMemberId(command.memberId())
             .orElseGet(
                 // if not present, create new PG Account in both pgProvider and database
                 () ->
-                    pgAccountService.createPGAccount(
+                    pgAccountService.registerPGAccount(
                         command.memberId(), command.email(), command.pgProvider()));
 
     // initialize payment method setup with PG and store the request in database

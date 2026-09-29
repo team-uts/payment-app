@@ -2,14 +2,17 @@ package dev.teamuts.payment.infra.pg.adapter;
 
 import com.stripe.StripeClient;
 import com.stripe.exception.SignatureVerificationException;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.Event;
+import com.stripe.model.PaymentMethod;
 import com.stripe.model.SetupIntent;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.SetupIntentCreateParams;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
+import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
@@ -41,11 +44,17 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
     return key == PG_PROVIDER;
   }
 
+  /**
+   * Creates a new Customer object in Stripe. (AccountV2 is not supported by Stripe for sandbox.)
+   *
+   * @param memberId Member ID in the database
+   * @param email Email address of the member
+   * @return Account DTO from PG containing the created Stripe "Customer ID"
+   */
   @Override
   public ExtPGAccountDto createNewAccount(Long memberId, String email) {
     ExtPGOperationType operationType = ExtPGOperationType.CREATE_CUSTOMER;
 
-    // AccountV2 is not supported by Stripe for sandbox.
     CustomerCreateParams params =
         CustomerCreateParams.builder()
             .setEmail(email)
@@ -140,10 +149,11 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
       StripeWebhookPayload stripePayload =
           webhookEventMapperProvider.getInstance(eventType).convert(event);
 
-      return ExtPGWebhookEventDto.of(PG_PROVIDER, requestType, stripePayload, eventType);
+      return ExtPGWebhookEventDto.of(PG_PROVIDER, requestType, stripePayload);
     } catch (SignatureVerificationException e) {
       log.error(e.getMessage());
 
+      // TODO: need to handle this exception properly, maybe return a 400 response to Stripe
       throw new RuntimeException("[%s] Webhook verification failed".formatted(PG_PROVIDER));
     } catch (Exception e) {
       log.error(e.getMessage());
@@ -169,5 +179,26 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
                 new RuntimeException(
                     "[%s] No base external request found for request type: %s"
                         .formatted(PG_PROVIDER, requestType)));
+  }
+
+  @Override
+  public ExtPGPaymentMethodDto retrievePGPaymentMethod(
+      PGAccount pgAccount, String pgPaymentMethodId) {
+    try {
+      PaymentMethod pgPaymentMethod =
+          stripeClient
+              .v1()
+              .customers()
+              .paymentMethods()
+              .retrieve(pgAccount.getPgAccountId(), pgPaymentMethodId);
+
+    } catch (StripeException e) {
+      log.error(e.getMessage());
+
+      throw new RuntimeException(
+          "[%s] %s - failed".formatted(PG_PROVIDER, "Retrieve Payment Method"));
+    }
+
+    return null;
   }
 }

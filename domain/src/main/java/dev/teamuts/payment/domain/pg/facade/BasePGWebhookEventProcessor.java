@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class BasePGWebhookEventProcessor implements ProviderService<PGRequestType> {
   public boolean processEvent(ExtPGWebhookEventDto event) {
+    // If the event is not succeeded, just return true and leave this processor
+    // to complete the PGExternalRequest
     if (!event.isSucceeded()) {
-      // If the event is not succeeded, just return true and leave this processor
-      // to complete the PGExternalRequest
       return true;
     }
 

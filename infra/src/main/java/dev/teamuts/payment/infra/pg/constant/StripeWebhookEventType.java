@@ -4,7 +4,6 @@ import static dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus.*;
 import static dev.teamuts.payment.infra.pg.constant.ExtPGOperationType.*;
 
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus;
-import dev.teamuts.payment.domain.pg.port.infra.PGWebhookEventStatusMappable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum StripeWebhookEventType implements PGWebhookEventStatusMappable {
+public enum StripeWebhookEventType {
   SETUP_INTENT_SUCCEEDED(WEBHOOK_SETUP_INTENT, "setup_intent.succeeded", SUCCEEDED),
   SETUP_INTENT_SETUP_FAILED(WEBHOOK_SETUP_INTENT, "setup_intent.setup_failed", FAILED),
   PAYMENT_INTENT_SUCCEEDED(WEBHOOK_PAYMENT_INTENT, "payment_intent.succeeded", SUCCEEDED),
@@ -37,18 +36,7 @@ public enum StripeWebhookEventType implements PGWebhookEventStatusMappable {
     return eventType;
   }
 
-  @Override
   public String getPGOperationName() {
     return this.getOperationType().name();
-  }
-
-  @Override
-  public String getPGDetailedMessage() {
-    return this.getEventTypeName();
-  }
-
-  @Override
-  public PGWebhookEventStatus getWebhookEventStatus() {
-    return this.getStatus();
   }
 }
