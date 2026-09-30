@@ -18,4 +18,4 @@ CREATE TABLE if not exists `cards`
     updated_by              VARCHAR(30)         NULL COMMENT 'updater'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX ix_c_paymethodid ON cards (pay_method_id);
+CREATE INDEX ix_c_paymethodid ON cards (payment_method_id);

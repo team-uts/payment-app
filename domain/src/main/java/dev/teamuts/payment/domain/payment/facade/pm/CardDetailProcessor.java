@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CardDetailProcessor implements PaymentMethodDetailProcessor {
+  private static final PaymentMethodType SUPPORTED_METHOD_TYPE = PaymentMethodType.CARD;
   private final CardService cardService;
 
   @Override
   public boolean supports(PaymentMethodType key) {
-    return key == PaymentMethodType.CARD;
+    return key == SUPPORTED_METHOD_TYPE;
   }
 
   @Override
   @AppTransactional
   public PaymentMethodDetail registerPaymentMethodDetail(
       PaymentMethod paymentMethod, ExtPGPaymentMethodDetail detail) {
-    // TODO: Implement card detail registration logic
 
-    return null;
+    return cardService.registerNewCard(paymentMethod, detail);
   }
 }

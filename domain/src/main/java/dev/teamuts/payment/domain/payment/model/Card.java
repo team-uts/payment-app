@@ -2,6 +2,8 @@ package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
+import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto.ExtPGCardDetail;
+import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -16,6 +18,28 @@ public class Card extends PaymentMethodDetail {
   private Integer expMonth;
   private Integer expYear;
   private CardStatus status;
+
+  public static Card newActiveCard(PaymentMethod paymentMethod, ExtPGPaymentMethodDetail detail) {
+    if (paymentMethod.getMethodType() != detail.methodType()) {
+      throw new IllegalArgumentException(
+          "PaymentMethodType mismatch: PaymentMethod (%s) - ExtDetail (%s)"
+              .formatted(paymentMethod.getMethodType(), detail.methodType()));
+    }
+
+    if (!(detail instanceof ExtPGCardDetail cardDetail)) {
+      throw new IllegalArgumentException("Invalid detail type for Card: " + detail.getClass());
+    }
+
+    return Card.builder()
+        .memberId(paymentMethod.getMemberId())
+        .payMethodId(paymentMethod.getId())
+        .last4(cardDetail.getLast4())
+        .brand(cardDetail.getBrand())
+        .expMonth(cardDetail.getExpMonth())
+        .expYear(cardDetail.getExpYear())
+        .status(CardStatus.ACTIVE)
+        .build();
+  }
 
   public static Card fromDatabase(
       Long id,

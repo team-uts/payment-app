@@ -1,6 +1,7 @@
 package dev.teamuts.payment.persistence.payment.entity;
 
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
+import dev.teamuts.payment.domain.payment.model.Card;
 import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +31,7 @@ public class CardJpaEntity extends BaseAuditableEntity {
   @Column(name = "member_id", nullable = false)
   private Long memberId;
 
-  @Column(name = "pay_method_id", nullable = false)
+  @Column(name = "payment_method_id", nullable = false)
   private Long payMethodId;
 
   @Column(name = "brand")
@@ -48,4 +49,17 @@ public class CardJpaEntity extends BaseAuditableEntity {
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
   private CardStatus status;
+
+  public static CardJpaEntity fromDomain(Card card) {
+    return CardJpaEntity.builder()
+        .id(card.getId())
+        .memberId(card.getMemberId())
+        .payMethodId(card.getPayMethodId())
+        .brand(card.getBrand())
+        .lastFour(card.getLast4())
+        .expiryMonth(card.getExpMonth())
+        .expiryYear(card.getExpYear())
+        .status(card.getStatus())
+        .build();
+  }
 }

@@ -37,6 +37,19 @@ public class PaymentMethod {
     return builder.build();
   }
 
+  public static PaymentMethod copyWithDetail(PaymentMethod origin, PaymentMethodDetail newDetail) {
+    return PaymentMethod.builder()
+        .id(origin.getId())
+        .memberId(origin.getMemberId())
+        .pgProvider(origin.getPgProvider())
+        .providerToken(origin.getProviderToken())
+        .methodType(origin.getMethodType())
+        .defaultMethod(origin.getDefaultMethod())
+        .status(origin.getStatus())
+        .detail(newDetail)
+        .build();
+  }
+
   public static PaymentMethod fromDatabase(
       Long id,
       Long memberId,
@@ -58,7 +71,7 @@ public class PaymentMethod {
         .build();
   }
 
-  public void updateDetail(PaymentMethodDetail newDetail) {
-    this.detail = newDetail;
+  public boolean isSameMethodType(PaymentMethodType otherType) {
+    return this.methodType == otherType;
   }
 }
