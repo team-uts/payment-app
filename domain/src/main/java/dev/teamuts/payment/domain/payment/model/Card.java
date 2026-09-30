@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @DomainModel
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Getter
 public class Card extends PaymentMethodDetail {
   private Long id;

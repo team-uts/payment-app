@@ -17,7 +17,6 @@ public class PaymentMethodInfo {
   private PaymentMethodStatus status;
   private CardDetailInfo card;
 
-  // FIXME: Add CardDetailInfo mapping
   public static PaymentMethodInfo of(PaymentMethod paymentMethod) {
     return PaymentMethodInfo.builder()
         .id(paymentMethod.getId())
@@ -25,6 +24,7 @@ public class PaymentMethodInfo {
         .methodType(paymentMethod.getMethodType())
         .defaultMethod(paymentMethod.getDefaultMethod())
         .status(paymentMethod.getStatus())
+        .card(CardDetailInfo.ofNullable(paymentMethod.getDetailOrNull()))
         .build();
   }
 }

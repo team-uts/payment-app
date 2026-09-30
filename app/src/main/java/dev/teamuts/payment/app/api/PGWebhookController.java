@@ -2,8 +2,6 @@ package dev.teamuts.payment.app.api;
 
 import dev.teamuts.payment.app.common.response.ApiResponse;
 import dev.teamuts.payment.app.pg.PGWebhookPayload;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.usecase.ProcessPGWebhookEventUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,12 +23,8 @@ public class PGWebhookController {
   @Operation(
       summary = "Receive Webhook Event",
       description = "Processes webhook events received from various payment gateway providers.")
-  @PostMapping("/payment-methods")
-  public ApiResponse<String> processWebhookEvent(
-      @PGWebhookPayload(
-              requestType = PGRequestType.PAYMENT_METHOD_SETUP,
-              pgProvider = PGProviderType.STRIPE)
-          ExtPGWebhookEventDto event) {
+  @PostMapping("/{requestType}/{pgProvider}")
+  public ApiResponse<String> processWebhookEvent(@PGWebhookPayload ExtPGWebhookEventDto event) {
     processPGWebhookEventUseCase.execute(event);
 
     return ApiResponse.success("ok");

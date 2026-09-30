@@ -12,7 +12,7 @@ import lombok.Getter;
 
 @DomainModel
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class PaymentMethod {
   private Long id;
@@ -22,6 +22,8 @@ public class PaymentMethod {
   private PaymentMethodType methodType;
   private Boolean defaultMethod;
   private PaymentMethodStatus status;
+
+  @Getter(AccessLevel.NONE)
   private PaymentMethodDetail detail;
 
   public static PaymentMethod newActiveMethod(ExtPGPaymentMethodDto extPGPaymentMethod) {
@@ -38,16 +40,7 @@ public class PaymentMethod {
   }
 
   public static PaymentMethod copyWithDetail(PaymentMethod origin, PaymentMethodDetail newDetail) {
-    return PaymentMethod.builder()
-        .id(origin.getId())
-        .memberId(origin.getMemberId())
-        .pgProvider(origin.getPgProvider())
-        .providerToken(origin.getProviderToken())
-        .methodType(origin.getMethodType())
-        .defaultMethod(origin.getDefaultMethod())
-        .status(origin.getStatus())
-        .detail(newDetail)
-        .build();
+    return origin.toBuilder().detail(newDetail).build();
   }
 
   public static PaymentMethod fromDatabase(
@@ -71,7 +64,12 @@ public class PaymentMethod {
         .build();
   }
 
-  public boolean isSameMethodType(PaymentMethodType otherType) {
-    return this.methodType == otherType;
+  // Return copy
+  public PaymentMethodDetail getDetailOrNull() {
+    if (detail instanceof Card cardDetail) {
+      return cardDetail.toBuilder().build();
+    }
+
+    return null;
   }
 }

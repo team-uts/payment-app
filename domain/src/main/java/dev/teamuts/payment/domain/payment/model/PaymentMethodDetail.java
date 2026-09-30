@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public abstract class PaymentMethodDetail {
   private Long payMethodId;
 }

@@ -27,13 +27,15 @@ public class PaymentMethodQueryRepositoryImpl implements PaymentMethodQueryRepos
                 paymentMethodJpaEntity.methodType,
                 paymentMethodJpaEntity.defaultMethod,
                 paymentMethodJpaEntity.status,
-                cardJpaEntity.id,
-                cardJpaEntity.memberId,
-                cardJpaEntity.brand,
-                cardJpaEntity.lastFour,
-                cardJpaEntity.expiryMonth,
-                cardJpaEntity.expiryYear,
-                cardJpaEntity.status))
+                Projections.constructor(
+                    PaymentMethodListRow.CardDetailRow.class,
+                    cardJpaEntity.id,
+                    cardJpaEntity.memberId,
+                    cardJpaEntity.brand,
+                    cardJpaEntity.lastFour,
+                    cardJpaEntity.expiryMonth,
+                    cardJpaEntity.expiryYear,
+                    cardJpaEntity.status)))
         .from(paymentMethodJpaEntity)
         .leftJoin(cardJpaEntity)
         .on(cardJpaEntity.payMethodId.eq(paymentMethodJpaEntity.id))

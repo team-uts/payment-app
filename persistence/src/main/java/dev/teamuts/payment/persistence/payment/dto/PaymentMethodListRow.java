@@ -18,11 +18,18 @@ public class PaymentMethodListRow {
   private PaymentMethodType methodType;
   private Boolean defaultMethod;
   private PaymentMethodStatus status;
-  private Long cardId;
-  private Long cardMemberId;
-  private String cardBrand;
-  private String cardLastFour;
-  private Integer cardExpiryMonth;
-  private Integer cardExpiryYear;
-  private CardStatus cardStatus;
+  private CardDetailRow cardDetail;
+
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class CardDetailRow {
+    Long id;
+    Long memberId;
+    String brand;
+    String last4;
+    Integer expiryMonth;
+    Integer expiryYear;
+    CardStatus status;
+  }
 }

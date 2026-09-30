@@ -2,6 +2,7 @@ package dev.teamuts.payment.domain.payment.dto;
 
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
 import dev.teamuts.payment.domain.payment.model.Card;
+import dev.teamuts.payment.domain.payment.model.PaymentMethodDetail;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,11 @@ public class CardDetailInfo {
   private String expYear;
   private CardStatus status;
 
-  public static CardDetailInfo of(Card card) {
+  public static CardDetailInfo ofNullable(PaymentMethodDetail detail) {
+    if (!(detail instanceof Card card)) {
+      return null;
+    }
+
     return CardDetailInfo.builder()
         .last4(card.getLast4())
         .brand(card.getBrand())

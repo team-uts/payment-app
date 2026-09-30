@@ -3,6 +3,7 @@ package dev.teamuts.payment.persistence.payment.mapper;
 import dev.teamuts.payment.domain.payment.model.Card;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.persistence.payment.dto.PaymentMethodListRow;
+import dev.teamuts.payment.persistence.payment.dto.PaymentMethodListRow.CardDetailRow;
 import dev.teamuts.payment.persistence.payment.entity.PaymentMethodJpaEntity;
 import org.springframework.stereotype.Component;
 
@@ -25,16 +26,7 @@ public class PaymentMethodConverter {
   }
 
   public PaymentMethod convertToDomainModel(PaymentMethodListRow row) {
-    Card card =
-        Card.fromDatabase(
-            row.getCardId(),
-            row.getMemberId(),
-            row.getId(),
-            row.getCardLastFour(),
-            row.getCardBrand(),
-            row.getCardExpiryMonth(),
-            row.getCardExpiryYear(),
-            row.getCardStatus());
+    CardDetailRow cardRow = row.getCardDetail();
 
     return PaymentMethod.fromDatabase(
         row.getId(),
@@ -44,6 +36,16 @@ public class PaymentMethodConverter {
         row.getMethodType(),
         row.getDefaultMethod(),
         row.getStatus(),
-        card);
+        cardRow != null
+            ? Card.fromDatabase(
+                cardRow.getId(),
+                cardRow.getMemberId(),
+                row.getId(),
+                cardRow.getLast4(),
+                cardRow.getBrand(),
+                cardRow.getExpiryMonth(),
+                cardRow.getExpiryYear(),
+                cardRow.getStatus())
+            : null);
   }
 }
