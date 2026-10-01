@@ -16,16 +16,14 @@ import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
-import dev.teamuts.payment.infra.pg.constant.ExtPGOperationType;
+import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import dev.teamuts.payment.infra.pg.constant.StripePaymentMethodType;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
 import dev.teamuts.payment.infra.pg.webhook.stripe.StripeWebhookEventMapperProvider;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,7 +52,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
    */
   @Override
   public ExtPGAccountDto createNewAccount(Long memberId, String email) {
-    ExtPGOperationType operationType = ExtPGOperationType.CREATE_CUSTOMER;
+    StripeOperationType operationType = StripeOperationType.CREATE_CUSTOMER;
 
     CustomerCreateParams params =
         CustomerCreateParams.builder()
@@ -88,7 +86,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
    */
   @Override
   public ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PGAccount pgAccount) {
-    ExtPGOperationType operationType = ExtPGOperationType.CREATE_SETUP_INTENT;
+    StripeOperationType operationType = StripeOperationType.CREATE_SETUP_INTENT;
 
     // Parms: **Stripe Customer ID** (not AccountV2 ID)
     // Parms: Member ID (for metadata)
@@ -161,25 +159,6 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
 
       throw new RuntimeException("[%s] Webhook payload parsing failed".formatted(PG_PROVIDER));
     }
-  }
-
-  @Override
-  public PGExternalRequest findBaseExternalRequestForWebhook(
-      List<PGExternalRequest> pgExternalRequests, PGRequestType requestType) {
-    // Find the base operation type for the given request type
-    // e.g., for PAYMENT_METHOD_SETUP, the base operation type is CREATE_SETUP_INTENT
-    ExtPGOperationType baseOperationType =
-        ExtPGOperationType.getBaseOperationTypeFromRequestType(requestType);
-
-    // After filtering the list, it should have exactly a single element.
-    return pgExternalRequests.stream()
-        .filter(req -> baseOperationType.name().equals(req.getExtOperation()))
-        .findFirst() // It's going to only use the element.
-        .orElseThrow(
-            () ->
-                new RuntimeException(
-                    "[%s] No base external request found for request type: %s"
-                        .formatted(PG_PROVIDER, requestType)));
   }
 
   /**

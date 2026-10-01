@@ -4,6 +4,7 @@ CREATE TABLE if not exists `pg_external_requests`
 
     pg_request_id           VARCHAR(255)        NOT NULL COMMENT 'PG request ID',
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
+    source_request_id       BIGINT UNSIGNED     NULL     COMMENT 'ID of the original request that triggered this external request',
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
     request_type            VARCHAR(32)         NOT NULL COMMENT 'PAYMENT_METHOD/PAYMENT',

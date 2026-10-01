@@ -4,4 +4,6 @@ import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 
 public interface PGExternalRequestUpdatePort {
   void updateStatus(PGExternalRequest pgExternalRequest);
+
+  void updateSourceRequestIdAndStatus(PGExternalRequest pgExternalRequest);
 }

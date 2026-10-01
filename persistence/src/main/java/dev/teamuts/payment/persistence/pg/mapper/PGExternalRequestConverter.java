@@ -11,6 +11,7 @@ public class PGExternalRequestConverter {
         entity.getId(),
         entity.getPgRequestId(),
         entity.getMemberId(),
+        entity.getSourceRequestId(),
         entity.getPgProvider(),
         entity.getRequestType(),
         entity.getExtOperation(),
@@ -23,6 +24,7 @@ public class PGExternalRequestConverter {
     return PGExternalRequestJpaEntity.newEntity(
         model.getPgRequestId(),
         model.getMemberId(),
+        model.getSourceRequestId(),
         model.getPgProvider(),
         model.getRequestType(),
         model.getExtOperation(),

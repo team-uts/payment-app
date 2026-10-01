@@ -17,7 +17,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Entity
 @Table(catalog = "payment", name = "pg_external_requests")
 @Getter
@@ -34,6 +36,12 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
 
   @Column(name = "member_id", nullable = false)
   private Long memberId;
+
+  @Column(
+      name = "source_request_id",
+      nullable = false,
+      comment = "the ID of the original request that triggered this external request")
+  private Long sourceRequestId;
 
   @Column(name = "pg_provider", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -59,6 +67,7 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
   public static PGExternalRequestJpaEntity newEntity(
       String pgRequestId,
       Long memberId,
+      Long sourceRequestId,
       PGProviderType pgProvider,
       PGRequestType requestType,
       String extOperation,
@@ -68,6 +77,7 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
     return PGExternalRequestJpaEntity.builder()
         .pgRequestId(pgRequestId)
         .memberId(memberId)
+        .sourceRequestId(sourceRequestId)
         .pgProvider(pgProvider)
         .requestType(requestType)
         .extOperation(extOperation)
@@ -75,5 +85,13 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
         .extProviderSecret(providerSecret)
         .status(status)
         .build();
+  }
+
+  public void updateStatus(PGRequestStatus newStatus) {
+    this.status = newStatus;
+  }
+
+  public void updateSourceRequestId(Long sourceRequestId) {
+    this.sourceRequestId = sourceRequestId;
   }
 }

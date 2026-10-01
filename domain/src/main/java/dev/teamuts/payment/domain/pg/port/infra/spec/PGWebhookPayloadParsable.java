@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.pg.port.infra;
+package dev.teamuts.payment.domain.pg.port.infra.spec;
 
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus;
 
@@ -10,6 +10,8 @@ public interface PGWebhookPayloadParsable {
   String getPGProviderToken();
 
   String getPGOperationName();
+
+  String getPGBaseOperationName();
 
   String getPGDetailedMessage();
 

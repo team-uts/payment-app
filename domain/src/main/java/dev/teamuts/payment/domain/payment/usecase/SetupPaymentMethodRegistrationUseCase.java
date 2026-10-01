@@ -29,7 +29,7 @@ public class SetupPaymentMethodRegistrationUseCase {
 
     // initialize payment method setup with PG and store the request in database
     PGExternalRequest pgExternalRequest =
-        pgExternalRequestService.initializePaymentMethodRequest(pgAccount);
+        pgExternalRequestService.storeInitPaymentMethodRequest(pgAccount);
 
     return SetupPaymentMethodInfo.of(pgExternalRequest);
   }

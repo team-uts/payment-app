@@ -7,9 +7,7 @@ import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.shared.provider.ProviderService;
-import java.util.List;
 
 public interface ExternalPGServicePort extends ProviderService<PGProviderType> {
   ExtPGAccountDto createNewAccount(Long memberId, String email);
@@ -23,9 +21,6 @@ public interface ExternalPGServicePort extends ProviderService<PGProviderType> {
   String getWebhookHeaderName();
 
   ExtPGWebhookEventDto parseWebhookEvent(PGRequestType requestType, String payload, String secret);
-
-  PGExternalRequest findBaseExternalRequestForWebhook(
-      List<PGExternalRequest> pgExternalRequests, PGRequestType requestType);
 
   ExtPGPaymentMethodDto retrievePGPaymentMethod(PGAccount pgAccount, String pgPaymentMethodId);
 }

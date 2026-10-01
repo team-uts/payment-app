@@ -1,7 +1,7 @@
 package dev.teamuts.payment.infra.pg.constant;
 
 import static dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus.*;
-import static dev.teamuts.payment.infra.pg.constant.ExtPGOperationType.*;
+import static dev.teamuts.payment.infra.pg.constant.StripeOperationType.*;
 
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus;
 import java.util.Arrays;
@@ -13,12 +13,17 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum StripeWebhookEventType {
-  SETUP_INTENT_SUCCEEDED(WEBHOOK_SETUP_INTENT, "setup_intent.succeeded", SUCCEEDED),
-  SETUP_INTENT_SETUP_FAILED(WEBHOOK_SETUP_INTENT, "setup_intent.setup_failed", FAILED),
-  PAYMENT_INTENT_SUCCEEDED(WEBHOOK_PAYMENT_INTENT, "payment_intent.succeeded", SUCCEEDED),
-  PAYMENT_INTENT_PAYMENT_FAILED(WEBHOOK_PAYMENT_INTENT, "payment_intent.payment_failed", FAILED);
+  SETUP_INTENT_SUCCEEDED(
+      WEBHOOK_SETUP_INTENT, CREATE_SETUP_INTENT, "setup_intent.succeeded", SUCCEEDED),
+  SETUP_INTENT_SETUP_FAILED(
+      WEBHOOK_SETUP_INTENT, CREATE_SETUP_INTENT, "setup_intent.setup_failed", FAILED),
+  PAYMENT_INTENT_SUCCEEDED(
+      WEBHOOK_PAYMENT_INTENT, CREATE_PAYMENT_INTENT, "payment_intent.succeeded", SUCCEEDED),
+  PAYMENT_INTENT_PAYMENT_FAILED(
+      WEBHOOK_PAYMENT_INTENT, CREATE_PAYMENT_INTENT, "payment_intent.payment_failed", FAILED);
 
-  private final ExtPGOperationType operationType;
+  private final StripeOperationType operationType;
+  private final StripeOperationType baseOperationType;
   private final String eventTypeName;
   private final PGWebhookEventStatus status;
 

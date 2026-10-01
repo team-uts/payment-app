@@ -2,7 +2,7 @@ package dev.teamuts.payment.infra.pg.dto;
 
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
-import dev.teamuts.payment.domain.pg.port.infra.PGWebhookPayloadParsable;
+import dev.teamuts.payment.domain.pg.port.infra.spec.PGWebhookPayloadParsable;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +38,11 @@ public class StripeWebhookPayload implements PGWebhookPayloadParsable {
   @Override
   public String getPGOperationName() {
     return eventType.getPGOperationName();
+  }
+
+  @Override
+  public String getPGBaseOperationName() {
+    return eventType.getBaseOperationType().name();
   }
 
   @Override
