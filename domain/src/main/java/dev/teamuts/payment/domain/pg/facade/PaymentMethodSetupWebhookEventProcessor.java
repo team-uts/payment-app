@@ -2,17 +2,16 @@ package dev.teamuts.payment.domain.pg.facade;
 
 import dev.teamuts.payment.domain.payment.facade.PaymentMethodFacade;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
+import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
-import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 
 @Slf4j
 @Component
@@ -20,6 +19,7 @@ import org.springframework.transaction.annotation.Propagation;
 public class PaymentMethodSetupWebhookEventProcessor extends BasePGWebhookEventProcessor {
   private final ExternalPGServiceProvider pgServiceProvider;
   private final PaymentMethodFacade paymentMethodFacade;
+  private final PaymentMethodService paymentMethodService;
   private final PGAccountService pgAccountService;
 
   @Override
@@ -27,24 +27,26 @@ public class PaymentMethodSetupWebhookEventProcessor extends BasePGWebhookEventP
     return key == PGRequestType.PAYMENT_METHOD_SETUP;
   }
 
+  @Override
+  protected boolean checkAlreadyProcessed(ExtPGWebhookEventDto event) {
+    // If the payment method is already registered, we can skip processing this event
+    return paymentMethodService.isAlreadyPaymentMethodRegistered(
+        event.getMemberId(), event.getPgProviderToken(), event.getPgProvider());
+  }
+
   /**
    * Processes a payment method setup event.
-   *
-   * <p>{@link Propagation#REQUIRES_NEW} This method is executed in a new transaction to process
-   * this operation independently. (e.g., to do this operation separately from the *PG webhook
-   * event* processing transaction)
    *
    * @param event Webhook Event from Payment Gateway. {@link
    *     ExtPGWebhookEventDto#getPgProviderToken()} = pgPaymentMethodId from PG provider, which is
    *     {@link PaymentMethod#getProviderToken()}.
    */
-  @AppTransactional(propagation = Propagation.REQUIRES_NEW)
   @Override
   public void process(ExtPGWebhookEventDto event) {
     String pgPaymentMethodId = event.getPgProviderToken();
 
     // Retrieve the PGAccount Information from DB using the memberId
-    PGAccount pgAccount = pgAccountService.getPGAccountByMemberIdNotNull(event.getMemberId());
+    PGAccount pgAccount = pgAccountService.getPGAccountByMemberId(event.getMemberId());
 
     // Retrieve the PG PaymentMethod Information from PG provider using the pgProviderToken
     // to get the necessary details to store a relevant Model (e.g., Card)

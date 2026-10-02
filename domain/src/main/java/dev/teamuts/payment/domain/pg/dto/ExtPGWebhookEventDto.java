@@ -36,7 +36,12 @@ public class ExtPGWebhookEventDto {
         .build();
   }
 
-  public boolean isSucceeded() {
-    return this.status == PGWebhookEventStatus.SUCCEEDED;
+  public boolean isNotSucceeded() {
+    return this.status != PGWebhookEventStatus.SUCCEEDED;
+  }
+
+  public String getBaseInfoForLog() {
+    return "pgProvider: %s / pgRequestId: %s / pgOperationName: %s / pgDetailedMessage: %s"
+        .formatted(this.pgProvider, this.pgRequestId, this.pgOperationName, this.pgDetailedMessage);
   }
 }

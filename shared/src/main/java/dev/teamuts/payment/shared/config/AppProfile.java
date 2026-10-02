@@ -29,6 +29,6 @@ public class AppProfile implements EnvironmentAware {
   }
 
   private boolean hasProfile(String profile) {
-    return Arrays.binarySearch(profiles, profile) >= 0;
+    return Arrays.asList(profiles).contains(profile);
   }
 }

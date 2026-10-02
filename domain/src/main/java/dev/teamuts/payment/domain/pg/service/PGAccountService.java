@@ -18,12 +18,12 @@ public class PGAccountService {
   private final PGAccountStorePort pgAccountStorePort;
   private final ExternalPGServiceProvider pgServiceProvider;
 
-  public Optional<PGAccount> getPGAccountByMemberId(Long memberId) {
+  public Optional<PGAccount> getPGAccountByMemberIdNullable(Long memberId) {
     return pgAccountReaderPort.retrievePGAccountOptionalByMemberId(memberId);
   }
 
-  public PGAccount getPGAccountByMemberIdNotNull(Long memberId) {
-    return getPGAccountByMemberId(memberId)
+  public PGAccount getPGAccountByMemberId(Long memberId) {
+    return getPGAccountByMemberIdNullable(memberId)
         .orElseThrow(() -> new RuntimeException("PGAccount not found for memberId: " + memberId));
   }
 

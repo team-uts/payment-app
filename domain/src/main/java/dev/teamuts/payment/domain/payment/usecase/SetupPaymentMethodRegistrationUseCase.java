@@ -20,7 +20,7 @@ public class SetupPaymentMethodRegistrationUseCase {
     // get PG Account from database
     PGAccount pgAccount =
         pgAccountService
-            .getPGAccountByMemberId(command.memberId())
+            .getPGAccountByMemberIdNullable(command.memberId())
             .orElseGet(
                 // if not present, create new PG Account in both pgProvider and database
                 () ->

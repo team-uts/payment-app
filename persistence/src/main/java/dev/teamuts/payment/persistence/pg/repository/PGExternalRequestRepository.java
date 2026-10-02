@@ -15,4 +15,12 @@ public interface PGExternalRequestRepository
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   Optional<PGExternalRequestJpaEntity> findLockById(Long id);
+
+  Optional<PGExternalRequestJpaEntity>
+      findTopByPgRequestIdAndMemberIdAndPgProviderAndExtOperationAndExtDetailedMessageOrderByIdDesc(
+          String pgRequestId,
+          Long memberId,
+          PGProviderType pgProvider,
+          String extOperation,
+          String extDetailedMessage);
 }

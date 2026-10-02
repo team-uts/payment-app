@@ -4,9 +4,9 @@ import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
-import dev.teamuts.payment.persistence.pg.entity.PGExternalRequestJpaEntity;
 import dev.teamuts.payment.persistence.pg.mapper.PGExternalRequestConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGExternalRequestRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
@@ -22,17 +22,28 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
    */
   @Override
   public PGExternalRequest retrieveSingleByParameters(
-      PGProviderType pgProvider, Long memberId, String pgRequestId, String extOperation) {
-    PGExternalRequestJpaEntity entity =
-        pgExternalRequestRepository
-            .findTopByPgRequestIdAndMemberIdAndPgProviderAndExtOperationOrderByIdDesc(
-                pgRequestId, memberId, pgProvider, extOperation)
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "PGExternalRequest not found with parameters: pgProvider=%s, memberId=%d, pgRequestId=%s, extOperation=%s"
-                            .formatted(pgProvider.name(), memberId, pgRequestId, extOperation)));
+      String pgRequestId, PGProviderType pgProvider, Long memberId, String extOperation) {
+    return pgExternalRequestRepository
+        .findTopByPgRequestIdAndMemberIdAndPgProviderAndExtOperationOrderByIdDesc(
+            pgRequestId, memberId, pgProvider, extOperation)
+        .map(pgExternalRequestConverter::covertToDomainModel)
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "PGExternalRequest not found with parameters: pgProvider=%s, memberId=%d, pgRequestId=%s, extOperation=%s"
+                        .formatted(pgProvider.name(), memberId, pgRequestId, extOperation)));
+  }
 
-    return pgExternalRequestConverter.covertToDomainModel(entity);
+  @Override
+  public Optional<PGExternalRequest> retrieveSingleByParametersNullable(
+      String pgRequestId,
+      PGProviderType pgProvider,
+      Long memberId,
+      String extOperation,
+      String extDetailedMessage) {
+    return pgExternalRequestRepository
+        .findTopByPgRequestIdAndMemberIdAndPgProviderAndExtOperationAndExtDetailedMessageOrderByIdDesc(
+            pgRequestId, memberId, pgProvider, extOperation, extDetailedMessage)
+        .map(pgExternalRequestConverter::covertToDomainModel);
   }
 }

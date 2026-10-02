@@ -21,8 +21,8 @@ public class PGExternalRequest {
   private Long id;
   private String pgRequestId;
   private Long memberId;
-  private Long
-      sourceRequestId; // the ID of the original request that triggered this external request
+  // the ID of the original request that triggered this external request
+  private Long sourceRequestId;
   private PGProviderType pgProvider;
   private PGRequestType requestType;
   private String extOperation;
@@ -82,6 +82,10 @@ public class PGExternalRequest {
 
   public boolean isSameRequestTypeWith(PGExternalRequest other) {
     return this.requestType == other.requestType;
+  }
+
+  public boolean isCompleted() {
+    return this.status == PGRequestStatus.COMPLETED;
   }
 
   // TODO: check if this model is persistent in the database.

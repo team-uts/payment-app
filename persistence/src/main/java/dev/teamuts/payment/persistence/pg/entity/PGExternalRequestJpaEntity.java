@@ -39,7 +39,6 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
 
   @Column(
       name = "source_request_id",
-      nullable = false,
       comment = "the ID of the original request that triggered this external request")
   private Long sourceRequestId;
 

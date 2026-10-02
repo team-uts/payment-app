@@ -11,18 +11,19 @@ import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPor
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestStorePort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestUpdatePort;
 import dev.teamuts.payment.shared.data.AppTransactional;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@AppTransactional
 public class PGExternalRequestService {
   private final PGExternalRequestReaderPort pgExternalRequestReaderPort;
   private final PGExternalRequestStorePort pgExternalRequestStorePort;
   private final PGExternalRequestUpdatePort pgExternalRequestUpdatePort;
   private final ExternalPGServiceProvider pgServiceProvider;
 
-  @AppTransactional
   public PGExternalRequest storeInitPaymentMethodRequest(PGAccount pgAccount) {
     ExtPGPaymentMethodOperationDto response =
         pgServiceProvider
@@ -37,7 +38,17 @@ public class PGExternalRequestService {
   public PGExternalRequest getPGExternalRequest(
       PGProviderType pgProvider, Long memberId, String pgRequestId, String extOperation) {
     return pgExternalRequestReaderPort.retrieveSingleByParameters(
-        pgProvider, memberId, pgRequestId, extOperation);
+        pgRequestId, pgProvider, memberId, extOperation);
+  }
+
+  public Optional<PGExternalRequest> getPGExternalRequestNullable(
+      PGProviderType pgProvider,
+      Long memberId,
+      String pgRequestId,
+      String extOperation,
+      String extDetailedMessage) {
+    return pgExternalRequestReaderPort.retrieveSingleByParametersNullable(
+        pgRequestId, pgProvider, memberId, extOperation, extDetailedMessage);
   }
 
   /**
@@ -46,14 +57,12 @@ public class PGExternalRequestService {
    * @param webhookEvent The webhook event data.
    * @return The newly created PGExternalRequest.
    */
-  @AppTransactional
   public PGExternalRequest registerInitWebhookRequest(ExtPGWebhookEventDto webhookEvent) {
     PGExternalRequest newPgExternalRequest = PGExternalRequest.initWebhookEvent(webhookEvent);
 
     return pgExternalRequestStorePort.storeNew(newPgExternalRequest);
   }
 
-  @AppTransactional
   public void associateWithSourceAfterProcessWebhook(
       PGExternalRequest targetRequest,
       PGExternalRequest sourceRequest,
@@ -64,7 +73,6 @@ public class PGExternalRequestService {
     pgExternalRequestUpdatePort.updateSourceRequestIdAndStatus(targetRequest);
   }
 
-  @AppTransactional
   public void completeSourceRequest(PGExternalRequest pgExternalRequest) {
     pgExternalRequest.completed();
 

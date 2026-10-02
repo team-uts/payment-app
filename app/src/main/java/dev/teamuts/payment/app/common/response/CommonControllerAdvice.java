@@ -16,6 +16,7 @@ public class CommonControllerAdvice {
   public ApiResponse<?> handleException(Exception e) {
     log.error("[COMMON] {}", e.getMessage());
 
-    return ApiResponse.failure(new ApiError(e.getMessage(), ApiErrorCode.INTERNAL_SERVER_ERROR));
+    return ApiResponse.failure(
+        new ApiError("Internal server error", ApiErrorCode.INTERNAL_SERVER_ERROR));
   }
 }
