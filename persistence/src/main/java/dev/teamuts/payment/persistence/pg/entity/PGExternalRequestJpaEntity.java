@@ -3,7 +3,7 @@ package dev.teamuts.payment.persistence.pg.entity;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.payment.persistence.common.entity.BaseAccountableEntity;
+import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,14 +17,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Entity
 @Table(catalog = "payment", name = "pg_external_requests")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
+public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -34,6 +36,11 @@ public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
 
   @Column(name = "member_id", nullable = false)
   private Long memberId;
+
+  @Column(
+      name = "source_request_id",
+      comment = "the ID of the original request that triggered this external request")
+  private Long sourceRequestId;
 
   @Column(name = "pg_provider", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -46,7 +53,10 @@ public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
   @Column(name = "ext_operation", nullable = false)
   private String extOperation;
 
-  @Column(name = "ext_provider_secret", nullable = false)
+  @Column(name = "ext_detailed_message")
+  private String extDetailedMessage;
+
+  @Column(name = "ext_provider_secret")
   private String extProviderSecret;
 
   @Column(name = "status", nullable = false)
@@ -56,19 +66,31 @@ public class PGExternalRequestJpaEntity extends BaseAccountableEntity {
   public static PGExternalRequestJpaEntity newEntity(
       String pgRequestId,
       Long memberId,
+      Long sourceRequestId,
       PGProviderType pgProvider,
       PGRequestType requestType,
       String extOperation,
+      String extDetailedMessage,
       String providerSecret,
       PGRequestStatus status) {
     return PGExternalRequestJpaEntity.builder()
         .pgRequestId(pgRequestId)
         .memberId(memberId)
+        .sourceRequestId(sourceRequestId)
         .pgProvider(pgProvider)
         .requestType(requestType)
         .extOperation(extOperation)
+        .extDetailedMessage(extDetailedMessage)
         .extProviderSecret(providerSecret)
         .status(status)
         .build();
+  }
+
+  public void updateStatus(PGRequestStatus newStatus) {
+    this.status = newStatus;
+  }
+
+  public void updateSourceRequestId(Long sourceRequestId) {
+    this.sourceRequestId = sourceRequestId;
   }
 }

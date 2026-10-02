@@ -20,7 +20,7 @@ public class PGAccount {
   private PGProviderType pgProvider;
   private PGAccountStatus status;
 
-  public static PGAccount activateNew(ExtPGAccountDto extPGAccount) {
+  public static PGAccount newActivated(ExtPGAccountDto extPGAccount) {
     return PGAccount.builder()
         .memberId(extPGAccount.getMemberId())
         .pgAccountId(extPGAccount.getPgAccountId())

@@ -11,9 +11,11 @@ public class PGExternalRequestConverter {
         entity.getId(),
         entity.getPgRequestId(),
         entity.getMemberId(),
+        entity.getSourceRequestId(),
         entity.getPgProvider(),
         entity.getRequestType(),
         entity.getExtOperation(),
+        entity.getExtDetailedMessage(),
         entity.getExtProviderSecret(),
         entity.getStatus());
   }
@@ -22,9 +24,11 @@ public class PGExternalRequestConverter {
     return PGExternalRequestJpaEntity.newEntity(
         model.getPgRequestId(),
         model.getMemberId(),
+        model.getSourceRequestId(),
         model.getPgProvider(),
         model.getRequestType(),
         model.getExtOperation(),
+        model.getExtDetailedMessage(),
         model.getProviderSecret(),
         model.getStatus());
   }

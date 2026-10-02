@@ -4,11 +4,13 @@ CREATE TABLE if not exists `pg_external_requests`
 
     pg_request_id           VARCHAR(255)        NOT NULL COMMENT 'PG request ID',
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
+    source_request_id       BIGINT UNSIGNED     NULL     COMMENT 'ID of the original request that triggered this external request',
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
     request_type            VARCHAR(32)         NOT NULL COMMENT 'PAYMENT_METHOD/PAYMENT',
     ext_operation           VARCHAR(32)         NOT NULL COMMENT 'specific operation of PG provider',
-    ext_provider_secret     VARCHAR(255)        NOT NULL COMMENT 'secret token for request (client_secret)',
+    ext_detailed_message    VARCHAR(255)        NULL     COMMENT 'detailed message from PG provider',
+    ext_provider_secret     VARCHAR(255)        NULL     COMMENT 'secret token for request (client_secret)',
 
     status                  VARCHAR(32)         NOT NULL COMMENT 'INIT/SUCCESS/PENDING/FAILED',
 
@@ -19,3 +21,4 @@ CREATE TABLE if not exists `pg_external_requests`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE INDEX ix_pger_memberid ON pg_external_requests (member_id);
+CREATE INDEX ix_pger_pgrequestid ON pg_external_requests (pg_request_id);

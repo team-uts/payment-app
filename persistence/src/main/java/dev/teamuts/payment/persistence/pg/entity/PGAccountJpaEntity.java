@@ -2,7 +2,7 @@ package dev.teamuts.payment.persistence.pg.entity;
 
 import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.persistence.common.entity.BaseAccountableEntity;
+import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class PGAccountJpaEntity extends BaseAccountableEntity {
+public class PGAccountJpaEntity extends BaseAuditableEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
