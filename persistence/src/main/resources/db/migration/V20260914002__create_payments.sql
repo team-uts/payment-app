@@ -5,9 +5,8 @@ CREATE TABLE IF NOT EXISTS `payments`
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
 
-    currency                CHAR(3)             NOT NULL COMMENT 'currency type (AUD)',
-
     amount                  DECIMAL(15, 2)      NOT NULL COMMENT 'actual payment amount',
+    currency                CHAR(3)             NOT NULL COMMENT 'currency type (AUD)',
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
     pg_method               VARCHAR(32)         NOT NULL COMMENT 'payment method (CARD)',
