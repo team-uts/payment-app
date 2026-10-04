@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `payments`
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
 
     amount                  DECIMAL(15, 2)      NOT NULL COMMENT 'actual payment amount',
+    point_amount            DECIMAL(15, 2)      NOT NULL COMMENT 'point payment amount used',
     currency                CHAR(3)             NOT NULL COMMENT 'currency type (AUD)',
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',

@@ -1,8 +1,8 @@
 package dev.teamuts.payment.domain.order.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
+import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public class Order {
   private Long id;
-  private String orderNumber;
+  private String extOrderNum;
   private AppServiceType serviceType;
   private Long memberId;
   private BigDecimal amount;

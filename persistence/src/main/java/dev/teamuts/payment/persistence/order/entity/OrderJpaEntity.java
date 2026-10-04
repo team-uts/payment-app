@@ -17,8 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(catalog = "payment", name = "orders")
@@ -31,8 +29,8 @@ public class OrderJpaEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "order_no", nullable = false)
-  private String orderNumber;
+  @Column(name = "ext_order_no", nullable = false)
+  private String extOrderNum;
 
   @Column(name = "service_type", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -45,8 +43,7 @@ public class OrderJpaEntity {
   private BigDecimal amount;
 
   @Enumerated(EnumType.STRING)
-  @JdbcTypeCode(SqlTypes.CHAR)
-  @Column(name = "currency", nullable = false, length = 3)
+  @Column(name = "currency", columnDefinition = "CHAR(3)", nullable = false, length = 3)
   private Currency currency;
 
   @Column(name = "status", nullable = false)
