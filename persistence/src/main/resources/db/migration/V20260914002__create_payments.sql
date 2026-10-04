@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS `payments`
     id                      BIGINT UNSIGNED     NOT NULL AUTO_INCREMENT    PRIMARY  KEY,
     order_id                BIGINT UNSIGNED     NOT NULL COMMENT 'order ID',
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
+
+    service_type            VARCHAR(32)         NOT NULL COMMENT 'app service type',
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
 
     amount                  DECIMAL(15, 2)      NOT NULL COMMENT 'actual payment amount',
@@ -10,9 +12,9 @@ CREATE TABLE IF NOT EXISTS `payments`
     currency                CHAR(3)             NOT NULL COMMENT 'currency type (AUD)',
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
-    pg_method               VARCHAR(32)         NOT NULL COMMENT 'payment method (CARD)',
 
     payment_method_id       BIGINT UNSIGNED     NULL     COMMENT 'stored payment method',
+    payment_method_type     VARCHAR(32)         NOT NULL COMMENT 'payment method (CARD)',
 
     created_at              DATETIME(6)         NOT NULL,
     updated_at              DATETIME(6)         NULL
