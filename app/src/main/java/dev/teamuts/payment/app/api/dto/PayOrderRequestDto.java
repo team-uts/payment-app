@@ -6,7 +6,8 @@ import java.math.BigDecimal;
 
 public record PayOrderRequestDto(
     String extOrderNum,
-    Long paymentMethodId,
-    BigDecimal amount,
+    Long payMethodId,
+    BigDecimal totalAmount,
+    BigDecimal pointAmount,
     Currency currency,
     AppServiceType serviceType) {}

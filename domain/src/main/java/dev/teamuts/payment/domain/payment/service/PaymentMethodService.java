@@ -20,6 +20,10 @@ public class PaymentMethodService {
     return paymentMethodReaderPort.retrievePaymentMethodsByMemberId(memberId);
   }
 
+  public PaymentMethod getPaymentMethodById(Long paymentMethodId) {
+    return paymentMethodReaderPort.retrievePaymentMethodById(paymentMethodId);
+  }
+
   @AppTransactional
   public PaymentMethod registerNewPaymentMethod(ExtPGPaymentMethodDto extPGPaymentMethod) {
     PaymentMethod paymentMethod = PaymentMethod.newActiveMethod(extPGPaymentMethod);

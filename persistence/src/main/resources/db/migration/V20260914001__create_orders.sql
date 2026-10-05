@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `orders`
     ext_order_no        VARCHAR(64)         NOT NULL COMMENT 'display order number',
     service_type        VARCHAR(32)         NOT NULL COMMENT 'app service type',
     member_id           BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
-    amount              DECIMAL(15, 2)      NOT NULL COMMENT 'order total amount',
+    amount              DECIMAL(15, 2)      NOT NULL COMMENT 'order total totalAmount',
     currency            CHAR(3)             NOT NULL COMMENT 'currency type (AUD)',
     status              VARCHAR(32)         NOT NULL COMMENT 'order status',
     created_at          DATETIME(6)         NOT NULL,

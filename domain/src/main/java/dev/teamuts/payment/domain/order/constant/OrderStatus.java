@@ -1,8 +1,7 @@
 package dev.teamuts.payment.domain.order.constant;
 
 public enum OrderStatus {
-  INIT,
-  PENDING,
+  PAYMENT_PENDING,
   CONFIRMED,
   CANCELLED,
   FAILED

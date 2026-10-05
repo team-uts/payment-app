@@ -4,18 +4,29 @@ import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
+import dev.teamuts.payment.domain.payment.facade.PaymentFacade;
+import dev.teamuts.payment.domain.payment.model.Payment;
+import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
+import dev.teamuts.payment.domain.payment.service.PaymentService;
+import dev.teamuts.payment.domain.point.service.PointService;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
 @RequiredArgsConstructor
 public class PayOrderUseCase {
   private final OrderService orderService;
+  private final PaymentFacade paymentFacade;
+  private final PaymentMethodService paymentMethodService;
+  private final PaymentService paymentService;
+  private final PointService pointService;
 
+  // TODO: require Redis Locking
   public void execute(Long memberId, PayOrderCommand command) {
-    // Create new Order data (INIT)
-    Order order = orderService.initializeOrder(memberId, command);
+    // Retrieve or Create new Order data (PAYMENT_PENDING)
+    Order order = orderService.getInitPaymentOrderOrCreate(memberId, command);
 
-    // Create new Payment (INIT)
+    // Retrieve or Create Payment (PROCESSING)
+    Payment payment = paymentFacade.getProcessingPaymentOrCreate(order, command);
 
     // Create new PaymentTransaction data (INIT)
 

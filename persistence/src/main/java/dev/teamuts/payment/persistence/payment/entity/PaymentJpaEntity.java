@@ -4,7 +4,7 @@ import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,8 +46,8 @@ public class PaymentJpaEntity extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private PaymentStatus status;
 
-  @Column(name = "amount", nullable = false)
-  private BigDecimal amount;
+  @Column(name = "pay_amount", nullable = false)
+  private BigDecimal payAmount;
 
   @Column(name = "point_amount", nullable = false)
   private BigDecimal pointAmount;
@@ -56,14 +56,24 @@ public class PaymentJpaEntity extends BaseTimeEntity {
   @Column(name = "currency", columnDefinition = "CHAR(3)", nullable = false, length = 3)
   private Currency currency;
 
-  @Column(name = "pg_provider", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private PGProviderType pgProvider;
-
   @Column(name = "payment_method_id")
   private Long payMethodId;
 
   @Column(name = "payment_method_type", nullable = false)
   @Enumerated(EnumType.STRING)
   private PaymentMethodType payMethodType;
+
+  public static PaymentJpaEntity fromDomain(Payment model) {
+    return PaymentJpaEntity.builder()
+        .orderId(model.getOrderId())
+        .memberId(model.getMemberId())
+        .serviceType(model.getServiceType())
+        .status(model.getStatus())
+        .payAmount(model.getPayAmount())
+        .pointAmount(model.getPointAmount())
+        .currency(model.getCurrency())
+        .payMethodId(model.getPayMethodId())
+        .payMethodType(model.getPayMethodType())
+        .build();
+  }
 }

@@ -36,6 +36,8 @@ public class PaymentMethodFacade {
             .getInstance(extPGPaymentMethod.getDetail().methodType())
             .registerPaymentMethodDetail(storedPaymentMethod, extPGPaymentMethod.getDetail());
 
-    return PaymentMethod.copyWithDetail(storedPaymentMethod, paymentMethodDetail);
+    storedPaymentMethod.updateDetail(paymentMethodDetail);
+
+    return storedPaymentMethod;
   }
 }
