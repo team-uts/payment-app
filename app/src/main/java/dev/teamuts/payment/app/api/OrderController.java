@@ -3,6 +3,7 @@ package dev.teamuts.payment.app.api;
 import dev.teamuts.payment.app.api.dto.OrderDtoMapper;
 import dev.teamuts.payment.app.api.dto.PayOrderRequestDto;
 import dev.teamuts.payment.app.common.response.ApiResponse;
+import dev.teamuts.payment.domain.order.usecase.PayOrderUseCase;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrderController {
   private final OrderDtoMapper mapper;
+  private final PayOrderUseCase payOrderUseCase;
 
   /**
    * External Service will call this API to process their orders with payment. This API will create
@@ -29,6 +31,9 @@ public class OrderController {
   public ApiResponse<String> payOrder(
       @RequestParam Long memberId, @RequestBody PayOrderRequestDto request) {
     var command = mapper.of(request);
+
+    payOrderUseCase.execute(memberId, command);
+
     return ApiResponse.success("Order created successfully");
   }
 }

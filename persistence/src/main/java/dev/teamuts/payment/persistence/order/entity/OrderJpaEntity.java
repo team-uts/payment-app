@@ -2,6 +2,7 @@ package dev.teamuts.payment.persistence.order.entity;
 
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
+import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
@@ -50,4 +51,16 @@ public class OrderJpaEntity extends BaseTimeEntity {
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
+
+  public static OrderJpaEntity fromDomain(Order order) {
+    return OrderJpaEntity.builder()
+        .id(order.getId())
+        .extOrderNum(order.getExtOrderNum())
+        .serviceType(order.getServiceType())
+        .memberId(order.getMemberId())
+        .amount(order.getAmount())
+        .currency(order.getCurrency())
+        .status(order.getStatus())
+        .build();
+  }
 }

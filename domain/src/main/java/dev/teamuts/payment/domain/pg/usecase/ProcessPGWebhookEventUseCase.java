@@ -38,6 +38,7 @@ public class ProcessPGWebhookEventUseCase {
     }
 
     // register new PGExternalRequest for the webhook event
+    // Be careful here that REPEATABLE_READ isolation level of MySQL could cause issues.
     PGExternalRequest webhookRequest =
         pgExternalRequestFacade.getInitWebhookRequestOrRegisterInitWebhookRequest(event);
 
