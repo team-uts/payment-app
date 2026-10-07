@@ -20,18 +20,19 @@ public class PaymentFacade {
 
   @AppTransactional
   public Payment getProcessingPaymentOrCreate(Order order, PayOrderCommand command) {
+    // If it has any point usage, validate the point status of the member. (Request to Point API)
     if (command.hasAnyPointUsage()) {
-      // Validate the point status of the member. (Request to Point API)
       pointService.checkPointStatus(order.getMemberId(), command.pointAmount());
     }
 
+    // If it has only point usage, retrieve or create Payment (PROCESSING) with Point PaymentMethod
     if (command.hasOnlyPointUsage()) {
-      // Retrieve or Create Payment (PROCESSING) with only point usage
       return paymentService.getProcessingPaymentOrCreate(
           order, PaymentMethod.point(order.getMemberId()), command.pointAmount());
     }
 
-    // Retrieve PaymentMethod to create and process new Payment
+    // If it is the usual case,
+    // retrieve PaymentMethod to create and process new Payment
     PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(command.payMethodId());
 
     // Validate PaymentMethod

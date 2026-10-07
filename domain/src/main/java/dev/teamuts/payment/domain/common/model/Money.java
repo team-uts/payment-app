@@ -54,6 +54,11 @@ public class Money {
         this.amount, BigDecimal.ZERO.setScale(currency.getScale(), RoundingMode.UNNECESSARY));
   }
 
+  public boolean isZero() {
+    return MoneyCalculator.isEqual(
+        this.amount, BigDecimal.ZERO.setScale(currency.getScale(), RoundingMode.UNNECESSARY));
+  }
+
   public boolean isLessThan(Money other) {
     checkIfSameCurrency(other);
 
@@ -64,5 +69,9 @@ public class Money {
     checkIfSameCurrency(other);
 
     return Money.of(MoneyCalculator.subtract(this.amount, other.amount), this.currency);
+  }
+
+  public Money copy() {
+    return Money.of(this.amount, this.currency);
   }
 }

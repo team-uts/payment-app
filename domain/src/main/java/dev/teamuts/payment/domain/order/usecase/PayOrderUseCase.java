@@ -6,9 +6,9 @@ import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.facade.PaymentFacade;
 import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
-import dev.teamuts.payment.domain.payment.service.PaymentService;
-import dev.teamuts.payment.domain.point.service.PointService;
+import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
+import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -16,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class PayOrderUseCase {
   private final OrderService orderService;
   private final PaymentFacade paymentFacade;
-  private final PaymentMethodService paymentMethodService;
-  private final PaymentService paymentService;
-  private final PointService pointService;
+  private final PaymentTransactionService paymentTransactionService;
 
   // TODO: require Redis Locking
   public void execute(Long memberId, PayOrderCommand command) {
@@ -28,8 +26,9 @@ public class PayOrderUseCase {
     // Retrieve or Create Payment (PROCESSING)
     Payment payment = paymentFacade.getProcessingPaymentOrCreate(order, command);
 
-    // Create new PaymentTransaction data (INIT)
-
+    // Create new PaymentTransactions data (INIT)
+    List<PaymentTransaction> paymentTransactions =
+        paymentTransactionService.createInitTransactions(payment);
     // Request payment to Payment Gateway (PG)
 
     // Update PaymentTransaction data with PG response

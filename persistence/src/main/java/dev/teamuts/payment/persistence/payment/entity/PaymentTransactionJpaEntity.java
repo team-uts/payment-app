@@ -3,7 +3,8 @@ package dev.teamuts.payment.persistence.payment.entity;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
-import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
+import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
@@ -71,5 +72,22 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
 
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
-  private PaymentStatus status;
+  private PaymentTransactionStatus status;
+
+  public static PaymentTransactionJpaEntity newEntity(PaymentTransaction paymentTransaction) {
+    return PaymentTransactionJpaEntity.builder()
+        .memberId(paymentTransaction.getMemberId())
+        .paymentId(paymentTransaction.getPaymentId())
+        .orderId(paymentTransaction.getOrderId())
+        .payMethodId(paymentTransaction.getPayMethodId())
+        .payMethodType(paymentTransaction.getPayMethodType())
+        .serviceType(paymentTransaction.getServiceType())
+        .amount(paymentTransaction.getAmount().getAmount())
+        .currency(paymentTransaction.getCurrency())
+        .pgProvider(paymentTransaction.getPgProvider())
+        .pgTransactionId(paymentTransaction.getPgTransactionId())
+        .pgResponseMessage(paymentTransaction.getPgResponseMessage())
+        .status(paymentTransaction.getStatus())
+        .build();
+  }
 }

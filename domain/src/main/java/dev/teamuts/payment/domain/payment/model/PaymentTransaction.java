@@ -5,8 +5,9 @@ import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
-import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,5 +30,74 @@ public class PaymentTransaction {
   private PGProviderType pgProvider;
   private String pgTransactionId;
   private String pgResponseMessage;
-  private PaymentStatus status;
+  private PaymentTransactionStatus status;
+
+  public static PaymentTransaction initPay(Payment payment) {
+    if (payment.hasNoPayAmount()) {
+      throw new RuntimeException(
+          "This Payment (id: %d) is invalid for payment transaction".formatted(payment.getId()));
+    }
+
+    return PaymentTransaction.builder()
+        .memberId(payment.getMemberId())
+        .paymentId(payment.getId())
+        .orderId(payment.getOrderId())
+        .payMethodId(payment.getPayMethodId())
+        .payMethodType(payment.getPayMethodType())
+        .serviceType(payment.getServiceType())
+        .amount(payment.getPayAmountMoney())
+        .currency(payment.getCurrency())
+        .status(PaymentTransactionStatus.INIT)
+        .build();
+  }
+
+  public static PaymentTransaction initPoint(Payment payment) {
+    if (payment.hasNoPointAmount()) {
+      throw new RuntimeException(
+          "This Payment (id: %d) is invalid for point transaction".formatted(payment.getId()));
+    }
+
+    return PaymentTransaction.builder()
+        .memberId(payment.getMemberId())
+        .paymentId(payment.getId())
+        .orderId(payment.getOrderId())
+        .payMethodId(payment.getPayMethodId())
+        .payMethodType(payment.getPayMethodType())
+        .serviceType(payment.getServiceType())
+        .amount(payment.getPointAmountMoney())
+        .currency(payment.getCurrency())
+        .status(PaymentTransactionStatus.INIT)
+        .build();
+  }
+
+  public static PaymentTransaction fromDatabase(
+      Long id,
+      Long memberId,
+      Long paymentId,
+      Long orderId,
+      Long payMethodId,
+      PaymentMethodType payMethodType,
+      AppServiceType serviceType,
+      BigDecimal amount,
+      Currency currency,
+      PGProviderType pgProvider,
+      String pgTransactionId,
+      String pgResponseMessage,
+      PaymentTransactionStatus status) {
+    return PaymentTransaction.builder()
+        .id(id)
+        .memberId(memberId)
+        .paymentId(paymentId)
+        .orderId(orderId)
+        .payMethodId(payMethodId)
+        .payMethodType(payMethodType)
+        .serviceType(serviceType)
+        .amount(Money.of(amount, currency))
+        .currency(currency)
+        .pgProvider(pgProvider)
+        .pgTransactionId(pgTransactionId)
+        .pgResponseMessage(pgResponseMessage)
+        .status(status)
+        .build();
+  }
 }

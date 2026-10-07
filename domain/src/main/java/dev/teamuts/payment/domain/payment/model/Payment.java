@@ -104,6 +104,14 @@ public class Payment {
         .build();
   }
 
+  public Money getPayAmountMoney() {
+    return payAmount.copy();
+  }
+
+  public Money getPointAmountMoney() {
+    return pointAmount.copy();
+  }
+
   public BigDecimal getPayAmount() {
     return payAmount.getAmount();
   }
@@ -116,5 +124,21 @@ public class Payment {
     if (this.status != PaymentStatus.PROCESSING) {
       throw new RuntimeException("Payment (id: %d) is not in PROCESSING status".formatted(this.id));
     }
+  }
+
+  public boolean hasPayAmount() {
+    return payAmount.isGreaterThanZero();
+  }
+
+  public boolean hasPointAmount() {
+    return pointAmount.isGreaterThanZero();
+  }
+
+  public boolean hasNoPayAmount() {
+    return payAmount.isZero();
+  }
+
+  public boolean hasNoPointAmount() {
+    return pointAmount.isZero();
   }
 }
