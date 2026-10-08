@@ -120,7 +120,7 @@ public class Payment {
     return pointAmount.getAmount();
   }
 
-  public void checkProcessing() {
+  public void checkProcessingStatus() {
     if (this.status != PaymentStatus.PROCESSING) {
       throw new RuntimeException("Payment (id: %d) is not in PROCESSING status".formatted(this.id));
     }

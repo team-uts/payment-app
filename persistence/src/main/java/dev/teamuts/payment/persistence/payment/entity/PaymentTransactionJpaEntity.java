@@ -74,6 +74,9 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private PaymentTransactionStatus status;
 
+  @Column(name = "seq", nullable = false)
+  private Integer sequence;
+
   public static PaymentTransactionJpaEntity newEntity(PaymentTransaction paymentTransaction) {
     return PaymentTransactionJpaEntity.builder()
         .memberId(paymentTransaction.getMemberId())
@@ -88,6 +91,7 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
         .pgTransactionId(paymentTransaction.getPgTransactionId())
         .pgResponseMessage(paymentTransaction.getPgResponseMessage())
         .status(paymentTransaction.getStatus())
+        .sequence(paymentTransaction.getSequenceType().getSeqNumber())
         .build();
   }
 }

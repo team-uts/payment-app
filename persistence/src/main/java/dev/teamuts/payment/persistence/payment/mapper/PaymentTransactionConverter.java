@@ -24,6 +24,7 @@ public class PaymentTransactionConverter {
         entity.getPgProvider(),
         entity.getPgTransactionId(),
         entity.getPgResponseMessage(),
-        entity.getStatus());
+        entity.getStatus(),
+        entity.getSequence());
   }
 }

@@ -10,4 +10,6 @@ public class PointService {
   public void checkPointStatus(Long memberId, Money pointAmount) {
     // TODO: if the order has any point usage, validate the point status of the member.
   }
+
+  public void usePoint() {}
 }

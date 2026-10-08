@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PaymentMethodSetupWebhookEventProcessor extends BasePGWebhookEventProcessor {
+public class PaymentMethodSetupWebhookEventProcessor extends AbstractPGWebhookEventProcessor {
   private final ExternalPGServiceProvider pgServiceProvider;
   private final PaymentMethodFacade paymentMethodFacade;
   private final PaymentMethodService paymentMethodService;

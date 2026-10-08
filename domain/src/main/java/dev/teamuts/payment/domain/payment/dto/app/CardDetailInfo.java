@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.payment.dto;
+package dev.teamuts.payment.domain.payment.dto.app;
 
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
 import dev.teamuts.payment.domain.payment.model.Card;

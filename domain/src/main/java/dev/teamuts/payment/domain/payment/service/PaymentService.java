@@ -23,7 +23,8 @@ public class PaymentService {
                 order.getId(), order.getServiceType(), paymentMethod.getMethodType())
             .orElseGet(() -> createProcessing(order, paymentMethod, pointAmount));
 
-    payment.checkProcessing();
+    // check if the payment is still in processing status.
+    payment.checkProcessingStatus();
 
     return payment;
   }

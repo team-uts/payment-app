@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  * <p>The PENDING status is not supported at the moment.
  */
 @Slf4j
-public abstract class BasePGWebhookEventProcessor implements ProviderService<PGRequestType> {
+public abstract class AbstractPGWebhookEventProcessor implements ProviderService<PGRequestType> {
 
   /**
    * Consider {@link AppTransactional#propagation()}. This method should be executed in a separate

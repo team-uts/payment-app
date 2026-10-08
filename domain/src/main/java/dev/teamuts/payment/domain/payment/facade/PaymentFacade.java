@@ -18,6 +18,10 @@ public class PaymentFacade {
   private final PaymentMethodService paymentMethodService;
   private final PointService pointService;
 
+  /**
+   * The reason why trying to retrieve first is to avoid creating duplicate records. This kind of
+   * process is for retrying the payment which couldn't be completed due to some issues.
+   */
   @AppTransactional
   public Payment getProcessingPaymentOrCreate(Order order, PayOrderCommand command) {
     // If it has any point usage, validate the point status of the member. (Request to Point API)
@@ -25,14 +29,15 @@ public class PaymentFacade {
       pointService.checkPointStatus(order.getMemberId(), command.pointAmount());
     }
 
+    // Case 1.
     // If it has only point usage, retrieve or create Payment (PROCESSING) with Point PaymentMethod
     if (command.hasOnlyPointUsage()) {
       return paymentService.getProcessingPaymentOrCreate(
           order, PaymentMethod.point(order.getMemberId()), command.pointAmount());
     }
 
-    // If it is the usual case,
-    // retrieve PaymentMethod to create and process new Payment
+    // Case 2.
+    // If it is the usual case, retrieve PaymentMethod to create and process new Payment
     PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(command.payMethodId());
 
     // Validate PaymentMethod

@@ -5,10 +5,11 @@ import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.facade.PaymentFacade;
+import dev.teamuts.payment.domain.payment.facade.pay.PayTransactionProcessorProvider;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
+import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -17,6 +18,7 @@ public class PayOrderUseCase {
   private final OrderService orderService;
   private final PaymentFacade paymentFacade;
   private final PaymentTransactionService paymentTransactionService;
+  private final PayTransactionProcessorProvider payTxProcessorProvider;
 
   // TODO: require Redis Locking
   public void execute(Long memberId, PayOrderCommand command) {
@@ -27,9 +29,16 @@ public class PayOrderUseCase {
     Payment payment = paymentFacade.getProcessingPaymentOrCreate(order, command);
 
     // Create new PaymentTransactions data (INIT)
-    List<PaymentTransaction> paymentTransactions =
-        paymentTransactionService.createInitTransactions(payment);
+    PaymentTransactions transactions = paymentTransactionService.createInitTransactions(payment);
+
     // Request payment to Payment Gateway (PG)
+    transactions.processInSequence(
+        transaction -> {
+          PaymentTransaction resultTx =
+              payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
+
+          return resultTx;
+        });
 
     // Update PaymentTransaction data with PG response
 

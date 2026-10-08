@@ -24,7 +24,6 @@ public class CardDetailProcessor implements PaymentMethodDetailProcessor {
   @AppTransactional
   public PaymentMethodDetail registerPaymentMethodDetail(
       PaymentMethod paymentMethod, ExtPGPaymentMethodDetail detail) {
-
     return cardService.registerNewCard(paymentMethod, detail);
   }
 }

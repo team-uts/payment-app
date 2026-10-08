@@ -4,6 +4,7 @@ import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.Currency;
+import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
@@ -31,6 +32,7 @@ public class PaymentTransaction {
   private String pgTransactionId;
   private String pgResponseMessage;
   private PaymentTransactionStatus status;
+  private PaySequenceType sequenceType;
 
   public static PaymentTransaction initPay(Payment payment) {
     if (payment.hasNoPayAmount()) {
@@ -48,6 +50,7 @@ public class PaymentTransaction {
         .amount(payment.getPayAmountMoney())
         .currency(payment.getCurrency())
         .status(PaymentTransactionStatus.INIT)
+        .sequenceType(PaySequenceType.PG_PAY)
         .build();
   }
 
@@ -67,6 +70,7 @@ public class PaymentTransaction {
         .amount(payment.getPointAmountMoney())
         .currency(payment.getCurrency())
         .status(PaymentTransactionStatus.INIT)
+        .sequenceType(PaySequenceType.POINT)
         .build();
   }
 
@@ -83,7 +87,8 @@ public class PaymentTransaction {
       PGProviderType pgProvider,
       String pgTransactionId,
       String pgResponseMessage,
-      PaymentTransactionStatus status) {
+      PaymentTransactionStatus status,
+      Integer sequence) {
     return PaymentTransaction.builder()
         .id(id)
         .memberId(memberId)
@@ -98,6 +103,7 @@ public class PaymentTransaction {
         .pgTransactionId(pgTransactionId)
         .pgResponseMessage(pgResponseMessage)
         .status(status)
+        .sequenceType(PaySequenceType.of(sequence))
         .build();
   }
 }

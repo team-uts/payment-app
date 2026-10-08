@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions`
     pg_transaction_id       VARCHAR(64)         NULL     COMMENT 'PG transaction ID',
     pg_response_message     VARCHAR(255)        NULL     COMMENT 'PG response message',
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
+    seq                     INT UNSIGNED        NOT NULL COMMENT 'payment transaction sequence',
     created_at              DATETIME(6)         NOT NULL,
     updated_at              DATETIME(6)         NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,12 +1,12 @@
 package dev.teamuts.payment.app.api;
 
-import static dev.teamuts.payment.domain.pg.dto.info.ExtPGOperationInfo.*;
+import static dev.teamuts.payment.domain.pg.dto.app.ExtPGOperationInfo.*;
 
 import dev.teamuts.payment.app.api.dto.PaymentMethodDtoMapper;
 import dev.teamuts.payment.app.api.dto.SetupPaymentMethodRequestDto;
 import dev.teamuts.payment.app.common.response.ApiResponse;
-import dev.teamuts.payment.domain.payment.dto.PaymentMethodInfo;
-import dev.teamuts.payment.domain.payment.dto.SetupPaymentMethodCommand;
+import dev.teamuts.payment.domain.payment.dto.app.PaymentMethodInfo;
+import dev.teamuts.payment.domain.payment.dto.app.SetupPaymentMethodCommand;
 import dev.teamuts.payment.domain.payment.usecase.GetPaymentMethodListUseCase;
 import dev.teamuts.payment.domain.payment.usecase.SetupPaymentMethodRegistrationUseCase;
 import io.swagger.v3.oas.annotations.Operation;
