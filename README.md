@@ -29,3 +29,21 @@ $ ./gradlew :persistence:flywayMigrate -Dprofile=local
 $ ./gradlew :persistence:flywayInfo -Dprofile=local
 $ ./gradlew :persistence:flywayValidate -Dprofile=local
 ```
+
+## Domain Layer
+
+Hexagonal Architecture
+
+### Roles and Specifications for Each Layer
+- app module
+  - RestController
+  - RequestDto
+  - Mapper
+- domain module
+  - app: UseCase
+  - logic:
+    1. Facade
+    2. Processor
+  - interface: 
+    - Service: managing some business logic and Ports
+    - Port: contract with other modules (infra and persistence)
