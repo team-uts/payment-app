@@ -141,4 +141,12 @@ public class Payment {
   public boolean hasNoPointAmount() {
     return pointAmount.isZero();
   }
+
+  public void updateStatus(PaymentStatus status) {
+    this.status = status;
+  }
+
+  public boolean isNotProcessing() {
+    return status != PaymentStatus.PROCESSING;
+  }
 }

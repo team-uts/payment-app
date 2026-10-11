@@ -20,7 +20,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Entity
 @Table(catalog = "payment", name = "payments")
 @Getter
@@ -75,5 +77,9 @@ public class PaymentJpaEntity extends BaseTimeEntity {
         .payMethodId(model.getPayMethodId())
         .payMethodType(model.getPayMethodType())
         .build();
+  }
+
+  public void updateStatus(PaymentStatus status) {
+    this.status = status;
   }
 }

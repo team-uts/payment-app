@@ -1,9 +1,8 @@
 package dev.teamuts.payment.domain.payment.facade;
 
-import dev.teamuts.payment.domain.payment.facade.pay.PayTransactionProcessorProvider;
 import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
+import dev.teamuts.payment.domain.payment.service.PaymentService;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,19 +10,26 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PaymentTransactionFacade {
+  private final PaymentTransactionExecutor paymentTransactionExecutor;
   private final PaymentTransactionService paymentTransactionService;
-  private final PayTransactionProcessorProvider payTxProcessorProvider;
+  private final PaymentService paymentService;
 
   public PaymentTransactions processPayment(Payment payment) {
-    PaymentTransactions transactions = paymentTransactionService.createInitTransactions(payment);
+    if (payment.isNotProcessing()) {
+      throw new RuntimeException("Not processing payment" + payment.getId());
+    }
 
-    // TODO: add new Facade
-    return transactions.processInSequence(
-        transaction -> {
-          PaymentTransaction resultTx =
-              payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
+    // Retrieve or Create multiple PaymentTransaction (should have at least one INIT tx)
+    PaymentTransactions transactions =
+        paymentTransactionService.getTransactionsOrCreateInit(payment);
 
-          return resultTx;
-        });
+    // process transaction list in PaySequenceType sequence
+    PaymentTransactions resultTransactions =
+        transactions.processInSequence(paymentTransactionExecutor::processTransaction);
+
+    // update payment status based on the result txs
+    paymentService.updateStatus(payment, resultTransactions.resolvePaymentStatus());
+
+    return resultTransactions;
   }
 }

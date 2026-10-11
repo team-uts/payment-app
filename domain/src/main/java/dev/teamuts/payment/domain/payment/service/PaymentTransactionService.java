@@ -15,8 +15,9 @@ import org.springframework.stereotype.Service;
 public class PaymentTransactionService {
   private final PaymentTransactionStorePort paymentTransactionStorePort;
 
+  // TODO: Retrieve existing transactions from DB and create INIT tx if not exist
   @AppTransactional
-  public PaymentTransactions createInitTransactions(Payment payment) {
+  public PaymentTransactions getTransactionsOrCreateInit(Payment payment) {
     List<PaymentTransaction> transactions = new ArrayList<>();
 
     if (payment.hasPayAmount()) {
@@ -32,4 +33,7 @@ public class PaymentTransactionService {
 
     return PaymentTransactions.of(storedTransactions);
   }
+
+  @AppTransactional
+  public void updateStatus(PaymentTransaction transaction) {}
 }

@@ -106,4 +106,20 @@ public class PaymentTransaction {
         .sequenceType(PaySequenceType.of(sequence))
         .build();
   }
+
+  public void failed() {
+    this.status = PaymentTransactionStatus.FAILED;
+  }
+
+  public boolean isFailed() {
+    return this.status == PaymentTransactionStatus.FAILED;
+  }
+
+  public boolean isCompleted() {
+    return this.status == PaymentTransactionStatus.COMPLETED;
+  }
+
+  public boolean isNotProcessable() {
+    return !PaymentTransactionStatus.PROCESSABLE_STATUSES.contains(this.status);
+  }
 }

@@ -10,6 +10,7 @@ import dev.teamuts.payment.domain.point.service.PointService;
 import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class PaymentFacade {
    * The reason why trying to retrieve first is to avoid creating duplicate records. This kind of
    * process is for retrying the payment which couldn't be completed due to some issues.
    */
-  @AppTransactional
+  @AppTransactional(propagation = Propagation.REQUIRES_NEW)
   public Payment getProcessingPaymentOrCreate(Order order, PayOrderCommand command) {
     // If it has any point usage, validate the point status of the member. (Request to Point API)
     if (command.hasAnyPointUsage()) {
