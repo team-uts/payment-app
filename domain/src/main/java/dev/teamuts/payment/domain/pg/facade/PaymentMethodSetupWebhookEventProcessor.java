@@ -7,7 +7,7 @@ import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
+import dev.teamuts.payment.domain.pg.service.ExternalPGServiceProvider;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

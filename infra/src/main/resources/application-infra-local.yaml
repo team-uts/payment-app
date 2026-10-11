@@ -1,2 +1,4 @@
 stripe:
   secret-key: ${STRIPE_SECRET_KEY}
+  connect-timeout-in-sec: 2
+  read-timeout-in-sec: 60

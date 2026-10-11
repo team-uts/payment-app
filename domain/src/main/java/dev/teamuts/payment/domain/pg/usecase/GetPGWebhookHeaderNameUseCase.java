@@ -2,7 +2,7 @@ package dev.teamuts.payment.domain.pg.usecase;
 
 import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
+import dev.teamuts.payment.domain.pg.service.ExternalPGServiceProvider;
 import lombok.RequiredArgsConstructor;
 
 @UseCase

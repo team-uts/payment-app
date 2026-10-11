@@ -6,7 +6,6 @@ import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
-import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestStorePort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestUpdatePort;

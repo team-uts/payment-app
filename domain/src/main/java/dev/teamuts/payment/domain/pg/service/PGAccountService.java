@@ -3,7 +3,6 @@ package dev.teamuts.payment.domain.pg.service;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountStorePort;
 import dev.teamuts.payment.shared.data.AppTransactional;

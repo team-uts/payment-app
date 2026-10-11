@@ -11,9 +11,12 @@ import lombok.RequiredArgsConstructor;
 public enum StripeOperationType {
   CREATE_CUSTOMER(ACCOUNT, "user_id", false),
   CREATE_SETUP_INTENT(PAYMENT_METHOD_SETUP, "user_id", false),
+  RETRIEVE_PAYMENT_METHOD(PAYMENT_METHOD, null, false),
   CREATE_PAYMENT_INTENT(PAYMENT, null, false),
+  RETRIEVE_PAYMENT_INTENT(PAYMENT, null, false),
   WEBHOOK_SETUP_INTENT(PAYMENT_METHOD_SETUP, "user_id", true),
-  WEBHOOK_PAYMENT_INTENT(PAYMENT, null, true);
+  WEBHOOK_PAYMENT_INTENT(PAYMENT, null, true),
+  ;
 
   private final PGRequestType requestType;
   private final String metadataKey;

@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.pg.port.infra.provider;
+package dev.teamuts.payment.domain.pg.service;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
