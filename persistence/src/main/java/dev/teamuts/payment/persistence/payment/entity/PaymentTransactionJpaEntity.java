@@ -70,6 +70,9 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "pg_response_message")
   private String pgResponseMessage;
 
+  @Column(name = "pg_error_message")
+  private String pgErrorMessage;
+
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
   private PaymentTransactionStatus status;
@@ -90,6 +93,7 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
         .pgProvider(paymentTransaction.getPgProvider())
         .pgTransactionId(paymentTransaction.getPgTransactionId())
         .pgResponseMessage(paymentTransaction.getPgResponseMessage())
+        .pgErrorMessage(paymentTransaction.getPgErrorMessage())
         .status(paymentTransaction.getStatus())
         .sequence(paymentTransaction.getSequenceType().getSeqNumber())
         .build();

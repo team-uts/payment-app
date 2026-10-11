@@ -24,21 +24,23 @@ public class PaymentTransactionExecutor {
           "Transaction %s cannot process transaction".formatted(transaction.getId()));
     }
 
-    PaymentTransaction resultTx;
+    PaymentTransaction resultTx = process(transaction);
 
+    paymentTransactionService.updateStatus(resultTx);
+
+    return resultTx;
+  }
+
+  private PaymentTransaction process(PaymentTransaction transaction) {
     try {
       // execute Pay based on the pay type (PG or Point)
-      resultTx = payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
+      return payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
     } catch (Exception e) {
       log.error("Error occurred while processing payment transaction: {}", transaction.getId(), e);
 
       transaction.failed();
 
-      resultTx = transaction;
+      return transaction;
     }
-
-    paymentTransactionService.updateStatus(resultTx);
-
-    return resultTx;
   }
 }

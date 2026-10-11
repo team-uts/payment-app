@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions`
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
     pg_transaction_id       VARCHAR(64)         NULL     COMMENT 'PG transaction ID',
     pg_response_message     VARCHAR(255)        NULL     COMMENT 'PG response message',
+    pg_error_message        VARCHAR(255)        NULL     COMMENT 'PG error message',
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
     seq                     INT UNSIGNED        NOT NULL COMMENT 'payment transaction sequence',
     created_at              DATETIME(6)         NOT NULL,

@@ -31,6 +31,7 @@ public class PaymentTransaction {
   private PGProviderType pgProvider;
   private String pgTransactionId;
   private String pgResponseMessage;
+  private String pgErrorMessage;
   private PaymentTransactionStatus status;
   private PaySequenceType sequenceType;
 
@@ -87,6 +88,7 @@ public class PaymentTransaction {
       PGProviderType pgProvider,
       String pgTransactionId,
       String pgResponseMessage,
+      String pgErrorMessage,
       PaymentTransactionStatus status,
       Integer sequence) {
     return PaymentTransaction.builder()
@@ -102,6 +104,7 @@ public class PaymentTransaction {
         .pgProvider(pgProvider)
         .pgTransactionId(pgTransactionId)
         .pgResponseMessage(pgResponseMessage)
+        .pgErrorMessage(pgErrorMessage)
         .status(status)
         .sequenceType(PaySequenceType.of(sequence))
         .build();
