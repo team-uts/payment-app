@@ -10,13 +10,12 @@ import com.stripe.model.PaymentMethod;
 import com.stripe.model.SetupIntent;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.SetupIntentCreateParams;
-import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
@@ -184,17 +183,4 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
       throw new RuntimeException("[%s] Webhook payload parsing failed".formatted(PG_PROVIDER));
     }
   }
-
-  @Override
-  public void retrievePGPaymentTransaction(PaymentTransaction transaction) {
-    //    executeStripe(
-    //        StripeOperationType.RETRIEVE_PAYMENT_INTENT,
-    //        () -> {
-    //          stripeClient.v1().paymentIntents().retrieve(transaction.getPgTransactionId());
-    //          return null;
-    //        });
-  }
-
-  @Override
-  public void confirmPaymentRequest() {}
 }

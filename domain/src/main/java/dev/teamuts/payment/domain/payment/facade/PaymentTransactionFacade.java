@@ -15,21 +15,21 @@ public class PaymentTransactionFacade {
   private final PaymentService paymentService;
 
   public PaymentTransactions processPayment(Payment payment) {
-    if (payment.isNotProcessing()) {
-      throw new RuntimeException("Not processing payment" + payment.getId());
+    if (payment.cannotProcessPayTransaction()) {
+      throw new RuntimeException("Cannot process payment" + payment.getId());
     }
 
     // Retrieve or Create multiple PaymentTransaction (should have at least one INIT tx)
     PaymentTransactions transactions =
         paymentTransactionService.getTransactionsOrCreateInit(payment);
 
+    // TODO: In case the subsequent txs are not possible to process, handle the error
     // process transaction list in PaySequenceType sequence
-    PaymentTransactions resultTransactions =
-        transactions.processInSequence(paymentTransactionExecutor::processTransaction);
+    transactions.processInSequence(paymentTransactionExecutor::processTransaction);
 
     // update payment status based on the result txs
-    paymentService.updateStatus(payment, resultTransactions.resolvePaymentStatus());
+    paymentService.updateStatus(payment, transactions.resolvePaymentStatus());
 
-    return resultTransactions;
+    return transactions;
   }
 }

@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.pg.dto;
+package dev.teamuts.payment.domain.pg.dto.infra;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;

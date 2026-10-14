@@ -17,6 +17,7 @@ public class PaymentConverter {
         paymentJpaEntity.getMemberId(),
         paymentJpaEntity.getServiceType(),
         paymentJpaEntity.getStatus(),
+        paymentJpaEntity.getPgProvider(),
         paymentJpaEntity.getPayAmount(),
         paymentJpaEntity.getPointAmount(),
         paymentJpaEntity.getCurrency(),

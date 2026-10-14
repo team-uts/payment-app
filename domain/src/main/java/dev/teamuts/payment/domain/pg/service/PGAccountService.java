@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.pg.service;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountStorePort;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class PGAccountService {
   private final PGAccountReaderPort pgAccountReaderPort;
   private final PGAccountStorePort pgAccountStorePort;
-  private final ExternalPGServiceProvider pgServiceProvider;
+  private final ExtPGServiceProvider pgServiceProvider;
 
   public Optional<PGAccount> getPGAccountByMemberIdNullable(Long memberId) {
     return pgAccountReaderPort.retrievePGAccountOptionalByMemberId(memberId);

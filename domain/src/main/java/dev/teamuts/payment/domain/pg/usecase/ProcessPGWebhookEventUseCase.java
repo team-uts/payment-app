@@ -2,7 +2,7 @@ package dev.teamuts.payment.domain.pg.usecase;
 
 import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResultType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.facade.PGExternalRequestFacade;
 import dev.teamuts.payment.domain.pg.facade.PGWebhookEventProcessorProvider;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;

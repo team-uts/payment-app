@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.pg.facade;
 
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.service.PGExternalRequestService;
 import dev.teamuts.payment.shared.data.AppTransactional;

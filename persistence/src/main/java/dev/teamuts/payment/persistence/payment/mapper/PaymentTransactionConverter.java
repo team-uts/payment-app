@@ -23,8 +23,10 @@ public class PaymentTransactionConverter {
         entity.getCurrency(),
         entity.getPgProvider(),
         entity.getPgTransactionId(),
-        entity.getPgResponseMessage(),
+        entity.getPgResponseCode(),
+        entity.getPgErrorCode(),
         entity.getPgErrorMessage(),
+        entity.getDetailMessage(),
         entity.getStatus(),
         entity.getSequence());
   }

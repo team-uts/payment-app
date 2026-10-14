@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `payments`
 
     payment_method_id       BIGINT UNSIGNED     NULL     COMMENT 'stored payment method',
     payment_method_type     VARCHAR(32)         NOT NULL COMMENT 'payment method (CARD)',
+    pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
 
     created_at              DATETIME(6)         NOT NULL,
     updated_at              DATETIME(6)         NULL

@@ -25,6 +25,9 @@ public class PayOrderUseCase {
     // Retrieve or Create Payment (PROCESSING)
     Payment payment = paymentFacade.getProcessingPaymentOrCreate(order, command);
 
+    // Prepare Order for Payment process
+    orderService.prepareForPayment(order);
+
     // Create new PaymentTransactions data (INIT)
     PaymentTransactions transactions = paymentTransactionFacade.processPayment(payment);
 

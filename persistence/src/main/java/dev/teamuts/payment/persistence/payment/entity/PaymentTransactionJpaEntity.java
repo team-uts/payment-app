@@ -21,7 +21,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Entity
 @Table(catalog = "payment", name = "payment_transactions")
 @Getter
@@ -67,11 +69,17 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "pg_transaction_id")
   private String pgTransactionId;
 
-  @Column(name = "pg_response_message")
-  private String pgResponseMessage;
+  @Column(name = "pg_response_code")
+  private String pgResponseCode;
+
+  @Column(name = "pg_error_code")
+  private String pgErrorCode;
 
   @Column(name = "pg_error_message")
   private String pgErrorMessage;
+
+  @Column(name = "detail_message")
+  private String detailMessage;
 
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -88,14 +96,35 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
         .payMethodId(paymentTransaction.getPayMethodId())
         .payMethodType(paymentTransaction.getPayMethodType())
         .serviceType(paymentTransaction.getServiceType())
-        .amount(paymentTransaction.getAmount().getAmount())
+        .amount(paymentTransaction.getAmount())
         .currency(paymentTransaction.getCurrency())
         .pgProvider(paymentTransaction.getPgProvider())
         .pgTransactionId(paymentTransaction.getPgTransactionId())
-        .pgResponseMessage(paymentTransaction.getPgResponseMessage())
+        .pgResponseCode(paymentTransaction.getPgResponseCode())
+        .pgErrorCode(paymentTransaction.getPgErrorCode())
         .pgErrorMessage(paymentTransaction.getPgErrorMessage())
+        .detailMessage(paymentTransaction.getDetailMessage())
         .status(paymentTransaction.getStatus())
         .sequence(paymentTransaction.getSequenceType().getSeqNumber())
         .build();
+  }
+
+  public void updatePGTransactionInfo(
+      String pgTransactionId,
+      String pgResponseCode,
+      String pgErrorCode,
+      String pgErrorMessage,
+      String detailMessage,
+      PaymentTransactionStatus status) {
+    this.pgTransactionId = pgTransactionId;
+    this.pgResponseCode = pgResponseCode;
+    this.pgErrorCode = pgErrorCode;
+    this.pgErrorMessage = pgErrorMessage;
+    this.detailMessage = detailMessage;
+    this.status = status;
+  }
+
+  public void updateDetailMessage(String detailMessage) {
+    this.detailMessage = detailMessage;
   }
 }

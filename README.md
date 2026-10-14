@@ -46,8 +46,8 @@ Hexagonal Architecture
     - orchestrates the flow between different components
   - logic:
     1. `Facade`
-    2. `Processor`
-    3. `Executor`
+    2. `Executor`
+    3. `Processor`
   - interface:
     - `Service`: manages some business logic and Ports
     - `Port`: contract with other modules (infra and persistence) / connection

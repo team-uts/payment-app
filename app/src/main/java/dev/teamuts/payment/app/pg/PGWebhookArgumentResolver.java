@@ -2,7 +2,7 @@ package dev.teamuts.payment.app.pg;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.usecase.GetPGWebhookHeaderNameUseCase;
 import dev.teamuts.payment.domain.pg.usecase.ParseValidPGWebhookEventUseCase;
 import jakarta.servlet.http.HttpServletRequest;

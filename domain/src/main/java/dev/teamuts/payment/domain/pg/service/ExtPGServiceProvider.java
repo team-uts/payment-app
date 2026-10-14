@@ -7,8 +7,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExternalPGServiceProvider extends Provider<PGProviderType, ExternalPGServicePort> {
-  protected ExternalPGServiceProvider(List<ExternalPGServicePort> services) {
+public class ExtPGServiceProvider extends Provider<PGProviderType, ExternalPGServicePort> {
+  protected ExtPGServiceProvider(List<ExternalPGServicePort> services) {
     super(services);
   }
 }

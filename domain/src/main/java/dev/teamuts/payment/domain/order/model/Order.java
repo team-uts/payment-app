@@ -35,7 +35,7 @@ public class Order {
         .serviceType(command.serviceType())
         .amount(command.totalAmount())
         .currency(command.currency())
-        .status(OrderStatus.PAYMENT_PENDING)
+        .status(OrderStatus.INIT)
         .build();
   }
 
@@ -90,5 +90,16 @@ public class Order {
 
   public BigDecimal getAmount() {
     return amount.getAmount();
+  }
+
+  public void paymentPending() {
+    // TODO: check the persistence status
+    if (this.status != OrderStatus.INIT) {
+      throw new RuntimeException(
+          "Order (id: %d) status must be INIT to change to PAYMENT_PENDING, but current status is %s"
+              .formatted(this.id, this.status));
+    }
+
+    this.status = OrderStatus.PAYMENT_PENDING;
   }
 }

@@ -7,6 +7,7 @@ import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class Payment {
   private Currency currency;
   private Long payMethodId;
   private PaymentMethodType payMethodType;
+  private PGProviderType pgProvider;
 
   public static Payment processing(Order order, PaymentMethod paymentMethod, Money pointAmount) {
     if (order.hasLessAmountThan(pointAmount)) {
@@ -57,6 +59,7 @@ public class Payment {
         .currency(order.getCurrency())
         .payMethodId(paymentMethod.getId())
         .payMethodType(paymentMethod.getMethodType())
+        .pgProvider(paymentMethod.getPgProvider())
         .build();
   }
 
@@ -75,7 +78,9 @@ public class Payment {
         .payAmount(Money.zero(order.getCurrency()))
         .pointAmount(pointAmount)
         .currency(order.getCurrency())
+        .payMethodId(null)
         .payMethodType(PaymentMethodType.POINT)
+        .pgProvider(PGProviderType.NONE)
         .build();
   }
 
@@ -85,6 +90,7 @@ public class Payment {
       Long memberId,
       AppServiceType serviceType,
       PaymentStatus status,
+      PGProviderType pgProvider,
       BigDecimal payAmount,
       BigDecimal pointAmount,
       Currency currency,
@@ -96,6 +102,7 @@ public class Payment {
         .memberId(memberId)
         .serviceType(serviceType)
         .status(status)
+        .pgProvider(pgProvider)
         .payAmount(Money.of(payAmount, currency))
         .pointAmount(Money.of(pointAmount, currency))
         .currency(currency)
@@ -126,6 +133,7 @@ public class Payment {
     }
   }
 
+  // TODO: refactoring
   public boolean hasPayAmount() {
     return payAmount.isGreaterThanZero();
   }
@@ -135,18 +143,26 @@ public class Payment {
   }
 
   public boolean hasNoPayAmount() {
-    return payAmount.isZero();
+    return !hasPayAmount();
   }
 
   public boolean hasNoPointAmount() {
-    return pointAmount.isZero();
+    return !hasPointAmount();
   }
 
   public void updateStatus(PaymentStatus status) {
     this.status = status;
   }
 
+  public boolean isProcessing() {
+    return status == PaymentStatus.PROCESSING;
+  }
+
   public boolean isNotProcessing() {
-    return status != PaymentStatus.PROCESSING;
+    return !isProcessing();
+  }
+
+  public boolean cannotProcessPayTransaction() {
+    return isNotProcessing() || (hasNoPayAmount() && hasNoPointAmount());
   }
 }

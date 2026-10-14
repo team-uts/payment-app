@@ -39,7 +39,8 @@ public class PaymentFacade {
 
     // Case 2.
     // If it is the usual case, retrieve PaymentMethod to create and process new Payment
-    PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(command.payMethodId());
+    PaymentMethod paymentMethod =
+        paymentMethodService.getActivePaymentMethodById(command.payMethodId());
 
     // Validate PaymentMethod
     paymentMethod.checkIfBelongsToMember(order.getMemberId());

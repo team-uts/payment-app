@@ -2,8 +2,8 @@ package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto.ExtPGCardDetail;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGCardDetail;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 

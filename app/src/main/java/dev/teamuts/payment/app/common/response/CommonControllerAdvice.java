@@ -1,5 +1,6 @@
 package dev.teamuts.payment.app.common.response;
 
+import dev.teamuts.payment.shared.config.AppProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,10 +12,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class CommonControllerAdvice {
+  private final AppProfile appProfile;
+
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ExceptionHandler(Exception.class)
   public ApiResponse<?> handleException(Exception e) {
-    log.error("[COMMON] {}", e.getMessage());
+    if (appProfile.isLocal()) {
+      log.error("[COMMON]", e);
+    }
+
+    log.error("[COMMON] Exception occurred {}", e.getMessage());
 
     return ApiResponse.failure(
         new ApiError("Internal server error", ApiErrorCode.INTERNAL_SERVER_ERROR));

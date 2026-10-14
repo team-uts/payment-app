@@ -4,7 +4,7 @@ import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -88,6 +88,12 @@ public class PaymentMethod {
     if (!this.memberId.equals(memberId)) {
       throw new IllegalArgumentException(
           "PaymentMethod does not belong to the member (memberId: %s)".formatted(memberId));
+    }
+  }
+
+  public void checkIfActive() {
+    if (this.status != PaymentMethodStatus.ACTIVE) {
+      throw new IllegalStateException("PaymentMethod (id: %s) is not active".formatted(this.id));
     }
   }
 

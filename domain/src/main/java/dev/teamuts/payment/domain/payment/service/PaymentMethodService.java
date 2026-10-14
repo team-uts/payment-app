@@ -4,7 +4,7 @@ import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodReaderPort;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodStorePort;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.shared.data.AppTransactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,13 @@ public class PaymentMethodService {
     return paymentMethodReaderPort.retrievePaymentMethodsByMemberId(memberId);
   }
 
-  public PaymentMethod getPaymentMethodById(Long paymentMethodId) {
-    return paymentMethodReaderPort.retrievePaymentMethodById(paymentMethodId);
+  public PaymentMethod getActivePaymentMethodById(Long paymentMethodId) {
+    PaymentMethod paymentMethod =
+        paymentMethodReaderPort.retrievePaymentMethodById(paymentMethodId);
+
+    paymentMethod.checkIfActive();
+
+    return paymentMethod;
   }
 
   @AppTransactional

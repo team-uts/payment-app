@@ -4,17 +4,20 @@ import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
+import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
 import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
   private final OrderReaderPort orderReaderPort;
   private final OrderStorePort orderStorePort;
+  private final OrderUpdatePort orderUpdatePort;
 
-  @AppTransactional
+  @AppTransactional(propagation = Propagation.REQUIRES_NEW)
   public Order getInitPaymentOrderOrCreate(Long memberId, PayOrderCommand command) {
     Order order =
         orderReaderPort
@@ -33,5 +36,12 @@ public class OrderService {
     }
 
     return order;
+  }
+
+  @AppTransactional(propagation = Propagation.REQUIRES_NEW)
+  public void prepareForPayment(Order order) {
+    order.paymentPending();
+
+    orderUpdatePort.updateStatus(order);
   }
 }

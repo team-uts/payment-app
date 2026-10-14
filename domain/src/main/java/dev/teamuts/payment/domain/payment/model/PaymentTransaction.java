@@ -8,6 +8,8 @@ import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.payment.shared.utils.StringUtils;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,14 +28,24 @@ public class PaymentTransaction {
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private AppServiceType serviceType;
+
+  @Getter(AccessLevel.NONE)
   private Money amount;
+
   private Currency currency;
   private PGProviderType pgProvider;
   private String pgTransactionId;
-  private String pgResponseMessage;
+  private String pgResponseCode;
+  private String pgErrorCode;
   private String pgErrorMessage;
+  private String detailMessage;
   private PaymentTransactionStatus status;
   private PaySequenceType sequenceType;
+
+  public static final int MAX_RESPONSE_CODE_LENGTH = 255;
+  public static final int MAX_ERROR_CODE_LENGTH = 255;
+  public static final int MAX_ERROR_MSG_LENGTH = 255;
+  public static final int MAX_DETAIL_MSG_LENGTH = 255;
 
   public static PaymentTransaction initPay(Payment payment) {
     if (payment.hasNoPayAmount()) {
@@ -50,6 +62,7 @@ public class PaymentTransaction {
         .serviceType(payment.getServiceType())
         .amount(payment.getPayAmountMoney())
         .currency(payment.getCurrency())
+        .pgProvider(payment.getPgProvider())
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.PG_PAY)
         .build();
@@ -70,6 +83,7 @@ public class PaymentTransaction {
         .serviceType(payment.getServiceType())
         .amount(payment.getPointAmountMoney())
         .currency(payment.getCurrency())
+        .pgProvider(PGProviderType.NONE)
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.POINT)
         .build();
@@ -87,8 +101,10 @@ public class PaymentTransaction {
       Currency currency,
       PGProviderType pgProvider,
       String pgTransactionId,
-      String pgResponseMessage,
+      String pgResponseCode,
+      String pgErrorCode,
       String pgErrorMessage,
+      String detailMessage,
       PaymentTransactionStatus status,
       Integer sequence) {
     return PaymentTransaction.builder()
@@ -103,15 +119,13 @@ public class PaymentTransaction {
         .currency(currency)
         .pgProvider(pgProvider)
         .pgTransactionId(pgTransactionId)
-        .pgResponseMessage(pgResponseMessage)
+        .pgResponseCode(pgResponseCode)
+        .pgErrorCode(pgErrorCode)
         .pgErrorMessage(pgErrorMessage)
+        .detailMessage(detailMessage)
         .status(status)
         .sequenceType(PaySequenceType.of(sequence))
         .build();
-  }
-
-  public void failed() {
-    this.status = PaymentTransactionStatus.FAILED;
   }
 
   public boolean isFailed() {
@@ -122,7 +136,44 @@ public class PaymentTransaction {
     return this.status == PaymentTransactionStatus.COMPLETED;
   }
 
+  public boolean isNotCompleted() {
+    return !isCompleted();
+  }
+
   public boolean isNotProcessable() {
-    return !PaymentTransactionStatus.PROCESSABLE_STATUSES.contains(this.status);
+    return !this.status.isFinal();
+  }
+
+  public void updatePGTransactionInfo(ExtPgPaymentTransaction pgResult) {
+    this.pgTransactionId = pgResult.getPgTransactionId();
+    this.pgResponseCode =
+        StringUtils.truncate(pgResult.getPgResponseCode(), MAX_RESPONSE_CODE_LENGTH);
+    this.pgErrorCode = StringUtils.truncate(pgResult.getPgErrCode(), MAX_ERROR_CODE_LENGTH);
+    this.pgErrorMessage = StringUtils.truncate(pgResult.getPgErrMessage(), MAX_ERROR_MSG_LENGTH);
+    this.detailMessage = StringUtils.truncate(pgResult.getPgOperationName(), MAX_DETAIL_MSG_LENGTH);
+    this.status = pgResult.getDomainStatus();
+  }
+
+  public void updateWithAppException(Exception e) {
+    this.detailMessage =
+        StringUtils.truncate(
+            "[%s] %s".formatted(e.getClass().getSimpleName(), e.getMessage()),
+            MAX_DETAIL_MSG_LENGTH);
+  }
+
+  public BigDecimal getAmount() {
+    return amount.getAmount();
+  }
+
+  public boolean cannotContinueProcessingPgPay() {
+    return !PaymentTransactionStatus.PG_PAY_PROCESSABLE_STATUSES.contains(this.status);
+  }
+
+  public boolean requiresPgTransaction() {
+    return this.status == PaymentTransactionStatus.INIT;
+  }
+
+  public boolean canBeConfirmed() {
+    return this.status == PaymentTransactionStatus.CREATED;
   }
 }

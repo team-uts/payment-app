@@ -5,8 +5,9 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionReaderPort;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionStorePort;
+import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionUpdatePort;
+import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.shared.data.AppTransactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,35 +16,36 @@ import org.springframework.stereotype.Service;
 public class PaymentTransactionService {
   private final PaymentTransactionStorePort paymentTransactionStorePort;
   private final PaymentTransactionReaderPort paymentTransactionReaderPort;
+  private final PaymentTransactionUpdatePort paymentTransactionUpdatePort;
 
-  // TODO: Retrieve existing transactions from DB and create INIT tx if not exist
   @AppTransactional
   public PaymentTransactions getTransactionsOrCreateInit(Payment payment) {
-    List<PaymentTransaction> transactions =
+    PaymentTransactions transactions =
         paymentTransactionReaderPort.retrieveAllByPaymentId(payment.getId());
 
     // If transactions already exist, return them without creating new INIT txs
-    if (!transactions.isEmpty()) {
-      return PaymentTransactions.of(transactions);
+    if (transactions.isNotEmpty()) {
+      return transactions;
     }
 
-    // In case the payment has pay amount
-    if (payment.hasPayAmount()) {
-      transactions.add(PaymentTransaction.initPay(payment));
-    }
-
-    // In case the payment has point amount
-    if (payment.hasPointAmount()) {
-      transactions.add(PaymentTransaction.initPoint(payment));
-    }
+    // Create an INIT tx from payment
+    PaymentTransactions newTransactions = PaymentTransactions.initFromPayment(payment);
 
     // Store all new txs
-    List<PaymentTransaction> storedTransactions =
-        paymentTransactionStorePort.storeAll(transactions);
-
-    return PaymentTransactions.of(storedTransactions);
+    return paymentTransactionStorePort.storeAll(newTransactions);
   }
 
   @AppTransactional
-  public void updateStatus(PaymentTransaction transaction) {}
+  public void updateWithPGResult(PaymentTransaction transaction, ExtPgPaymentTransaction pgResult) {
+    transaction.updatePGTransactionInfo(pgResult);
+
+    paymentTransactionUpdatePort.updatePGTransactionInfo(transaction);
+  }
+
+  @AppTransactional
+  public void updateWithAppException(PaymentTransaction transaction, Exception exception) {
+    transaction.updateWithAppException(exception);
+
+    paymentTransactionUpdatePort.updateDetailMessage(transaction);
+  }
 }

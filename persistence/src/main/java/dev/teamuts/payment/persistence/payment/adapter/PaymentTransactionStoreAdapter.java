@@ -1,13 +1,13 @@
 package dev.teamuts.payment.persistence.payment.adapter;
 
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
+import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionStorePort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.payment.entity.PaymentTransactionJpaEntity;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentTransactionConverter;
 import dev.teamuts.payment.persistence.payment.repository.PaymentTransactionRepository;
 import dev.teamuts.payment.shared.data.AppTransactional;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
@@ -19,17 +19,20 @@ public class PaymentTransactionStoreAdapter implements PaymentTransactionStorePo
   private final PaymentTransactionConverter paymentTransactionConverter;
 
   @Override
-  public List<PaymentTransaction> storeAll(List<PaymentTransaction> transactions) {
+  public PaymentTransactions storeAll(PaymentTransactions transactions) {
     if (transactions.isEmpty()) {
-      return Collections.emptyList();
+      return PaymentTransactions.empty();
     }
 
     List<PaymentTransactionJpaEntity> entities =
-        transactions.stream().map(paymentTransactionConverter::convertToJpaEntity).toList();
+        transactions.mapToList(paymentTransactionConverter::convertToJpaEntity);
 
     List<PaymentTransactionJpaEntity> savedEntities =
         paymentTransactionRepository.saveAll(entities);
 
-    return savedEntities.stream().map(paymentTransactionConverter::convertToDomainModel).toList();
+    List<PaymentTransaction> savedTxs =
+        savedEntities.stream().map(paymentTransactionConverter::convertToDomainModel).toList();
+
+    return PaymentTransactions.of(savedTxs);
   }
 }

@@ -2,7 +2,7 @@ package dev.teamuts.payment.app.api;
 
 import dev.teamuts.payment.app.common.response.ApiResponse;
 import dev.teamuts.payment.app.pg.PGWebhookPayload;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.usecase.ProcessPGWebhookEventUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
