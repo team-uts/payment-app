@@ -9,15 +9,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PaymentTransactionStatus {
   INIT(false),
-  CREATED(false),
+  READY(false),
   PENDING(false), // should check first the PG transaction status from PG provider.
   ACTION_REQUIRED(false), // e.g., 3D authentication required (on banking app)
   COMPLETED(true),
   CANCELED(true),
-  FAILED(true);
+  FAILED(false);
 
   private final boolean isFinal;
 
   public static final Set<PaymentTransactionStatus> PG_PAY_PROCESSABLE_STATUSES =
-      Set.of(INIT, CREATED);
+      Set.of(INIT, READY);
 }

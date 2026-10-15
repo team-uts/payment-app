@@ -28,7 +28,10 @@ public class ExtPgPaymentTransaction {
       String errMsg,
       String pgOperationName,
       PaymentTransactionStatus domainStatus) {
-    if (!Objects.equals(transaction.getPgTransactionId(), pgTransactionId)) {
+    // if the tx has pgTransactionId, it must match the provided pgTransactionId
+    // there is a case where the transaction is not associated with pgTransactionId yet.
+    if (transaction.getPgTransactionId() != null
+        && !Objects.equals(transaction.getPgTransactionId(), pgTransactionId)) {
       throw new IllegalArgumentException(
           "PG transaction ID does not match (txId: %d, pgTxId: %s)"
               .formatted(transaction.getId(), pgTransactionId));
@@ -60,7 +63,7 @@ public class ExtPgPaymentTransaction {
         .pgErrMessage(errMsg)
         .pgOperationName(pgOperationName)
         .resultStatus(ExtPGOperationResultStatus.INVALID_REQUEST)
-        .domainStatus(null)
+        .domainStatus(PaymentTransactionStatus.FAILED)
         .build();
   }
 

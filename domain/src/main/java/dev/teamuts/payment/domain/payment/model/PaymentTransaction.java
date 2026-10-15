@@ -141,7 +141,7 @@ public class PaymentTransaction {
   }
 
   public boolean isNotProcessable() {
-    return !this.status.isFinal();
+    return this.status.isFinal();
   }
 
   public void updatePGTransactionInfo(ExtPgPaymentTransaction pgResult) {
@@ -169,11 +169,15 @@ public class PaymentTransaction {
     return !PaymentTransactionStatus.PG_PAY_PROCESSABLE_STATUSES.contains(this.status);
   }
 
-  public boolean requiresPgTransaction() {
-    return this.status == PaymentTransactionStatus.INIT;
+  public boolean requiresPgAssociation() {
+    return this.status == PaymentTransactionStatus.INIT && this.pgTransactionId == null;
+  }
+
+  public boolean isAlreadyAssociatedWithPg() {
+    return this.status != PaymentTransactionStatus.INIT && this.pgTransactionId != null;
   }
 
   public boolean canBeConfirmed() {
-    return this.status == PaymentTransactionStatus.CREATED;
+    return this.status == PaymentTransactionStatus.READY;
   }
 }

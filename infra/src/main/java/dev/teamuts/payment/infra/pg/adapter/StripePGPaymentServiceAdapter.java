@@ -1,11 +1,11 @@
 package dev.teamuts.payment.infra.pg.adapter;
 
-import static dev.teamuts.payment.infra.pg.utils.StripeOperationExecutor.executeStripe;
 import static dev.teamuts.payment.infra.pg.utils.StripeOperationExecutor.executeStripeHandlingException;
 
 import com.stripe.StripeClient;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
@@ -58,29 +58,39 @@ public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePo
   @Override
   public ExtPgPaymentTransaction createPGTransaction(
       PaymentTransaction transaction, PGAccount pgAccount, PaymentMethod paymentMethod) {
-    return executeStripe(
+    return executeStripeHandlingException(
         StripeOperationType.CREATE_PAYMENT_INTENT,
         operationType -> {
           StripeCurrency currency = StripeCurrency.of(transaction.getCurrency());
 
+          // return_url (setAllowRedirects) off
           PaymentIntentCreateParams params =
               PaymentIntentCreateParams.builder()
                   .setAmount(currency.getTransactionAmount(transaction.getAmount()))
                   .setCurrency(currency.getCurrencyCode())
                   .setCustomer(pgAccount.getPgAccountId())
                   .setPaymentMethod(paymentMethod.getProviderToken())
+                  .setAutomaticPaymentMethods(
+                      PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
+                          .setEnabled(true)
+                          .setAllowRedirects(AllowRedirects.NEVER)
+                          .build())
                   .build();
 
           PaymentIntent paymentIntent = stripeClient.v1().paymentIntents().create(params);
 
           return stripePayTransactionConverter.fromPaymentIntent(
               paymentIntent, transaction, operationType);
-        });
+        },
+        (stripeE, operationType) ->
+            stripePayTransactionConverter.fromStripeException(stripeE, operationType, transaction),
+        (e, operationType) ->
+            stripePayTransactionConverter.fromException(e, operationType, transaction));
   }
 
   @Override
   public ExtPgPaymentTransaction confirmPayment(PaymentTransaction transaction) {
-    return executeStripe(
+    return executeStripeHandlingException(
         StripeOperationType.CONFIRM_PAYMENT_INTENT,
         operationType -> {
           PaymentIntent paymentIntent =
@@ -88,6 +98,10 @@ public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePo
 
           return stripePayTransactionConverter.fromPaymentIntent(
               paymentIntent, transaction, operationType);
-        });
+        },
+        (stripeE, operationType) ->
+            stripePayTransactionConverter.fromStripeException(stripeE, operationType, transaction),
+        (e, operationType) ->
+            stripePayTransactionConverter.fromException(e, operationType, transaction));
   }
 }

@@ -23,7 +23,6 @@ public class PaymentTransactionFacade {
     PaymentTransactions transactions =
         paymentTransactionService.getTransactionsOrCreateInit(payment);
 
-    // TODO: In case the subsequent txs are not possible to process, handle the error
     // process transaction list in PaySequenceType sequence
     transactions.processInSequence(paymentTransactionExecutor::processTransaction);
 

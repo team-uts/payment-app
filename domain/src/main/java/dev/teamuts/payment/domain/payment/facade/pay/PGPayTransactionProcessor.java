@@ -1,6 +1,8 @@
 package dev.teamuts.payment.domain.payment.facade.pay;
 
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
+import dev.teamuts.payment.domain.payment.facade.pay.helper.PayProcessStepPipeline;
+import dev.teamuts.payment.domain.payment.facade.pay.helper.PayTransactionHelperProcessor;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
@@ -31,37 +33,44 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
   @Override
   public PaymentTransaction pay(PaymentTransaction transaction) {
     // 1. retrieve tx from PG to check if the transaction is already created.
-    payTransactionHelperProcessor.callPgWithConditionalSync(
-        transaction,
-        pgService -> pgService.retrievePGPaymentTransaction(transaction),
-        ExtPgPaymentTransaction::isNotInvalidRequest);
+    // if the tx is already associated with PG, then execute synchronization with PG again.
+    return PayProcessStepPipeline.start(transaction)
+        .runIf(
+            PaymentTransaction::isAlreadyAssociatedWithPg,
+            tx -> {
+              // when the PG tx is not found (invalid_request), the PG tx will not be updated to DB
+              payTransactionHelperProcessor.callPgWithConditionalSync(
+                  tx,
+                  pgService -> pgService.retrievePGPaymentTransaction(tx),
+                  ExtPgPaymentTransaction::isNotInvalidRequest);
+            })
+        // 2. Check if the transaction can continue processing PG pay.
+        // (INIT, CREATED only permitted here to continue)
+        .stopIf(PaymentTransaction::cannotContinueProcessingPgPay)
+        // 3. In case app tx is not associated with PG tx
+        .runIf(
+            PaymentTransaction::requiresPgAssociation,
+            tx -> {
+              // 3-1. Retrieve PGAccount to create new PG tx
+              PGAccount pgAccount = pgAccountService.getPGAccountByMemberId(tx.getMemberId());
 
-    // 2. Check if the transaction can continue processing PG pay.
-    if (transaction.cannotContinueProcessingPgPay()) {
-      return transaction;
-    }
+              // 3-2. Retrieve PaymentMethod to create new PG tx
+              PaymentMethod paymentMethod =
+                  paymentMethodService.getActivePaymentMethodById(tx.getPayMethodId());
 
-    // 3. In case app tx is not associated with PG tx
-    if (transaction.requiresPgTransaction()) {
-      // 3-1. Retrieve PGAccount to create new PG tx
-      PGAccount pgAccount = pgAccountService.getPGAccountByMemberId(transaction.getMemberId());
-
-      // 3-2. Retrieve PaymentMethod to create new PG tx
-      PaymentMethod paymentMethod =
-          paymentMethodService.getActivePaymentMethodById(transaction.getPayMethodId());
-
-      // 3-3. Create new PG tx
-      payTransactionHelperProcessor.callPgWithSync(
-          transaction,
-          pgService -> pgService.createPGTransaction(transaction, pgAccount, paymentMethod));
-    }
-
-    // 4. Only in case the PG tx can be confirmed, confirm it.
-    if (transaction.canBeConfirmed()) {
-      payTransactionHelperProcessor.callPgWithSync(
-          transaction, pgService -> pgService.confirmPayment(transaction));
-    }
-
-    return transaction;
+              // 3-3. Create new PG tx
+              payTransactionHelperProcessor.callPgWithSync(
+                  tx,
+                  pgService ->
+                      pgService.createPGTransaction(transaction, pgAccount, paymentMethod));
+            })
+        // 4. Only in case the PG tx can be confirmed, confirm it.
+        .runIf(
+            PaymentTransaction::canBeConfirmed,
+            tx -> {
+              payTransactionHelperProcessor.callPgWithSync(
+                  tx, pgService -> pgService.confirmPayment(tx));
+            })
+        .done();
   }
 }

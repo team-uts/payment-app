@@ -16,9 +16,10 @@ public class PaymentTransactions {
   private List<PaymentTransaction> transactions;
 
   public static PaymentTransactions ofOrEmpty(List<PaymentTransaction> paymentTransactions) {
-    paymentTransactions.sort((Comparator.comparingInt(tx -> tx.getSequenceType().getSeqNumber())));
-
-    return new PaymentTransactions(paymentTransactions);
+    return new PaymentTransactions(
+        paymentTransactions.stream()
+            .sorted((Comparator.comparingInt(tx -> tx.getSequenceType().getSeqNumber())))
+            .toList());
   }
 
   public static PaymentTransactions of(List<PaymentTransaction> paymentTransactions) {
@@ -70,27 +71,8 @@ public class PaymentTransactions {
     return transactions.stream().map(mapper).toList();
   }
 
-  // FIXME: refactoring
   public PaymentStatus resolvePaymentStatus() {
-    boolean isAllCompleted = transactions.stream().allMatch(PaymentTransaction::isCompleted);
-
-    if (isAllCompleted) {
-      return PaymentStatus.COMPLETED;
-    }
-
-    boolean hasAnyFailed = transactions.stream().anyMatch(PaymentTransaction::isFailed);
-
-    if (hasAnyFailed) {
-      return PaymentStatus.FAILED;
-    }
-
-    boolean hasAnyPending = transactions.stream().anyMatch(PaymentTransaction::isFailed);
-
-    if (hasAnyPending) {
-      return PaymentStatus.PENDING;
-    }
-
-    return PaymentStatus.PROCESSING;
+    return PaymentStatusRuleResolver.resolve(transactions);
   }
 
   public boolean isEmpty() {

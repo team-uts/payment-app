@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.payment.facade.pay;
+package dev.teamuts.payment.domain.payment.facade.pay.helper;
 
 import dev.teamuts.payment.domain.common.exception.ExtPGApiException;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;

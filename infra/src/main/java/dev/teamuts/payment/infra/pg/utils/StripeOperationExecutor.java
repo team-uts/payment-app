@@ -20,8 +20,9 @@ public class StripeOperationExecutor {
       return operation.execute(operationType);
     } catch (StripeException e) {
       log.error(
-          "[{}] Status: {}, Code: {}, Msg: {}",
+          "[{}] Exception: {}, Status: {}, Code: {}, Msg: {}",
           PG_PROVIDER,
+          e.getClass().getSimpleName(),
           e.getStatusCode(),
           e.getCode(),
           e.getMessage());

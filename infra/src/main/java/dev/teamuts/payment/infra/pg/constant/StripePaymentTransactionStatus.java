@@ -17,7 +17,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StripePaymentTransactionStatus {
   REQUIRES_PAYMENT_METHOD(PaymentTransactionStatus.FAILED),
-  REQUIRES_CONFIRMATION(PaymentTransactionStatus.CREATED),
+  REQUIRES_CONFIRMATION(PaymentTransactionStatus.READY),
   REQUIRES_ACTION(PaymentTransactionStatus.ACTION_REQUIRED),
   PROCESSING(PaymentTransactionStatus.PENDING),
   CANCELED(PaymentTransactionStatus.CANCELED),
