@@ -37,7 +37,7 @@ import java.util.stream.IntStream;
  */
 public class PaymentStatusRuleResolver {
   private static final int FIRST_STEP_INDEX = 0;
-  private static final int NO_CURRENT_STEP = -1;
+  private static final int ALL_COMPLETED_STEP = -1;
 
   /**
    * @param orderedTransactions the payment's transactions, sorted by sequence order
@@ -53,7 +53,7 @@ public class PaymentStatusRuleResolver {
     int currentNonCompletedIndex = indexOfCurrentNonCompletedStep(orderedTransactions);
 
     // all the transactions completed (Case 7)
-    if (currentNonCompletedIndex == NO_CURRENT_STEP) {
+    if (currentNonCompletedIndex == ALL_COMPLETED_STEP) {
       return PaymentStatus.COMPLETED;
     }
 
@@ -73,13 +73,13 @@ public class PaymentStatusRuleResolver {
   }
 
   /**
-   * @return the index of the first transaction that is not COMPLETED, or {@link #NO_CURRENT_STEP}
+   * @return the index of the first transaction that is not COMPLETED, or {@link #ALL_COMPLETED_STEP}
    *     when every transaction is COMPLETED
    */
   private static int indexOfCurrentNonCompletedStep(List<PaymentTransaction> orderedTransactions) {
     return IntStream.range(FIRST_STEP_INDEX, orderedTransactions.size())
         .filter(index -> orderedTransactions.get(index).isNotCompleted())
         .findFirst()
-        .orElse(NO_CURRENT_STEP);
+        .orElse(ALL_COMPLETED_STEP);
   }
 }
