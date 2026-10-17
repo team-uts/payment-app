@@ -128,6 +128,10 @@ public class PaymentTransaction {
         .build();
   }
 
+  public boolean isInit() {
+    return this.status == PaymentTransactionStatus.INIT;
+  }
+
   public boolean isFailed() {
     return this.status == PaymentTransactionStatus.FAILED;
   }

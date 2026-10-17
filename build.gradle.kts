@@ -51,12 +51,13 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter-webmvc")
         implementation("org.springframework:spring-tx")
 
-        compileOnly("org.projectlombok:lombok")
-        annotationProcessor("org.projectlombok:lombok")
+        compileOnly(projectLibs.lombok)
+        annotationProcessor(projectLibs.lombok)
+
         testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-        testCompileOnly("org.projectlombok:lombok")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-        testAnnotationProcessor("org.projectlombok:lombok")
+        testCompileOnly(projectLibs.lombok)
+        testAnnotationProcessor(projectLibs.lombok)
     }
 
     tasks.withType<Test> {

@@ -34,23 +34,25 @@ import java.util.stream.IntStream;
  *
  * <p>Anything else - no transaction at all, or a current step still INIT / READY - means the
  * payment is simply still running, so it stays {@link PaymentStatus#PROCESSING}.
+ *
+ * <p>Constraints: After the tx which is not COMPLETED, all the following txs must be INIT status.
  */
 public class PaymentStatusRuleResolver {
   private static final int FIRST_STEP_INDEX = 0;
   private static final int ALL_COMPLETED_STEP = -1;
 
   /**
-   * @param orderedTransactions the payment's transactions, sorted by sequence order
+   * @param transactions the payment's transactions, sorted by sequence order
    * @return the status the owning Payment should hold
    */
-  public static PaymentStatus resolve(List<PaymentTransaction> orderedTransactions) {
+  public static PaymentStatus resolve(List<PaymentTransaction> transactions) {
     // not allowed for empty transaction list
-    if (orderedTransactions.isEmpty()) {
+    if (transactions.isEmpty()) {
       throw new IllegalArgumentException("Ordered transactions must not be empty");
     }
 
     // find the index of the last non-completed transaction
-    int currentNonCompletedIndex = indexOfCurrentNonCompletedStep(orderedTransactions);
+    int currentNonCompletedIndex = indexOfCurrentNonCompletedStep(transactions);
 
     // all the transactions completed (Case 7)
     if (currentNonCompletedIndex == ALL_COMPLETED_STEP) {
@@ -59,11 +61,13 @@ public class PaymentStatusRuleResolver {
 
     // an earlier step already succeeded, so the payment needs settlement, retry or either way.
     if (currentNonCompletedIndex > FIRST_STEP_INDEX) {
+      checkIfSubsequentTransactionsAreAllInit(transactions, currentNonCompletedIndex);
+
       return PaymentStatus.PENDING;
     }
 
     // the first step has not been done yet - the first step alone decides.
-    return switch (orderedTransactions.get(currentNonCompletedIndex).getStatus()) {
+    return switch (transactions.get(currentNonCompletedIndex).getStatus()) {
       case INIT, READY -> PaymentStatus.PROCESSING;
       case PENDING, ACTION_REQUIRED -> PaymentStatus.PENDING;
       case FAILED -> PaymentStatus.FAILED;
@@ -73,13 +77,25 @@ public class PaymentStatusRuleResolver {
   }
 
   /**
-   * @return the index of the first transaction that is not COMPLETED, or {@link #ALL_COMPLETED_STEP}
-   *     when every transaction is COMPLETED
+   * @return the index of the first transaction that is not COMPLETED, or {@link
+   *     #ALL_COMPLETED_STEP} when every transaction is COMPLETED
    */
-  private static int indexOfCurrentNonCompletedStep(List<PaymentTransaction> orderedTransactions) {
-    return IntStream.range(FIRST_STEP_INDEX, orderedTransactions.size())
-        .filter(index -> orderedTransactions.get(index).isNotCompleted())
+  private static int indexOfCurrentNonCompletedStep(List<PaymentTransaction> transactions) {
+    return IntStream.range(FIRST_STEP_INDEX, transactions.size())
+        .filter(index -> transactions.get(index).isNotCompleted())
         .findFirst()
         .orElse(ALL_COMPLETED_STEP);
+  }
+
+  private static void checkIfSubsequentTransactionsAreAllInit(
+      List<PaymentTransaction> transactions, int index) {
+    if (transactions.subList(index + 1, transactions.size()).stream()
+        .allMatch(PaymentTransaction::isInit)) {
+      return;
+    }
+
+    throw new IllegalStateException(
+        "After the tx which is not COMPLETED, all the following txs must be INIT status (payment ID: %d)"
+            .formatted(transactions.getFirst().getPaymentId()));
   }
 }
