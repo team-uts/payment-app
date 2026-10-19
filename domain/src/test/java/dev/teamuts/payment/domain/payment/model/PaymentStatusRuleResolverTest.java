@@ -1,6 +1,7 @@
 package dev.teamuts.payment.domain.payment.model;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.*;
 
 import dev.teamuts.payment.domain.payment.PaymentTransactionFixtureFactory;
@@ -18,7 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 class PaymentStatusRuleResolverTest {
   private PaymentTransactionFixtureFactory paymentTransactionFactory;
 
-  static Stream<Arguments> provideTxsForResolvingPaymentStatusTest() {
+  static Stream<Arguments> provideTwoTxsForResolvingPaymentStatusTest() {
     return Stream.of(
         arguments(
             List.of(
@@ -77,13 +78,52 @@ class PaymentStatusRuleResolverTest {
             PaymentStatus.COMPLETED));
   }
 
+  static Stream<Arguments> provideOverThreeTxsForResolvingPaymentStatusTest() {
+    return Stream.of(
+        arguments(
+            List.of(
+                Map.entry(PaySequenceType.PG_PAY, PaymentTransactionStatus.PENDING),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.INIT),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.INIT)),
+            PaymentStatus.PENDING),
+        arguments(
+            List.of(
+                Map.entry(PaySequenceType.PG_PAY, PaymentTransactionStatus.COMPLETED),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.PENDING),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.INIT)),
+            PaymentStatus.PENDING),
+        arguments(
+            List.of(
+                Map.entry(PaySequenceType.PG_PAY, PaymentTransactionStatus.COMPLETED),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.COMPLETED),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.COMPLETED)),
+            PaymentStatus.COMPLETED));
+  }
+
+  static Stream<Arguments> provideTwoInvalidTxs() {
+    return Stream.of(
+        arguments(
+            List.of(
+                Map.entry(PaySequenceType.PG_PAY, PaymentTransactionStatus.PENDING),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.PENDING)),
+            PaymentStatus.PENDING),
+        arguments(
+            List.of(
+                Map.entry(PaySequenceType.PG_PAY, PaymentTransactionStatus.PENDING),
+                Map.entry(PaySequenceType.POINT, PaymentTransactionStatus.COMPLETED)),
+            PaymentStatus.PENDING));
+  }
+
   @BeforeEach
   void setup() {
     paymentTransactionFactory = new PaymentTransactionFixtureFactory();
   }
 
   @ParameterizedTest
-  @MethodSource("provideTxsForResolvingPaymentStatusTest")
+  @MethodSource({
+    "provideTwoTxsForResolvingPaymentStatusTest",
+    "provideOverThreeTxsForResolvingPaymentStatusTest"
+  })
   void testMultipleTxsReturnValidPaymentStatus(
       List<Map.Entry<PaySequenceType, PaymentTransactionStatus>> testCases,
       PaymentStatus expectedStatus) {
@@ -97,5 +137,25 @@ class PaymentStatusRuleResolverTest {
     PaymentStatus resultStatus = PaymentStatusRuleResolver.resolve(txs);
 
     assertThat(resultStatus).isEqualTo(expectedStatus);
+  }
+
+  @ParameterizedTest
+  @MethodSource({
+    "provideTwoInvalidTxs",
+  })
+  void throwExceptionInvalidMultipleTxStatuses(
+      List<Map.Entry<PaySequenceType, PaymentTransactionStatus>> testCases,
+      PaymentStatus expectedStatus) {
+
+    // Given a list of test cases and an expected payment status
+    List<PaymentTransaction> txs =
+        testCases.stream()
+            .map(e -> paymentTransactionFactory.createSingleRandom(e.getValue(), e.getKey()))
+            .toList();
+
+    assertThatThrownBy(() -> PaymentStatusRuleResolver.resolve(txs))
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining(
+            "After the tx which is not COMPLETED, all the following txs must be INIT status");
   }
 }

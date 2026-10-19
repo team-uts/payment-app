@@ -59,10 +59,11 @@ public class PaymentStatusRuleResolver {
       return PaymentStatus.COMPLETED;
     }
 
+    // check all the subsequent tx statuses after the last non-completed tx.
+    checkIfSubsequentTransactionsAreAllInit(transactions, currentNonCompletedIndex);
+
     // an earlier step already succeeded, so the payment needs settlement, retry or either way.
     if (currentNonCompletedIndex > FIRST_STEP_INDEX) {
-      checkIfSubsequentTransactionsAreAllInit(transactions, currentNonCompletedIndex);
-
       return PaymentStatus.PENDING;
     }
 
