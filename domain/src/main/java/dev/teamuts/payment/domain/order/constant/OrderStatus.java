@@ -4,6 +4,6 @@ public enum OrderStatus {
   INIT,
   PAYMENT_PENDING,
   CONFIRMED,
-  CANCELLED,
+  CANCELED,
   FAILED
 }

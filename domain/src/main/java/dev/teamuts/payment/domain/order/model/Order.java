@@ -102,4 +102,8 @@ public class Order {
 
     this.status = OrderStatus.PAYMENT_PENDING;
   }
+
+  public void updateStatus(OrderStatus newStatus) {
+    this.status = newStatus;
+  }
 }

@@ -5,6 +5,7 @@ import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
+import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,12 @@ public class OrderService {
   @AppTransactional(propagation = Propagation.REQUIRES_NEW)
   public void prepareForPayment(Order order) {
     order.paymentPending();
+
+    orderUpdatePort.updateStatus(order);
+  }
+
+  public void updateStatusWithPayment(Order order, Payment payment) {
+    order.updateStatus(payment.resolveOrderStatus());
 
     orderUpdatePort.updateStatus(order);
   }

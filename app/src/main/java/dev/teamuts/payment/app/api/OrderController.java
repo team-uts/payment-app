@@ -3,7 +3,9 @@ package dev.teamuts.payment.app.api;
 import dev.teamuts.payment.app.api.dto.OrderDtoMapper;
 import dev.teamuts.payment.app.api.dto.PayOrderRequestDto;
 import dev.teamuts.payment.app.common.response.ApiResponse;
+import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.usecase.PayOrderUseCase;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +29,14 @@ public class OrderController {
    *
    * <p>TODO: member authentication should be added to this API
    */
+  @Operation(summary = "Pay Order", description = "Pay Order API (External PG, Point)")
   @PostMapping("/pay")
-  public ApiResponse<String> payOrder(
+  public ApiResponse<PayOrderInfo> payOrder(
       @RequestParam Long memberId, @RequestBody PayOrderRequestDto request) {
     var command = mapper.of(request);
 
-    payOrderUseCase.execute(memberId, command);
+    PayOrderInfo result = payOrderUseCase.execute(memberId, command);
 
-    return ApiResponse.success("Order created successfully");
+    return ApiResponse.success(result);
   }
 }

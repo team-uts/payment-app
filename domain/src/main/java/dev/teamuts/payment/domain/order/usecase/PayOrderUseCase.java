@@ -2,12 +2,12 @@ package dev.teamuts.payment.domain.order.usecase;
 
 import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
+import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.facade.PaymentFacade;
 import dev.teamuts.payment.domain.payment.facade.PaymentTransactionFacade;
 import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -18,7 +18,7 @@ public class PayOrderUseCase {
   private final PaymentTransactionFacade paymentTransactionFacade;
 
   // TODO: require Redis Locking
-  public void execute(Long memberId, PayOrderCommand command) {
+  public PayOrderInfo execute(Long memberId, PayOrderCommand command) {
     // Retrieve or Create new Order data (PAYMENT_PENDING)
     Order order = orderService.getInitPaymentOrderOrCreate(memberId, command);
 
@@ -29,12 +29,11 @@ public class PayOrderUseCase {
     orderService.prepareForPayment(order);
 
     // Create new PaymentTransactions data (INIT)
-    PaymentTransactions transactions = paymentTransactionFacade.processPayment(payment);
-
-    // Update PaymentTransaction data with PG response
-
-    // Update Payment data to "PAID"
+    Payment resultPayment = paymentTransactionFacade.processPayment(payment);
 
     // Update Order status to "CONFIRMED"
+    orderService.updateStatusWithPayment(order, resultPayment);
+
+    return PayOrderInfo.of(order);
   }
 }

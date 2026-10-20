@@ -14,7 +14,7 @@ public class PaymentTransactionFacade {
   private final PaymentTransactionService paymentTransactionService;
   private final PaymentService paymentService;
 
-  public PaymentTransactions processPayment(Payment payment) {
+  public Payment processPayment(Payment payment) {
     if (payment.cannotProcessPayTransaction()) {
       throw new RuntimeException("Cannot process payment" + payment.getId());
     }
@@ -27,8 +27,8 @@ public class PaymentTransactionFacade {
     transactions.processInSequence(paymentTransactionExecutor::processTransaction);
 
     // update payment status based on the result txs
-    paymentService.updateStatus(payment, transactions.resolvePaymentStatus());
+    paymentService.integrateTransactions(payment, transactions);
 
-    return transactions;
+    return payment;
   }
 }

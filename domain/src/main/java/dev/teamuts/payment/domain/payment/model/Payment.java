@@ -3,6 +3,7 @@ package dev.teamuts.payment.domain.payment.model;
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
+import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
@@ -35,6 +36,9 @@ public class Payment {
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private PGProviderType pgProvider;
+
+  @Getter(AccessLevel.NONE)
+  private PaymentTransactions transactions;
 
   public static Payment processing(Order order, PaymentMethod paymentMethod, Money pointAmount) {
     if (order.hasLessAmountThan(pointAmount)) {
@@ -150,8 +154,9 @@ public class Payment {
     return !hasPointAmount();
   }
 
-  public void updateStatus(PaymentStatus status) {
-    this.status = status;
+  public void integrateTransactions(PaymentTransactions transactions) {
+    this.status = transactions.resolvePaymentStatus();
+    this.transactions = transactions;
   }
 
   public boolean isProcessing() {
@@ -164,5 +169,9 @@ public class Payment {
 
   public boolean cannotProcessPayTransaction() {
     return isNotProcessing() || (hasNoPayAmount() && hasNoPointAmount());
+  }
+
+  public OrderStatus resolveOrderStatus() {
+    return status.getOrderStatus();
   }
 }
