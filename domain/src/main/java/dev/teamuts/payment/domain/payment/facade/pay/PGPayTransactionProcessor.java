@@ -26,6 +26,9 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
 
   /**
    * Ultimately, this process aims to confirm the payment.
+   * 1. check the previously created PG tx.
+   * 2. create new PG tx.
+   * 3. confirm the PG tx. >> require to handle ReadTimeout error (PENDING)
    *
    * @param transaction the payment transaction to process
    * @return the processed payment transaction (the argument tx will also be modified)

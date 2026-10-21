@@ -85,6 +85,24 @@ public class ExtPgPaymentTransaction {
         .build();
   }
 
+  public static ExtPgPaymentTransaction timeout(
+      PaymentTransaction transaction,
+      String pgResponseCode,
+      String errCode,
+      String errMsg,
+      String pgOperationName) {
+    return ExtPgPaymentTransaction.builder()
+        .transactionId(transaction.getId())
+        .pgTransactionId(transaction.getPgTransactionId())
+        .pgResponseCode(pgResponseCode)
+        .pgErrCode(errCode)
+        .pgErrMessage(errMsg)
+        .pgOperationName(pgOperationName)
+        .resultStatus(ExtPGOperationResultStatus.TIMEOUT)
+        .domainStatus(PaymentTransactionStatus.PENDING)
+        .build();
+  }
+
   public boolean isFailed() {
     return resultStatus == ExtPGOperationResultStatus.FAILED;
   }

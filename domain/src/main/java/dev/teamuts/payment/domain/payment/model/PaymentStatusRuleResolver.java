@@ -90,8 +90,10 @@ public class PaymentStatusRuleResolver {
 
   private static void checkIfSubsequentTransactionsAreAllInit(
       List<PaymentTransaction> transactions, int index) {
-    if (transactions.subList(index + 1, transactions.size()).stream()
-        .allMatch(PaymentTransaction::isInit)) {
+    boolean allInit =
+        transactions.subList(index + 1, transactions.size()).stream()
+            .allMatch(PaymentTransaction::isInit);
+    if (allInit) {
       return;
     }
 

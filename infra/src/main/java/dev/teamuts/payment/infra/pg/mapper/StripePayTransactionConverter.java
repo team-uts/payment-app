@@ -35,15 +35,11 @@ public class StripePayTransactionConverter {
 
   public ExtPgPaymentTransaction fromStripeException(
       StripeException e, StripeOperationType operationType, PaymentTransaction transaction) {
-    if (e instanceof ApiConnectionException) {
-      // TODO: Handle ApiConnectionException specifically if needed (Timeout issue)
-    }
-
     if (e instanceof InvalidRequestException) {
       return ExtPgPaymentTransaction.invalidRequest(
           transaction,
           String.valueOf(e.getStatusCode()),
-          e.getCode() != null ? e.getCode() : e.getClass().getSimpleName(),
+          getErrorCodeFromException(e),
           e.getMessage(),
           operationType.name());
     }
@@ -51,14 +47,36 @@ public class StripePayTransactionConverter {
     return ExtPgPaymentTransaction.apiFailed(
         transaction,
         String.valueOf(e.getStatusCode()),
-        e.getCode() != null ? e.getCode() : e.getClass().getSimpleName(),
+        getErrorCodeFromException(e),
         e.getMessage(),
         operationType.name());
+  }
+
+  public ExtPgPaymentTransaction fromStripeExceptionWithTimeout(
+      StripeException e, StripeOperationType operationType, PaymentTransaction transaction) {
+    if (e instanceof ApiConnectionException) {
+      return ExtPgPaymentTransaction.timeout(
+          transaction,
+          String.valueOf(e.getStatusCode()),
+          getErrorCodeFromException(e),
+          e.getMessage(),
+          operationType.name());
+    }
+
+    return fromStripeException(e, operationType, transaction);
   }
 
   public ExtPgPaymentTransaction fromException(
       Exception e, StripeOperationType operationType, PaymentTransaction transaction) {
     return ExtPgPaymentTransaction.apiFailed(
-        transaction, null, e.getClass().getSimpleName(), e.getMessage(), operationType.name());
+        transaction, null, getErrorCodeFromException(e), e.getMessage(), operationType.name());
+  }
+
+  private String getErrorCodeFromException(Exception e) {
+    if (e instanceof StripeException stripeE) {
+      return stripeE.getCode() != null ? stripeE.getCode() : e.getClass().getSimpleName();
+    }
+
+    return e.getClass().getSimpleName();
   }
 }

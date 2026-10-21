@@ -4,6 +4,7 @@ import static dev.teamuts.payment.infra.pg.utils.StripeOperationExecutor.execute
 
 import com.stripe.StripeClient;
 import com.stripe.model.PaymentIntent;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
@@ -93,14 +94,20 @@ public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePo
     return executeStripeHandlingException(
         StripeOperationType.CONFIRM_PAYMENT_INTENT,
         operationType -> {
+          RequestOptions options =
+              RequestOptions.builder()
+                  .setReadTimeout(1)
+                  .setConnectTimeout(10_000) // 10 seconds
+                  .build();
+
           PaymentIntent paymentIntent =
-              stripeClient.v1().paymentIntents().confirm(transaction.getPgTransactionId());
+              stripeClient.v1().paymentIntents().confirm(transaction.getPgTransactionId(), options);
 
           return stripePayTransactionConverter.fromPaymentIntent(
               paymentIntent, transaction, operationType);
         },
         (stripeE, operationType) ->
-            stripePayTransactionConverter.fromStripeException(stripeE, operationType, transaction),
+            stripePayTransactionConverter.fromStripeExceptionWithTimeout(stripeE, operationType, transaction),
         (e, operationType) ->
             stripePayTransactionConverter.fromException(e, operationType, transaction));
   }
