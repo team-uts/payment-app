@@ -24,7 +24,7 @@ public class CardDetailInfo {
     return CardDetailInfo.builder()
         .last4(card.getLast4())
         .brand(card.getBrand())
-        .expMonth(String.format("%02d", card.getExpMonth())) // TODO: formatting on other class
+        .expMonth(card.getFormattedExpMonth())
         .expYear(String.valueOf(card.getExpYear()))
         .status(card.getStatus())
         .build();

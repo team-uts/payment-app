@@ -93,6 +93,7 @@ public class PaymentStatusRuleResolver {
     boolean allInit =
         transactions.subList(index + 1, transactions.size()).stream()
             .allMatch(PaymentTransaction::isInit);
+
     if (allInit) {
       return;
     }

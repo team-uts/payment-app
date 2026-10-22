@@ -19,6 +19,8 @@ public class Card extends PaymentMethodDetail {
   private Integer expYear;
   private CardStatus status;
 
+  private static final String STR_EXP_MONTH_FORMAT = "%02d";
+
   public static Card newActiveCard(PaymentMethod paymentMethod, ExtPGPaymentMethodDetail detail) {
     if (paymentMethod.getMethodType() != detail.methodType()) {
       throw new IllegalArgumentException(
@@ -60,5 +62,9 @@ public class Card extends PaymentMethodDetail {
         .expYear(expYear)
         .status(status)
         .build();
+  }
+
+  public String getFormattedExpMonth() {
+    return String.format(STR_EXP_MONTH_FORMAT, this.expMonth);
   }
 }
