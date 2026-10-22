@@ -74,4 +74,8 @@ public class Money {
   public Money copy() {
     return Money.of(this.amount, this.currency);
   }
+
+  public boolean hasSameCurrency(Money other) {
+    return this.currency.equals(other.currency);
+  }
 }

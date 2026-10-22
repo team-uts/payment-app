@@ -32,7 +32,6 @@ public class Payment {
   @Getter(AccessLevel.NONE)
   private Money pointAmount;
 
-  private Currency currency;
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private PGProviderType pgProvider;
@@ -60,7 +59,6 @@ public class Payment {
         .status(PaymentStatus.PROCESSING)
         .payAmount(order.getRemainingAmount(pointAmount))
         .pointAmount(pointAmount)
-        .currency(order.getCurrency())
         .payMethodId(paymentMethod.getId())
         .payMethodType(paymentMethod.getMethodType())
         .pgProvider(paymentMethod.getPgProvider())
@@ -81,7 +79,6 @@ public class Payment {
         .status(PaymentStatus.PROCESSING)
         .payAmount(Money.zero(order.getCurrency()))
         .pointAmount(pointAmount)
-        .currency(order.getCurrency())
         .payMethodId(null)
         .payMethodType(PaymentMethodType.POINT)
         .pgProvider(PGProviderType.NONE)
@@ -109,7 +106,6 @@ public class Payment {
         .pgProvider(pgProvider)
         .payAmount(Money.of(payAmount, currency))
         .pointAmount(Money.of(pointAmount, currency))
-        .currency(currency)
         .payMethodId(payMethodId)
         .payMethodType(payMethodType)
         .build();
@@ -173,5 +169,15 @@ public class Payment {
 
   public OrderStatus resolveOrderStatus() {
     return status.getOrderStatus();
+  }
+
+  public Currency getCurrency() {
+    if (this.payAmount.hasSameCurrency(this.pointAmount)) {
+      throw new RuntimeException(
+          "Payment (id: %d) has different currencies for payAmount and pointAmount"
+              .formatted(this.id));
+    }
+
+    return this.payAmount.getCurrency();
   }
 }

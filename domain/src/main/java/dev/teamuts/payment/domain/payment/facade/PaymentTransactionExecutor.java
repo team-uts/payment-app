@@ -15,7 +15,7 @@ public class PaymentTransactionExecutor {
   private final PayTransactionProcessorProvider payTxProcessorProvider;
   private final PaymentTransactionService paymentTransactionService;
 
-  public void processTransaction(PaymentTransaction transaction) {
+  public void executeProcessing(PaymentTransaction transaction) {
     if (transaction.isNotProcessable()) {
       log.info(
           "Transaction (id: {}) already processed ({})",
@@ -27,13 +27,12 @@ public class PaymentTransactionExecutor {
 
     try {
       // execute Pay based on the pay type (PG or Point)
-      PaymentTransaction resultTx =
-          payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
+      payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
 
       log.info(
           "Transaction (id: {}) processed successfully with status: {}",
-          resultTx.getId(),
-          resultTx.getStatus());
+          transaction.getId(),
+          transaction.getStatus());
     } catch (Exception e) {
       log.error("Error occurred while processing payment transaction: {}", transaction.getId(), e);
 

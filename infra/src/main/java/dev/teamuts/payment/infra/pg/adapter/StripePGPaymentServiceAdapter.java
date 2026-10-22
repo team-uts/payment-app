@@ -96,7 +96,7 @@ public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePo
         operationType -> {
           RequestOptions options =
               RequestOptions.builder()
-                  .setReadTimeout(1)
+                  .setReadTimeout(60_000) // 60 seconds
                   .setConnectTimeout(10_000) // 10 seconds
                   .build();
 
@@ -107,7 +107,8 @@ public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePo
               paymentIntent, transaction, operationType);
         },
         (stripeE, operationType) ->
-            stripePayTransactionConverter.fromStripeExceptionWithTimeout(stripeE, operationType, transaction),
+            stripePayTransactionConverter.fromStripeExceptionWithTimeout(
+                stripeE, operationType, transaction),
         (e, operationType) ->
             stripePayTransactionConverter.fromException(e, operationType, transaction));
   }

@@ -32,10 +32,6 @@ public class PayProcessStepPipeline {
     return this;
   }
 
-  public PaymentTransaction done() {
-    return transaction;
-  }
-
   public boolean isNotStopped() {
     return !stopped;
   }

@@ -32,7 +32,6 @@ public class PaymentTransaction {
   @Getter(AccessLevel.NONE)
   private Money amount;
 
-  private Currency currency;
   private PGProviderType pgProvider;
   private String pgTransactionId;
   private String pgResponseCode;
@@ -61,7 +60,6 @@ public class PaymentTransaction {
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
         .amount(payment.getPayAmountMoney())
-        .currency(payment.getCurrency())
         .pgProvider(payment.getPgProvider())
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.PG_PAY)
@@ -82,7 +80,6 @@ public class PaymentTransaction {
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
         .amount(payment.getPointAmountMoney())
-        .currency(payment.getCurrency())
         .pgProvider(PGProviderType.NONE)
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.POINT)
@@ -116,7 +113,6 @@ public class PaymentTransaction {
         .payMethodType(payMethodType)
         .serviceType(serviceType)
         .amount(Money.of(amount, currency))
-        .currency(currency)
         .pgProvider(pgProvider)
         .pgTransactionId(pgTransactionId)
         .pgResponseCode(pgResponseCode)
@@ -183,5 +179,9 @@ public class PaymentTransaction {
 
   public boolean canBeConfirmed() {
     return this.status == PaymentTransactionStatus.READY;
+  }
+
+  public Currency getCurrency() {
+    return this.amount.getCurrency();
   }
 }

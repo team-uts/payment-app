@@ -25,19 +25,16 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
   }
 
   /**
-   * Ultimately, this process aims to confirm the payment.
-   * 1. check the previously created PG tx.
-   * 2. create new PG tx.
-   * 3. confirm the PG tx. >> require to handle ReadTimeout error (PENDING)
+   * Ultimately, this process aims to confirm the payment. 1. check the previously created PG tx. 2.
+   * create new PG tx. 3. confirm the PG tx. >> require to handle ReadTimeout error (PENDING)
    *
    * @param transaction the payment transaction to process
-   * @return the processed payment transaction (the argument tx will also be modified)
    */
   @Override
-  public PaymentTransaction pay(PaymentTransaction transaction) {
+  public void pay(PaymentTransaction transaction) {
     // 1. retrieve tx from PG to check if the transaction is already created.
     // if the tx is already associated with PG, then execute synchronization with PG again.
-    return PayProcessStepPipeline.start(transaction)
+    PayProcessStepPipeline.start(transaction)
         .runIf(
             PaymentTransaction::isAlreadyAssociatedWithPg,
             tx -> {
@@ -73,7 +70,6 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
             tx -> {
               payTransactionHelperProcessor.callPgWithSync(
                   tx, pgService -> pgService.confirmPayment(tx));
-            })
-        .done();
+            });
   }
 }

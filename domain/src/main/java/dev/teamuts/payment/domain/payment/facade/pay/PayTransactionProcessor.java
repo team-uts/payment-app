@@ -5,5 +5,5 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.shared.provider.ProviderService;
 
 public interface PayTransactionProcessor extends ProviderService<PaySequenceType> {
-  PaymentTransaction pay(PaymentTransaction transaction);
+  void pay(PaymentTransaction transaction);
 }

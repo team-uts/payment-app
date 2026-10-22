@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 
 @Service
 @RequiredArgsConstructor
-public class PaymentFacade {
+public class InitPaymentFacade {
   private final PaymentService paymentService;
   private final PaymentMethodService paymentMethodService;
   private final PointService pointService;
