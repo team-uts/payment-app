@@ -4,7 +4,7 @@ import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,8 +39,15 @@ public class PaymentMethod {
     return builder.build();
   }
 
-  public static PaymentMethod copyWithDetail(PaymentMethod origin, PaymentMethodDetail newDetail) {
-    return origin.toBuilder().detail(newDetail).build();
+  public static PaymentMethod point(Long memberId) {
+    return PaymentMethod.builder()
+        .memberId(memberId)
+        .pgProvider(PGProviderType.NONE)
+        .providerToken(null)
+        .methodType(PaymentMethodType.POINT)
+        .defaultMethod(false)
+        .status(PaymentMethodStatus.ACTIVE)
+        .build();
   }
 
   public static PaymentMethod fromDatabase(
@@ -64,6 +71,10 @@ public class PaymentMethod {
         .build();
   }
 
+  public void updateDetail(PaymentMethodDetail newDetail) {
+    this.detail = newDetail;
+  }
+
   // Return copy
   public PaymentMethodDetail getDetailOrNull() {
     if (detail instanceof Card cardDetail) {
@@ -71,5 +82,22 @@ public class PaymentMethod {
     }
 
     return null;
+  }
+
+  public void checkIfBelongsToMember(Long memberId) {
+    if (!this.memberId.equals(memberId)) {
+      throw new IllegalArgumentException(
+          "PaymentMethod does not belong to the member (memberId: %s)".formatted(memberId));
+    }
+  }
+
+  public void checkIfActive() {
+    if (this.status != PaymentMethodStatus.ACTIVE) {
+      throw new IllegalStateException("PaymentMethod (id: %s) is not active".formatted(this.id));
+    }
+  }
+
+  public boolean isPointType() {
+    return this.methodType == PaymentMethodType.POINT;
   }
 }

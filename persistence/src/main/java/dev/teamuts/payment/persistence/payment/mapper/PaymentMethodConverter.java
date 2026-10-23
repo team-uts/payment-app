@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PaymentMethodConverter {
-  public PaymentMethodJpaEntity convertToJpaEntity(PaymentMethod paymentMethod) {
-    return PaymentMethodJpaEntity.fromDomain(paymentMethod);
+  public PaymentMethodJpaEntity convertToJpaEntity(PaymentMethod model) {
+    return PaymentMethodJpaEntity.fromDomain(model);
   }
 
   public PaymentMethod convertToDomainModel(PaymentMethodJpaEntity entity) {

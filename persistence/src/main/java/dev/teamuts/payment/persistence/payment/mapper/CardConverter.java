@@ -6,19 +6,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CardConverter {
-  public CardJpaEntity convertToJpaEntity(Card card) {
-    return CardJpaEntity.fromDomain(card);
+  public CardJpaEntity convertToJpaEntity(Card model) {
+    return CardJpaEntity.fromDomain(model);
   }
 
-  public Card convertToDomainModel(CardJpaEntity cardJpaEntity) {
+  public Card convertToDomainModel(CardJpaEntity entity) {
     return Card.fromDatabase(
-        cardJpaEntity.getId(),
-        cardJpaEntity.getMemberId(),
-        cardJpaEntity.getPayMethodId(),
-        cardJpaEntity.getLastFour(),
-        cardJpaEntity.getBrand(),
-        cardJpaEntity.getExpiryMonth(),
-        cardJpaEntity.getExpiryYear(),
-        cardJpaEntity.getStatus());
+        entity.getId(),
+        entity.getMemberId(),
+        entity.getPayMethodId(),
+        entity.getLastFour(),
+        entity.getBrand(),
+        entity.getExpiryMonth(),
+        entity.getExpiryYear(),
+        entity.getStatus());
   }
 }

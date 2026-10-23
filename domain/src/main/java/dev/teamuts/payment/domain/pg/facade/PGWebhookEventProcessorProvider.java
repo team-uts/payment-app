@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PGWebhookEventProcessorProvider
-    extends Provider<PGRequestType, BasePGWebhookEventProcessor> {
+    extends Provider<PGRequestType, AbstractPGWebhookEventProcessor> {
 
-  protected PGWebhookEventProcessorProvider(List<BasePGWebhookEventProcessor> services) {
+  protected PGWebhookEventProcessorProvider(List<AbstractPGWebhookEventProcessor> services) {
     super(services);
   }
 }

@@ -1,0 +1,32 @@
+package dev.teamuts.payment.domain.payment.dto.app;
+
+import dev.teamuts.payment.domain.payment.constant.CardStatus;
+import dev.teamuts.payment.domain.payment.model.Card;
+import dev.teamuts.payment.domain.payment.model.PaymentMethodDetail;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder(access = AccessLevel.PRIVATE)
+public class CardDetailInfo {
+  private String last4;
+  private String brand;
+  private String expMonth;
+  private String expYear;
+  private CardStatus status;
+
+  public static CardDetailInfo ofNullable(PaymentMethodDetail detail) {
+    if (!(detail instanceof Card card)) {
+      return null;
+    }
+
+    return CardDetailInfo.builder()
+        .last4(card.getLast4())
+        .brand(card.getBrand())
+        .expMonth(card.getFormattedExpMonth())
+        .expYear(String.valueOf(card.getExpYear()))
+        .status(card.getStatus())
+        .build();
+  }
+}

@@ -3,14 +3,14 @@ package dev.teamuts.payment.domain.pg.usecase;
 import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
-import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.service.ExtPGServiceProvider;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
 @RequiredArgsConstructor
 public class ParseValidPGWebhookEventUseCase {
-  private final ExternalPGServiceProvider pgServiceProvider;
+  private final ExtPGServiceProvider pgServiceProvider;
 
   public ExtPGWebhookEventDto execute(
       PGRequestType requestType, PGProviderType pgProvider, String secret, String payload) {

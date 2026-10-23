@@ -4,10 +4,10 @@ import dev.teamuts.payment.domain.payment.facade.PaymentMethodFacade;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
+import dev.teamuts.payment.domain.pg.service.ExtPGServiceProvider;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PaymentMethodSetupWebhookEventProcessor extends BasePGWebhookEventProcessor {
-  private final ExternalPGServiceProvider pgServiceProvider;
+public class PaymentMethodSetupWebhookEventProcessor extends AbstractPGWebhookEventProcessor {
+  private final ExtPGServiceProvider pgServiceProvider;
   private final PaymentMethodFacade paymentMethodFacade;
   private final PaymentMethodService paymentMethodService;
   private final PGAccountService pgAccountService;

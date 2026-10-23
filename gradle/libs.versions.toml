@@ -18,6 +18,8 @@ flyway = { id = "org.flywaydb.flyway", version.ref = "flywaydb" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
+lombok = { module = "org.projectlombok:lombok" }
+
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywaydb" }
 flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flywaydb" }
 
@@ -30,3 +32,5 @@ querydsl-apt = { module = "com.querydsl:querydsl-apt", version.ref = "querydsl" 
 springdoc-openapi-webmvc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version = "3.1.1" }
 
 stripe-java = { module = "com.stripe:stripe-java", version.ref = "stripe" }
+
+easyRandom = { module = "org.jeasy:easy-random", version = "6.0.1" }

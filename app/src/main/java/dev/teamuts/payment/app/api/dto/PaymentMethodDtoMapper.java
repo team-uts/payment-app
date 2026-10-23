@@ -1,6 +1,6 @@
 package dev.teamuts.payment.app.api.dto;
 
-import dev.teamuts.payment.domain.payment.dto.SetupPaymentMethodCommand;
+import dev.teamuts.payment.domain.payment.dto.app.SetupPaymentMethodCommand;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

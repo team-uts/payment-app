@@ -2,11 +2,10 @@ package dev.teamuts.payment.domain.pg.service;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResultType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
-import dev.teamuts.payment.domain.pg.port.infra.provider.ExternalPGServiceProvider;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestStorePort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestUpdatePort;
@@ -22,7 +21,7 @@ public class PGExternalRequestService {
   private final PGExternalRequestReaderPort pgExternalRequestReaderPort;
   private final PGExternalRequestStorePort pgExternalRequestStorePort;
   private final PGExternalRequestUpdatePort pgExternalRequestUpdatePort;
-  private final ExternalPGServiceProvider pgServiceProvider;
+  private final ExtPGServiceProvider pgServiceProvider;
 
   public PGExternalRequest storeInitPaymentMethodRequest(PGAccount pgAccount) {
     ExtPGPaymentMethodOperationDto response =
