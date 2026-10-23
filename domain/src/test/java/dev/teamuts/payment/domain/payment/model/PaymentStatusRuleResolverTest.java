@@ -140,9 +140,7 @@ class PaymentStatusRuleResolverTest {
   }
 
   @ParameterizedTest
-  @MethodSource({
-    "provideTwoInvalidTxs",
-  })
+  @MethodSource({"provideTwoInvalidTxs"})
   void throwExceptionInvalidMultipleTxStatuses(
       List<Map.Entry<PaySequenceType, PaymentTransactionStatus>> testCases,
       PaymentStatus expectedStatus) {
