@@ -24,7 +24,7 @@ public class PayProcessStepPipeline {
     return this;
   }
 
-  public PayProcessStepPipeline stopIf(Predicate<PaymentTransaction> condition) {
+  public PayProcessStepPipeline stopWhen(Predicate<PaymentTransaction> condition) {
     if (isNotStopped() && condition.test(transaction)) {
       stopped = true;
     }

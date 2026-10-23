@@ -34,14 +34,20 @@ public class PaymentTransactionExecutor {
           transaction.getId(),
           transaction.getStatus());
     } catch (Exception e) {
-      log.error("Error occurred while processing payment transaction: {}", transaction.getId(), e);
-
       // In case of PG API exception
-      if (e instanceof ExtPGApiException) {
+      if (e instanceof ExtPGApiException extException) {
+        log.error(
+            "(External) Error payment transaction - txId: {} / pgResponseCode: {} / pgErrorCode: {} / pgErrorMessage: {}",
+            transaction.getId(),
+            extException.getPgResponseCode(),
+            extException.getPgErrorCode(),
+            extException.getPgErrorMessage());
+
         // pass, because the PG API exception's already been applied in the pay process.
         return;
       }
 
+      log.error("(App) Error payment transaction - txId: {}", transaction.getId(), e);
       // In case of app exception
       paymentTransactionService.updateWithAppException(transaction, e);
     }

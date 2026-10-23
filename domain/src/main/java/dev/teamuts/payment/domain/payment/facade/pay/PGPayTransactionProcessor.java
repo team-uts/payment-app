@@ -46,7 +46,7 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
             })
         // 2. Check if the transaction can continue processing PG pay.
         // (INIT, CREATED only permitted here to continue)
-        .stopIf(PaymentTransaction::cannotContinueProcessingPgPay)
+        .stopWhen(PaymentTransaction::cannotContinueProcessingPgPay)
         // 3. In case app tx is not associated with PG tx
         .runIf(
             PaymentTransaction::requiresPgAssociation,

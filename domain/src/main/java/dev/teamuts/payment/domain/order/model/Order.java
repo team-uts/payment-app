@@ -25,7 +25,6 @@ public class Order {
   @Getter(AccessLevel.NONE)
   private Money amount;
 
-  private Currency currency;
   private OrderStatus status;
 
   public static Order initPayment(Long memberId, PayOrderCommand command) {
@@ -34,7 +33,6 @@ public class Order {
         .extOrderNum(command.extOrderNum())
         .serviceType(command.serviceType())
         .amount(command.totalAmount())
-        .currency(command.currency())
         .status(OrderStatus.INIT)
         .build();
   }
@@ -53,7 +51,6 @@ public class Order {
         .serviceType(serviceType)
         .memberId(memberId)
         .amount(Money.of(amount, currency))
-        .currency(currency)
         .status(status)
         .build();
   }
@@ -90,6 +87,10 @@ public class Order {
 
   public BigDecimal getAmount() {
     return amount.getAmount();
+  }
+
+  public Currency getCurrency() {
+    return amount.getCurrency();
   }
 
   public void paymentPending() {

@@ -133,7 +133,6 @@ public class Payment {
     }
   }
 
-  // TODO: refactoring
   public boolean hasPayAmount() {
     return payAmount.isGreaterThanZero();
   }
