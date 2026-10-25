@@ -18,7 +18,7 @@ public class PaymentUpdateAdapter implements PaymentUpdatePort {
   public void updateStatus(Payment payment) {
     PaymentJpaEntity entity =
         paymentRepository
-            .findById(payment.getId())
+            .findLockById(payment.getId())
             .orElseThrow(
                 () -> new RuntimeException("Payment not found with id: " + payment.getId()));
 

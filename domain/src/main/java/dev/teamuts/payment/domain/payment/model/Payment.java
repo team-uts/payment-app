@@ -158,12 +158,8 @@ public class Payment {
     return status == PaymentStatus.PROCESSING;
   }
 
-  public boolean isNotProcessing() {
-    return !isProcessing();
-  }
-
   public boolean cannotProcessPayTransaction() {
-    return isNotProcessing() || (hasNoPayAmount() && hasNoPointAmount());
+    return this.status.isFinal() || (hasNoPayAmount() && hasNoPointAmount());
   }
 
   public OrderStatus resolveOrderStatus() {

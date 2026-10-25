@@ -2,6 +2,7 @@ import extensions.pluginId
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import task.BuildLifecyclePlugin
+import task.test.MockitoAgentProvider
 import task.test.TestContainer
 import task.test.TestLoggingUtils
 import task.test.TestSummary
@@ -31,6 +32,8 @@ allprojects {
 }
 
 subprojects {
+    val mockitoAgent = configurations.create("mockitoAgent")
+
     apply {
         plugin("java")
         plugin(projectLibs.plugins.spring.boot.pluginId())
@@ -41,10 +44,6 @@ subprojects {
         toolchain {
             languageVersion = JavaLanguageVersion.of(projectLibs.versions.java.get())
         }
-    }
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
     }
 
     dependencies {
@@ -58,11 +57,22 @@ subprojects {
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         testCompileOnly(projectLibs.lombok)
         testAnnotationProcessor(projectLibs.lombok)
+
+        testImplementation(projectLibs.mockito)
+        mockitoAgent(projectLibs.mockito) { isTransitive = false }
     }
 
     tasks.withType<Test> {
         useJUnitPlatform()
-        jvmArgs("-Xshare:off")  // Class Data Sharing(CDS) 비활성화
+
+        // https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+        jvmArgumentProviders.add(objects.newInstance<MockitoAgentProvider>().apply {
+            agentJar.from(mockitoAgent)
+        })
+
+        jvmArgs(
+            "-Xshare:off"
+        )  // deactivate Class Data Sharing(CDS)
 
         testLogging {
             events = setOf(

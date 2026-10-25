@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS `orders`
     updated_at          DATETIME(6)         NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX ix_o_extorderno ON orders (ext_order_no);
+CREATE UNIQUE INDEX ux_o_extorderno ON orders (ext_order_no);
 CREATE INDEX ix_o_memberid ON orders (member_id);

@@ -4,7 +4,6 @@ import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.order.entity.OrderJpaEntity;
-import dev.teamuts.payment.persistence.order.mapper.OrderConverter;
 import dev.teamuts.payment.persistence.order.repository.OrderRepository;
 import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +13,12 @@ import lombok.RequiredArgsConstructor;
 @AppTransactional
 public class OrderUpdateAdapter implements OrderUpdatePort {
   private final OrderRepository orderRepository;
-  private final OrderConverter orderConverter;
 
   @Override
   public void updateStatus(Order order) {
     OrderJpaEntity entity =
         orderRepository
-            .findById(order.getId())
+            .findLockById(order.getId())
             .orElseThrow(() -> new RuntimeException("Order id not found: " + order.getId()));
 
     entity.updateStatus(order.getStatus());

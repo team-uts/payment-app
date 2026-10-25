@@ -18,7 +18,7 @@ public class PaymentTransactionUpdateAdapter implements PaymentTransactionUpdate
   public void updatePGTransactionInfo(PaymentTransaction transaction) {
     PaymentTransactionJpaEntity entity =
         paymentTransactionRepository
-            .findById(transaction.getId())
+            .findLockById(transaction.getId())
             .orElseThrow(
                 () ->
                     new RuntimeException(
@@ -37,7 +37,7 @@ public class PaymentTransactionUpdateAdapter implements PaymentTransactionUpdate
   public void updateDetailMessage(PaymentTransaction transaction) {
     PaymentTransactionJpaEntity entity =
         paymentTransactionRepository
-            .findById(transaction.getId())
+            .findLockById(transaction.getId())
             .orElseThrow(
                 () ->
                     new RuntimeException(

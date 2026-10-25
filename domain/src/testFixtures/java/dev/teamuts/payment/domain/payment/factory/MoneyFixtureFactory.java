@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.payment;
+package dev.teamuts.payment.domain.payment.factory;
 
 import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.payment.constant.Currency;
@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class MoneyTestFactory {
-  /** Step between two adjacent amounts when none is given: the currency's smallest minor unit. */
-  private static final long DEFAULT_STEP_MINOR_UNITS = 1L;
+public class MoneyFixtureFactory {
+
+  public static Money createSingle(BigDecimal amount, Currency currency) {
+    return Money.of(amount, currency);
+  }
 
   /**
    * Creates Money with a random amount within [min, max], where min and max are identifying the
@@ -24,9 +26,11 @@ public class MoneyTestFactory {
     if (min < 0) {
       throw new IllegalArgumentException("min must be greater than or equal to zero");
     }
+
     if (min > max) {
       throw new IllegalArgumentException("min must be less than or equal to max");
     }
+
     if (stepUnit <= 0) {
       throw new IllegalArgumentException("step must be greater than zero");
     }

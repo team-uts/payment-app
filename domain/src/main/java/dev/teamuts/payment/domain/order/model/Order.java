@@ -67,6 +67,10 @@ public class Order {
     return this.status == OrderStatus.PAYMENT_PENDING;
   }
 
+  public boolean cannotProcessPayment() {
+    return this.status.isFinal();
+  }
+
   public boolean hasLessAmountThan(Money amount) {
     return this.amount.isLessThan(amount);
   }

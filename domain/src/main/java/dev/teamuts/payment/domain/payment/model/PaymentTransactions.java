@@ -31,21 +31,22 @@ public class PaymentTransactions {
   }
 
   /**
-   * for every sequence type applicable to this payment, skip the others
+   * create new init transactions from valid payment.
    *
-   * @param payment target payment to process
+   * @param payment target payment to process (only for {@link PaymentStatus#PROCESSING} status)
    * @return new INIT transactions for every applicable sequence type
    */
   public static PaymentTransactions initFromPayment(Payment payment) {
-    if (payment.cannotProcessPayTransaction()) {
-      throw new RuntimeException("Payment cannot process pay transaction: " + payment.getId());
+    if (!payment.isProcessing()) {
+      throw new RuntimeException("Payment cannot create pay transaction: " + payment.getId());
     }
 
     // initialize new tx based on the pay sequence type condition.
+    // first, filter with the condition where the sequence type is applicable to this payment.
     List<PaymentTransaction> transactions =
         Arrays.stream(PaySequenceType.values())
-            .sorted(Comparator.comparingInt(PaySequenceType::getSeqNumber))
             .filter(seqType -> seqType.isApplicableTo(payment))
+            .sorted(Comparator.comparingInt(PaySequenceType::getSeqNumber))
             .map(seqType -> seqType.initTransaction(payment))
             .toList();
 

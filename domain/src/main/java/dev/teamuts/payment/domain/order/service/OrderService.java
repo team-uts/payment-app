@@ -19,7 +19,7 @@ public class OrderService {
   private final OrderUpdatePort orderUpdatePort;
 
   @AppTransactional(propagation = Propagation.REQUIRES_NEW)
-  public Order getInitPaymentOrderOrCreate(Long memberId, PayOrderCommand command) {
+  public Order getPaymentOrderOrCreateInit(Long memberId, PayOrderCommand command) {
     Order order =
         orderReaderPort
             .retrieveByExtOrderNumNullable(command.extOrderNum())
@@ -30,7 +30,7 @@ public class OrderService {
                   return orderStorePort.store(newOrder);
                 });
 
-    if (order.isNotTheSameMember(memberId) && order.isPaymentPending()) {
+    if (order.isNotTheSameMember(memberId)) {
       throw new RuntimeException(
           "Order (extOrderNum: %s) is not valid for processing payment for memberId %s"
               .formatted(command.extOrderNum(), memberId));
@@ -41,6 +41,10 @@ public class OrderService {
 
   @AppTransactional(propagation = Propagation.REQUIRES_NEW)
   public void prepareForPayment(Order order) {
+    if (order.isPaymentPending()) {
+      return;
+    }
+
     order.paymentPending();
 
     orderUpdatePort.updateStatus(order);
