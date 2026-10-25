@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions`
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
     payment_id              BIGINT UNSIGNED     NOT NULL COMMENT 'payment ID',
     order_id                BIGINT UNSIGNED     NOT NULL COMMENT 'order ID',
-    payment_method_id       BIGINT UNSIGNED     NOT NULL COMMENT 'payment method ID',
+    payment_method_id       BIGINT UNSIGNED     NULL     COMMENT 'payment method ID',
     payment_method_type     VARCHAR(32)         NOT NULL COMMENT 'payment method type (CARD/BANK_ACCOUNT/PAYPAL/APPLEPAY)',
     service_type            VARCHAR(32)         NOT NULL COMMENT 'app service type',
     amount                  DECIMAL(15, 2)      NOT NULL COMMENT 'payment transaction totalAmount',

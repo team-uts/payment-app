@@ -167,7 +167,7 @@ public class Payment {
   }
 
   public Currency getCurrency() {
-    if (this.payAmount.hasSameCurrency(this.pointAmount)) {
+    if (this.payAmount.hasNotSameCurrency(this.pointAmount)) {
       throw new RuntimeException(
           "Payment (id: %d) has different currencies for payAmount and pointAmount"
               .formatted(this.id));

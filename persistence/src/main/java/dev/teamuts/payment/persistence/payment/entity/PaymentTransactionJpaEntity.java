@@ -44,7 +44,7 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "order_id", nullable = false)
   private Long orderId;
 
-  @Column(name = "payment_method_id", nullable = false)
+  @Column(name = "payment_method_id")
   private Long payMethodId;
 
   @Column(name = "payment_method_type", nullable = false)

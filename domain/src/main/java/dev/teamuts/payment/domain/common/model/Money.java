@@ -78,4 +78,8 @@ public class Money {
   public boolean hasSameCurrency(Money other) {
     return this.currency.equals(other.currency);
   }
+
+  public boolean hasNotSameCurrency(Money other) {
+    return !hasSameCurrency(other);
+  }
 }

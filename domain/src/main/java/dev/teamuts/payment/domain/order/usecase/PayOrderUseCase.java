@@ -5,7 +5,6 @@ import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
-import dev.teamuts.payment.domain.payment.facade.InitPaymentFacade;
 import dev.teamuts.payment.domain.payment.facade.OrderPaymentFacade;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PayOrderUseCase {
   private final OrderService orderService;
-  private final InitPaymentFacade paymentFacade;
   private final OrderPaymentFacade paymentTransactionFacade;
 
   // TODO: require Redis Locking
