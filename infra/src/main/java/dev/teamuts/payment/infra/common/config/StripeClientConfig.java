@@ -1,19 +1,23 @@
 package dev.teamuts.payment.infra.common.config;
 
 import com.stripe.StripeClient;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(StripeWebhookProperties.class)
+@EnableConfigurationProperties(StripeProperties.class)
+@RequiredArgsConstructor
 public class StripeClientConfig {
-  @Value("${stripe.secret-key}")
-  private String stripeSecretKey;
+  private final StripeProperties stripeProperties;
 
   @Bean
   public StripeClient stripeClient() {
-    return new StripeClient(stripeSecretKey);
+    return StripeClient.builder()
+        .setApiKey(stripeProperties.secretKey())
+        .setConnectTimeout(stripeProperties.getConnectTimeoutInMillis())
+        .setReadTimeout(stripeProperties.getReadTimeoutInMillis())
+        .build();
   }
 }

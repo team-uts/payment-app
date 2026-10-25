@@ -7,5 +7,7 @@ import java.util.List;
 public interface PaymentMethodReaderPort {
   List<PaymentMethod> retrievePaymentMethodsByMemberId(Long memberId);
 
+  PaymentMethod retrievePaymentMethodById(Long id);
+
   boolean existsByParameters(Long memberId, String pgProviderToken, PGProviderType pgProvider);
 }

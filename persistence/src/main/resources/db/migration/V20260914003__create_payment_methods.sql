@@ -5,7 +5,7 @@ CREATE TABLE if not exists `payment_methods`
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
 
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
-    method_type             VARCHAR(32)         NOT NULL COMMENT 'CARD/PAYPAL/APPLEPAY',
+    method_type             VARCHAR(32)         NOT NULL COMMENT 'CARD/BANK_ACCOUNT/PAYPAL/APPLEPAY',
 
     provider_token          VARCHAR(256)        NULL COMMENT 'PG payment method token (encryption)',
 

@@ -2,8 +2,8 @@ package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto.ExtPGCardDetail;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGCardDetail;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -18,6 +18,8 @@ public class Card extends PaymentMethodDetail {
   private Integer expMonth;
   private Integer expYear;
   private CardStatus status;
+
+  private static final String STR_EXP_MONTH_FORMAT = "%02d";
 
   public static Card newActiveCard(PaymentMethod paymentMethod, ExtPGPaymentMethodDetail detail) {
     if (paymentMethod.getMethodType() != detail.methodType()) {
@@ -60,5 +62,9 @@ public class Card extends PaymentMethodDetail {
         .expYear(expYear)
         .status(status)
         .build();
+  }
+
+  public String getFormattedExpMonth() {
+    return String.format(STR_EXP_MONTH_FORMAT, this.expMonth);
   }
 }

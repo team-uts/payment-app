@@ -6,6 +6,14 @@ val bootJar: BootJar by tasks
 bootJar.enabled = false
 jar.enabled = true
 
+plugins {
+    `java-test-fixtures`
+}
+
 dependencies {
     implementation(project(":shared"))
+
+    testFixturesImplementation(libs.easyRandom)
+    testFixturesCompileOnly(libs.lombok)
+    testFixturesAnnotationProcessor(libs.lombok)
 }

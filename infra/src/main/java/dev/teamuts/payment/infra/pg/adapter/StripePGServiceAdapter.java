@@ -1,8 +1,9 @@
 package dev.teamuts.payment.infra.pg.adapter;
 
+import static dev.teamuts.payment.infra.pg.utils.StripeOperationExecutor.executeStripe;
+
 import com.stripe.StripeClient;
 import com.stripe.exception.SignatureVerificationException;
-import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentMethod;
@@ -11,10 +12,10 @@ import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.SetupIntentCreateParams;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodOperationDto;
-import dev.teamuts.payment.domain.pg.dto.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
@@ -52,29 +53,25 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
    */
   @Override
   public ExtPGAccountDto createNewAccount(Long memberId, String email) {
-    StripeOperationType operationType = StripeOperationType.CREATE_CUSTOMER;
+    return executeStripe(
+        StripeOperationType.CREATE_CUSTOMER,
+        operationType -> {
+          CustomerCreateParams params =
+              CustomerCreateParams.builder()
+                  .setEmail(email)
+                  .setName(memberId.toString())
+                  .putMetadata(operationType.getMetadataKey(), memberId.toString())
+                  .build();
 
-    CustomerCreateParams params =
-        CustomerCreateParams.builder()
-            .setEmail(email)
-            .setName(memberId.toString())
-            .putMetadata(operationType.getMetadataKey(), memberId.toString())
-            .build();
+          Customer customer = stripeClient.v1().customers().create(params);
+          String userId = customer.getName();
 
-    try {
-      Customer customer = stripeClient.v1().customers().create(params);
-      String userId = customer.getName();
-
-      return ExtPGAccountDto.builder()
-          .memberId(Long.parseLong(userId))
-          .pgAccountId(customer.getId())
-          .pgProvider(PG_PROVIDER)
-          .build();
-    } catch (Exception e) {
-      log.error(e.getMessage());
-
-      throw new RuntimeException("[%s] %s - failed".formatted(PG_PROVIDER, operationType));
-    }
+          return ExtPGAccountDto.builder()
+              .memberId(Long.parseLong(userId))
+              .pgAccountId(customer.getId())
+              .pgProvider(PG_PROVIDER)
+              .build();
+        });
   }
 
   /**
@@ -86,42 +83,68 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
    */
   @Override
   public ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PGAccount pgAccount) {
-    StripeOperationType operationType = StripeOperationType.CREATE_SETUP_INTENT;
+    return executeStripe(
+        StripeOperationType.CREATE_SETUP_INTENT,
+        operationType -> {
+          // Parms: **Stripe Customer ID** (not AccountV2 ID)
+          // Parms: Member ID (for metadata)
+          SetupIntentCreateParams params =
+              SetupIntentCreateParams.builder()
+                  .setCustomer(pgAccount.getPgAccountId())
+                  .setAutomaticPaymentMethods(
+                      SetupIntentCreateParams.AutomaticPaymentMethods.builder()
+                          .setEnabled(true)
+                          .build())
+                  .putMetadata(operationType.getMetadataKey(), pgAccount.getMemberId().toString())
+                  .build();
 
-    // Parms: **Stripe Customer ID** (not AccountV2 ID)
-    // Parms: Member ID (for metadata)
-    SetupIntentCreateParams params =
-        SetupIntentCreateParams.builder()
-            .setCustomer(pgAccount.getPgAccountId())
-            .setAutomaticPaymentMethods(
-                SetupIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build())
-            .putMetadata(operationType.getMetadataKey(), pgAccount.getMemberId().toString())
-            .build();
+          SetupIntent setupIntent = stripeClient.v1().setupIntents().create(params);
+          String userId = setupIntent.getMetadata().get(operationType.getMetadataKey());
 
-    try {
-      SetupIntent setupIntent = stripeClient.v1().setupIntents().create(params);
-      String userId = setupIntent.getMetadata().get(operationType.getMetadataKey());
-
-      return ExtPGPaymentMethodOperationDto.builder()
-          .memberId(Long.parseLong(userId))
-          .pgOperationId(setupIntent.getId())
-          .pgOperationName(operationType.name())
-          .pgAccountId(setupIntent.getCustomer())
-          .pgProvider(PG_PROVIDER)
-          .pgProviderSecret(setupIntent.getClientSecret())
-          .build();
-    } catch (Exception e) {
-      log.error(e.getMessage());
-
-      throw new RuntimeException("[%s] %s - failed".formatted(PG_PROVIDER, operationType));
-    }
+          return ExtPGPaymentMethodOperationDto.builder()
+              .memberId(Long.parseLong(userId))
+              .pgOperationId(setupIntent.getId())
+              .pgOperationName(operationType.name())
+              .pgAccountId(setupIntent.getCustomer())
+              .pgProvider(PG_PROVIDER)
+              .pgProviderSecret(setupIntent.getClientSecret())
+              .build();
+        });
   }
 
+  /**
+   * Retrieves a payment method from Stripe using the given PG account and payment method ID.
+   *
+   * <p>Here, we can check the payment method type (e.g., card, bank account).
+   *
+   * @param pgAccount The PG account containing the Stripe Customer ID.
+   * @param pgPaymentMethodId The ID of the payment method to retrieve.
+   * @return The retrieved payment method DTO.
+   */
   @Override
-  public void setupPaymentRequest() {}
+  public ExtPGPaymentMethodDto retrievePGPaymentMethod(
+      PGAccount pgAccount, String pgPaymentMethodId) {
+    return executeStripe(
+        StripeOperationType.RETRIEVE_PAYMENT_METHOD,
+        operationType -> {
+          PaymentMethod stripePaymentMethod =
+              stripeClient
+                  .v1()
+                  .customers()
+                  .paymentMethods()
+                  .retrieve(pgAccount.getPgAccountId(), pgPaymentMethodId);
 
-  @Override
-  public void confirmPaymentRequest() {}
+          StripePaymentMethodType stripePaymentMethodType =
+              StripePaymentMethodType.fromTypeName(stripePaymentMethod.getType());
+
+          return ExtPGPaymentMethodDto.builder()
+              .memberId(pgAccount.getMemberId())
+              .pgPaymentMethodId(stripePaymentMethod.getId())
+              .pgProvider(PG_PROVIDER)
+              .detail(stripePaymentMethodType.getConverter().apply(stripePaymentMethod))
+              .build();
+        });
+  }
 
   @Override
   public String getWebhookHeaderName() {
@@ -158,43 +181,6 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
       log.error(e.getMessage());
 
       throw new RuntimeException("[%s] Webhook payload parsing failed".formatted(PG_PROVIDER));
-    }
-  }
-
-  /**
-   * Retrieves a payment method from Stripe using the given PG account and payment method ID.
-   *
-   * <p>Here, we can check the payment method type (e.g., card, bank account).
-   *
-   * @param pgAccount The PG account containing the Stripe Customer ID.
-   * @param pgPaymentMethodId The ID of the payment method to retrieve.
-   * @return The retrieved payment method DTO.
-   */
-  @Override
-  public ExtPGPaymentMethodDto retrievePGPaymentMethod(
-      PGAccount pgAccount, String pgPaymentMethodId) {
-    try {
-      PaymentMethod stripePaymentMethod =
-          stripeClient
-              .v1()
-              .customers()
-              .paymentMethods()
-              .retrieve(pgAccount.getPgAccountId(), pgPaymentMethodId);
-
-      StripePaymentMethodType stripePaymentMethodType =
-          StripePaymentMethodType.fromTypeName(stripePaymentMethod.getType());
-
-      return ExtPGPaymentMethodDto.builder()
-          .memberId(pgAccount.getMemberId())
-          .pgPaymentMethodId(stripePaymentMethod.getId())
-          .pgProvider(PG_PROVIDER)
-          .detail(stripePaymentMethodType.getConverter().apply(stripePaymentMethod))
-          .build();
-    } catch (StripeException e) {
-      log.error(e.getMessage());
-
-      throw new RuntimeException(
-          "[%s] %s - failed".formatted(PG_PROVIDER, "Retrieve Payment Method"));
     }
   }
 }

@@ -11,6 +11,8 @@ flywaydb = "13.2.0"
 spotless = "8.10.2"
 stripe = "33.4.0"
 
+mockito = "5.23.0"
+
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependencyManagement = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
@@ -18,6 +20,8 @@ flyway = { id = "org.flywaydb.flyway", version.ref = "flywaydb" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
+lombok = { module = "org.projectlombok:lombok" }
+
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywaydb" }
 flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flywaydb" }
 
@@ -30,3 +34,7 @@ querydsl-apt = { module = "com.querydsl:querydsl-apt", version.ref = "querydsl" 
 springdoc-openapi-webmvc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version = "3.1.1" }
 
 stripe-java = { module = "com.stripe:stripe-java", version.ref = "stripe" }
+
+easyRandom = { module = "org.jeasy:easy-random", version = "6.0.1" }
+
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }

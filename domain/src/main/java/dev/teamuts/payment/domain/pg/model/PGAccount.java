@@ -3,7 +3,7 @@ package dev.teamuts.payment.domain.pg.model;
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.dto.ExtPGAccountDto;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

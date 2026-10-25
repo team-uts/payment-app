@@ -4,7 +4,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentMethodDetail;
 import dev.teamuts.payment.domain.payment.service.CardService;
-import dev.teamuts.payment.domain.pg.dto.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
+import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
 import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,6 @@ public class CardDetailProcessor implements PaymentMethodDetailProcessor {
   @AppTransactional
   public PaymentMethodDetail registerPaymentMethodDetail(
       PaymentMethod paymentMethod, ExtPGPaymentMethodDetail detail) {
-
     return cardService.registerNewCard(paymentMethod, detail);
   }
 }
