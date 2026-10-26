@@ -25,10 +25,13 @@ dependencies {
     implementation(project(":infra"))
     implementation(project(":persistence"))
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.security)
 
     // mapstruct for dto mapping (https://mapstruct.org/documentation/reference-guide/)
     implementation(libs.mapstruct.core)
     annotationProcessor(libs.mapstruct.processor)
+
+    implementation(libs.google.gson)
 
     // swagger
     implementation(libs.springdoc.openapi.webmvc)
