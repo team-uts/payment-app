@@ -8,11 +8,11 @@ afterEvaluate {
         ":infra"
     )
     project.tasks.apply {
-        // depends on sub-modules test tasks
+        // depends on submodules test tasks
         this.withType<Test> {
             dependsOn(multiModules.map { "$it:test" })
         }
-        // spotless checking for all sub-modules
+        // spotless checking for all submodules
         this.withType<SpotlessCheck> {
             dependsOn(multiModules.map { "$it:spotlessCheck" })
         }
@@ -24,6 +24,7 @@ dependencies {
     implementation(project(":shared"))
     implementation(project(":infra"))
     implementation(project(":persistence"))
+    implementation(libs.spring.boot.starter.actuator)
 
     // mapstruct for dto mapping (https://mapstruct.org/documentation/reference-guide/)
     implementation(libs.mapstruct.core)

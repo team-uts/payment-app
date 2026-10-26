@@ -14,7 +14,7 @@ plugins {
     alias(libs.plugins.spotless)
 }
 
-val projectLibs = rootProject.libs
+val projectLibs = libs
 
 allprojects {
     group = "dev.teamuts.payment"
@@ -47,17 +47,16 @@ subprojects {
     }
 
     dependencies {
-        implementation("org.springframework.boot:spring-boot-starter-webmvc")
-        implementation("org.springframework:spring-tx")
+        implementation(projectLibs.spring.boot.starter.webmvc)
+        implementation(projectLibs.spring.tx)
 
         compileOnly(projectLibs.lombok)
         annotationProcessor(projectLibs.lombok)
 
-        testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+        testImplementation(projectLibs.spring.boot.starter.webmvc.test)
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         testCompileOnly(projectLibs.lombok)
         testAnnotationProcessor(projectLibs.lombok)
-
         testImplementation(projectLibs.mockito)
         mockitoAgent(projectLibs.mockito) { isTransitive = false }
     }
