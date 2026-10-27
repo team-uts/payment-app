@@ -1,6 +1,9 @@
 package dev.teamuts.payment.domain.common.model;
 
 import dev.teamuts.payment.domain.payment.constant.Currency;
+import dev.teamuts.payment.shared.error.constant.MoneyErrorCode;
+import dev.teamuts.payment.shared.error.exception.BusinessException;
+import dev.teamuts.payment.shared.error.exception.ErrorArguments;
 import dev.teamuts.payment.shared.utils.MoneyCalculator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,7 +28,7 @@ public class Money {
 
   public static Money of(BigDecimal amount, Currency currency) {
     if (MoneyCalculator.isLessThanZero(amount)) {
-      throw new RuntimeException("Amount should be greater than or equal to zero");
+      throw BusinessException.of(MoneyErrorCode.LESS_THAN_ZERO, ErrorArguments.of(amount));
     }
 
     return new Money(amount.setScale(currency.getScale(), RoundingMode.UNNECESSARY), currency);
@@ -33,7 +36,8 @@ public class Money {
 
   private void checkIfSameCurrency(Money other) {
     if (!this.currency.equals(other.currency)) {
-      throw new RuntimeException("Currencies must be the same");
+      throw BusinessException.of(
+          MoneyErrorCode.CURRENCY_MISMATCH, ErrorArguments.of(this.currency, other.currency));
     }
   }
 
@@ -41,12 +45,6 @@ public class Money {
     checkIfSameCurrency(other);
 
     return MoneyCalculator.isEqual(this.amount, other.amount);
-  }
-
-  public boolean isGreaterThan(Money other) {
-    checkIfSameCurrency(other);
-
-    return MoneyCalculator.isGreaterThan(this.amount, other.amount);
   }
 
   public boolean isGreaterThanZero() {

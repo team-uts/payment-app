@@ -7,6 +7,9 @@ import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.payment.shared.error.constant.OrderErrorCode;
+import dev.teamuts.payment.shared.error.exception.ErrorArguments;
+import dev.teamuts.payment.shared.error.exception.OrderException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,9 +34,9 @@ public class OrderService {
                 });
 
     if (order.isNotTheSameMember(memberId)) {
-      throw new RuntimeException(
-          "Order (extOrderNum: %s) is not valid for processing payment for memberId %s"
-              .formatted(command.extOrderNum(), memberId));
+      throw OrderException.of(
+          OrderErrorCode.ORDER_MEMBER_MISMATCH,
+          ErrorArguments.of(order.getExtOrderNum(), memberId));
     }
 
     return order;

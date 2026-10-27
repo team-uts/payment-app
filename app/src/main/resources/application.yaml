@@ -7,5 +7,9 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 30s # default 30s (graceful shutdown)
 
+  messages:
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
 server:
   shutdown: graceful
