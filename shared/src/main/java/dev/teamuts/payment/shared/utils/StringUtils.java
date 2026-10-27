@@ -1,5 +1,7 @@
 package dev.teamuts.payment.shared.utils;
 
+import java.nio.charset.StandardCharsets;
+
 public class StringUtils {
   public static String truncate(String str, int maxLength) {
     if (str == null) {
@@ -17,5 +19,9 @@ public class StringUtils {
     }
 
     return target.substring(0, maxLength);
+  }
+
+  public static String covertByteArrayToStr(byte[] bytes, int maxLength) {
+    return new String(bytes, 0, Math.min(bytes.length, maxLength), StandardCharsets.UTF_8);
   }
 }
