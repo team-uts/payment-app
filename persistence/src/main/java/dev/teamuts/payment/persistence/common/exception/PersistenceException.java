@@ -1,23 +1,28 @@
 package dev.teamuts.payment.persistence.common.exception;
 
+import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.shared.error.constant.ErrorCode;
-import dev.teamuts.payment.shared.error.exception.ApiCommonException;
 import dev.teamuts.payment.shared.error.exception.ErrorArguments;
+import dev.teamuts.payment.shared.error.exception.SystemException;
 
-public class PersistenceException extends ApiCommonException {
-  private PersistenceException(ErrorCode errorCode) {
-    super(errorCode);
+public class PersistenceException extends SystemException {
+  private PersistenceException(ErrorCode errorCode, String logMessage, String detailedMessage) {
+    super(errorCode, logMessage, detailedMessage);
   }
 
   private PersistenceException(ErrorCode errorCode, Throwable cause) {
-    super(errorCode, cause);
+    super(errorCode, cause, null, null);
   }
 
   private PersistenceException(ErrorCode errorCode, ErrorArguments errorArgs) {
-    super(errorCode, errorArgs);
+    super(errorCode, errorArgs, null, null);
   }
 
-  public static PersistenceException of(ErrorCode errorCode) {
-    return new PersistenceException(errorCode);
+  public static PersistenceException notFound(BaseIdentifiableModel<?> model) {
+    return new PersistenceException(
+        PersistenceErrorCode.NOT_FOUND,
+        "Entity (%s) not found with id (%s) in the persistence layer"
+            .formatted(model.getClass().getSimpleName(), model.getId()),
+        null);
   }
 }

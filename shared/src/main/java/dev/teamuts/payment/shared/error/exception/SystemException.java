@@ -5,21 +5,31 @@ import lombok.Getter;
 
 @Getter
 public class SystemException extends ApiCommonException {
+  private final String logMessage;
+  private final String detailedMessage;
 
-  private SystemException(ErrorCode errorCode) {
+  protected SystemException(ErrorCode errorCode, String logMessage, String detailedMessage) {
     super(errorCode);
+    this.logMessage = logMessage;
+    this.detailedMessage = detailedMessage;
   }
 
-  private SystemException(ErrorCode errorCode, Throwable cause) {
+  protected SystemException(
+      ErrorCode errorCode, Throwable cause, String logMessage, String detailedMessage) {
     super(errorCode, cause);
+    this.logMessage = logMessage;
+    this.detailedMessage = detailedMessage;
   }
 
-  private SystemException(ErrorCode errorCode, ErrorArguments errorArgs) {
+  protected SystemException(
+      ErrorCode errorCode, ErrorArguments errorArgs, String logMessage, String detailedMessage) {
     super(errorCode, errorArgs);
+    this.logMessage = logMessage;
+    this.detailedMessage = detailedMessage;
   }
 
   public static SystemException of(ErrorCode errorCode) {
-    return new SystemException(errorCode);
+    return new SystemException(errorCode, null, null);
   }
 
   public static SystemException fromOrDefault(Throwable cause, ErrorCode defaultCode) {
@@ -27,10 +37,10 @@ public class SystemException extends ApiCommonException {
       return systemException;
     }
 
-    return new SystemException(defaultCode, cause);
+    return new SystemException(defaultCode, cause, null, null);
   }
 
   public static SystemException of(ErrorCode errorCode, ErrorArguments errorArgs) {
-    return new SystemException(errorCode, errorArgs);
+    return new SystemException(errorCode, errorArgs, null, null);
   }
 }

@@ -1,9 +1,7 @@
 package dev.teamuts.payment.shared.error.exception;
 
 import dev.teamuts.payment.shared.error.constant.ErrorCode;
-import lombok.Getter;
 
-@Getter
 public class BusinessException extends ApiCommonException {
   protected BusinessException(ErrorCode errorCode) {
     super(errorCode);

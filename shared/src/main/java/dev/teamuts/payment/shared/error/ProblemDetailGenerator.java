@@ -1,6 +1,7 @@
 package dev.teamuts.payment.shared.error;
 
 import dev.teamuts.payment.shared.error.constant.ErrorCode;
+import dev.teamuts.payment.shared.error.exception.SystemException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Locale;
@@ -17,15 +18,25 @@ import org.springframework.stereotype.Component;
 public class ProblemDetailGenerator {
   private final MessageSource messageSource;
 
+  // TODO
   private static final String PROBLEM_BASE_URL = "https://api.payment.teamuts.dev/problem/";
 
-  public ProblemDetail generate(ErrorCode errorCode, HttpServletRequest request, Locale locale) {
+  public ProblemDetail generate(
+      SystemException exception, HttpServletRequest request, Locale locale) {
+    ErrorCode errorCode = exception.getErrorCode();
+    String detail = exception.getDetailedMessage();
+
     ProblemDetail problem = ProblemDetail.forStatus(errorCode.getHttpStatus());
 
     problem.setType(getProblemType(errorCode));
     problem.setTitle(errorCode.name());
     problem.setProperty("code", errorCode.getCode());
-    problem.setDetail(messageSource.getMessage(errorCode.getMessageKey(), null, locale));
+
+    problem.setDetail(
+        detail != null && !detail.isBlank()
+            ? detail
+            : messageSource.getMessage(errorCode.getMessageKey(), null, locale));
+
     problem.setInstance(URI.create(request.getRequestURI()));
 
     return problem;

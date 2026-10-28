@@ -1,5 +1,6 @@
 package dev.teamuts.payment.app.common.response;
 
+import dev.teamuts.payment.persistence.common.exception.PersistenceException;
 import dev.teamuts.payment.shared.config.AppProfile;
 import dev.teamuts.payment.shared.error.ProblemDetailGenerator;
 import dev.teamuts.payment.shared.error.constant.CommonErrorCode;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Locale;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -33,6 +35,8 @@ public class CommonControllerAdvice {
   /**
    * Handle System Exception (Unexpected Exception). Default response status = 500 Internal Server
    * Error. Always return with problem detail.
+   *
+   * @param e {@link Exception} {@link SystemException} {@link PersistenceException}
    */
   @ApiResponse(
       responseCode = "500",
@@ -60,7 +64,7 @@ public class CommonControllerAdvice {
 
     logException(systemException);
 
-    return problemDetailGenerator.generate(systemException.getErrorCode(), request, locale);
+    return problemDetailGenerator.generate(systemException, request, locale);
   }
 
   /** Handle Business Logic Exception. Always return HTTP 200 OK with error code. */
@@ -97,11 +101,18 @@ public class CommonControllerAdvice {
   }
 
   private void logException(ApiCommonException e) {
+    String logMessage = e.getMessage();
+
+    if (Objects.requireNonNull(e) instanceof SystemException systemException) {
+      logMessage = systemException.getLogMessage();
+    }
+
     if (appProfile.isLocal()) {
       log.error(
-          "Code: {} / Exception: {}",
+          "Code: {} / Exception: {} / Msg: {} /",
           e.getErrorCode().name(),
           e.getClass().getSimpleName(),
+          logMessage,
           e.getCause());
       return;
     }
@@ -110,6 +121,6 @@ public class CommonControllerAdvice {
         "Code: {} / Exception: {} / Msg: {}",
         e.getErrorCode().name(),
         e.getClass().getSimpleName(),
-        e.getMessage());
+        logMessage);
   }
 }
