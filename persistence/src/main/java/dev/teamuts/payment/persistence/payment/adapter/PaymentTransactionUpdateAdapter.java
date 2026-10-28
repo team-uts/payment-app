@@ -3,6 +3,7 @@ package dev.teamuts.payment.persistence.payment.adapter;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionUpdatePort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
+import dev.teamuts.payment.persistence.common.exception.PersistenceException;
 import dev.teamuts.payment.persistence.payment.entity.PaymentTransactionJpaEntity;
 import dev.teamuts.payment.persistence.payment.repository.PaymentTransactionRepository;
 import dev.teamuts.payment.shared.data.AppTransactional;
@@ -19,10 +20,7 @@ public class PaymentTransactionUpdateAdapter implements PaymentTransactionUpdate
     PaymentTransactionJpaEntity entity =
         paymentTransactionRepository
             .findLockById(transaction.getId())
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "PaymentTransaction with ID " + transaction.getId() + " not found"));
+            .orElseThrow(() -> PersistenceException.notFound(transaction));
 
     entity.updatePGTransactionInfo(
         transaction.getPgTransactionId(),
@@ -38,10 +36,7 @@ public class PaymentTransactionUpdateAdapter implements PaymentTransactionUpdate
     PaymentTransactionJpaEntity entity =
         paymentTransactionRepository
             .findLockById(transaction.getId())
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "PaymentTransaction with ID " + transaction.getId() + " not found"));
+            .orElseThrow(() -> PersistenceException.notFound(transaction));
 
     entity.updateDetailMessage(transaction.getDetailMessage());
   }

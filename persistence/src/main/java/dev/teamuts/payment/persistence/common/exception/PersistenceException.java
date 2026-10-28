@@ -18,11 +18,20 @@ public class PersistenceException extends SystemException {
     super(errorCode, errorArgs, null, null);
   }
 
-  public static PersistenceException notFound(BaseIdentifiableModel<?> model) {
+  public static PersistenceException notFound(BaseIdentifiableModel<Long> model) {
     return new PersistenceException(
         PersistenceErrorCode.NOT_FOUND,
-        "Entity (%s) not found with id (%s) in the persistence layer"
+        "Entity (%s) not found with id (%d) in the persistence layer"
             .formatted(model.getClass().getSimpleName(), model.getId()),
+        null);
+  }
+
+  public static PersistenceException notFound(
+      Class<? extends BaseIdentifiableModel<Long>> modelClazz, Long id) {
+    return new PersistenceException(
+        PersistenceErrorCode.NOT_FOUND,
+        "Entity (%s) not found with id (%d) in the persistence layer"
+            .formatted(modelClazz.getSimpleName(), id),
         null);
   }
 }

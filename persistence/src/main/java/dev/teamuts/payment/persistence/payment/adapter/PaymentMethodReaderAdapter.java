@@ -4,6 +4,7 @@ import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodReaderPort;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
+import dev.teamuts.payment.persistence.common.exception.PersistenceException;
 import dev.teamuts.payment.persistence.payment.dto.PaymentMethodListRow;
 import dev.teamuts.payment.persistence.payment.entity.PaymentMethodJpaEntity;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentMethodConverter;
@@ -29,7 +30,7 @@ public class PaymentMethodReaderAdapter implements PaymentMethodReaderPort {
     PaymentMethodJpaEntity entity =
         paymentMethodRepository
             .findById(id)
-            .orElseThrow(() -> new RuntimeException("Payment method not found with id: " + id));
+            .orElseThrow(() -> PersistenceException.notFound(PaymentMethod.class, id));
 
     return paymentMethodConverter.convertToDomainModel(entity);
   }

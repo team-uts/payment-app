@@ -3,6 +3,7 @@ package dev.teamuts.payment.persistence.payment.adapter;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentUpdatePort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
+import dev.teamuts.payment.persistence.common.exception.PersistenceException;
 import dev.teamuts.payment.persistence.payment.entity.PaymentJpaEntity;
 import dev.teamuts.payment.persistence.payment.repository.PaymentRepository;
 import dev.teamuts.payment.shared.data.AppTransactional;
@@ -19,8 +20,7 @@ public class PaymentUpdateAdapter implements PaymentUpdatePort {
     PaymentJpaEntity entity =
         paymentRepository
             .findLockById(payment.getId())
-            .orElseThrow(
-                () -> new RuntimeException("Payment not found with id: " + payment.getId()));
+            .orElseThrow(() -> PersistenceException.notFound(payment));
 
     entity.updateStatus(payment.getStatus());
   }
