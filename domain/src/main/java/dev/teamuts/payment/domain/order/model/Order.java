@@ -1,6 +1,7 @@
 package dev.teamuts.payment.domain.order.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
+import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
@@ -8,16 +9,13 @@ import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @DomainModel
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
-public class Order {
-  private Long id;
+public class Order extends BaseIdentifiableModel<Long> {
   private String extOrderNum;
   private AppServiceType serviceType;
   private Long memberId;
@@ -45,14 +43,18 @@ public class Order {
       BigDecimal amount,
       Currency currency,
       OrderStatus status) {
-    return Order.builder()
-        .id(id)
-        .extOrderNum(extOrderNum)
-        .serviceType(serviceType)
-        .memberId(memberId)
-        .amount(Money.of(amount, currency))
-        .status(status)
-        .build();
+    Order order =
+        Order.builder()
+            .extOrderNum(extOrderNum)
+            .serviceType(serviceType)
+            .memberId(memberId)
+            .amount(Money.of(amount, currency))
+            .status(status)
+            .build();
+
+    order.id = id;
+
+    return order;
   }
 
   public boolean isTheSameMember(Long memberId) {

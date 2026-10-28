@@ -1,8 +1,8 @@
 package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 /**
  * Represents a bank account payment method detail.
@@ -10,10 +10,9 @@ import lombok.experimental.SuperBuilder;
  * <p>TODO (Not implemented for this demo, but can be used for future expansion)
  */
 @DomainModel
-@SuperBuilder
+@Builder(access = lombok.AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class BankAccount extends PaymentMethodDetail {
-  private Long id;
   private Long memberId;
   private String bankName;
   private String accountNumber;

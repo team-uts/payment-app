@@ -1,6 +1,7 @@
 package dev.teamuts.payment.domain.pg.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
+import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
@@ -8,17 +9,14 @@ import dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResultType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.Assert;
 
 @DomainModel
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
-public class PGExternalRequest {
-  private Long id;
+public class PGExternalRequest extends BaseIdentifiableModel<Long> {
   private String pgRequestId;
   private Long memberId;
   // the ID of the original request that triggered this external request
@@ -66,18 +64,22 @@ public class PGExternalRequest {
       String extDetailedMessage,
       String providerSecret,
       PGRequestStatus status) {
-    return PGExternalRequest.builder()
-        .id(id)
-        .pgRequestId(pgRequestId)
-        .memberId(memberId)
-        .sourceRequestId(sourceRequestId)
-        .pgProvider(pgProvider)
-        .requestType(requestType)
-        .extOperation(extOperation)
-        .extDetailedMessage(extDetailedMessage)
-        .providerSecret(providerSecret)
-        .status(status)
-        .build();
+    PGExternalRequest pgRequest =
+        PGExternalRequest.builder()
+            .pgRequestId(pgRequestId)
+            .memberId(memberId)
+            .sourceRequestId(sourceRequestId)
+            .pgProvider(pgProvider)
+            .requestType(requestType)
+            .extOperation(extOperation)
+            .extDetailedMessage(extDetailedMessage)
+            .providerSecret(providerSecret)
+            .status(status)
+            .build();
+
+    pgRequest.id = id;
+
+    return pgRequest;
   }
 
   public boolean isSameRequestTypeWith(PGExternalRequest other) {

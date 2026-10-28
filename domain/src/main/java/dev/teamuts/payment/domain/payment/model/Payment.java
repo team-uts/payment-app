@@ -1,6 +1,7 @@
 package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
+import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
@@ -13,16 +14,13 @@ import dev.teamuts.payment.domain.payment.exception.PaymentException;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @DomainModel
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
-public class Payment {
-  private Long id;
+public class Payment extends BaseIdentifiableModel<Long> {
   private Long orderId;
   private Long memberId;
   private AppServiceType serviceType;
@@ -90,18 +88,22 @@ public class Payment {
       Currency currency,
       Long payMethodId,
       PaymentMethodType payMethodType) {
-    return Payment.builder()
-        .id(id)
-        .orderId(orderId)
-        .memberId(memberId)
-        .serviceType(serviceType)
-        .status(status)
-        .pgProvider(pgProvider)
-        .payAmount(Money.of(payAmount, currency))
-        .pointAmount(Money.of(pointAmount, currency))
-        .payMethodId(payMethodId)
-        .payMethodType(payMethodType)
-        .build();
+    Payment payment =
+        Payment.builder()
+            .orderId(orderId)
+            .memberId(memberId)
+            .serviceType(serviceType)
+            .status(status)
+            .pgProvider(pgProvider)
+            .payAmount(Money.of(payAmount, currency))
+            .pointAmount(Money.of(pointAmount, currency))
+            .payMethodId(payMethodId)
+            .payMethodType(payMethodType)
+            .build();
+
+    payment.id = id;
+
+    return payment;
   }
 
   public Money getPayAmountMoney() {
