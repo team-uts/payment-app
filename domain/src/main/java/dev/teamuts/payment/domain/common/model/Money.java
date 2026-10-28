@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.common.model;
 
+import dev.teamuts.payment.domain.common.exception.MoneyErrorCode;
 import dev.teamuts.payment.domain.payment.constant.Currency;
-import dev.teamuts.payment.shared.error.constant.MoneyErrorCode;
 import dev.teamuts.payment.shared.error.exception.BusinessException;
 import dev.teamuts.payment.shared.error.exception.ErrorArguments;
 import dev.teamuts.payment.shared.utils.MoneyCalculator;

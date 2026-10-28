@@ -5,4 +5,6 @@ import java.util.Optional;
 
 public interface PGAccountReaderPort {
   Optional<PGAccount> retrievePGAccountOptionalByMemberId(Long memberId);
+
+  PGAccount retrievePGAccountByMemberId(Long memberId);
 }

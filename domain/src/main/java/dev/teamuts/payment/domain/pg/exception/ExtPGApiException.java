@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.common.exception;
+package dev.teamuts.payment.domain.pg.exception;
 
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import lombok.AccessLevel;

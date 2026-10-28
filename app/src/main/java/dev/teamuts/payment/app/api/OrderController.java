@@ -2,7 +2,7 @@ package dev.teamuts.payment.app.api;
 
 import dev.teamuts.payment.app.api.dto.OrderDtoMapper;
 import dev.teamuts.payment.app.api.dto.PayOrderRequestDto;
-import dev.teamuts.payment.app.common.response.ApiResponse;
+import dev.teamuts.payment.app.common.response.ApiCommonResponse;
 import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.usecase.PayOrderUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,12 +31,12 @@ public class OrderController {
    */
   @Operation(summary = "Pay Order", description = "Pay Order API (External PG, Point)")
   @PostMapping("/pay")
-  public ApiResponse<PayOrderInfo> payOrder(
+  public ApiCommonResponse<PayOrderInfo> payOrder(
       @RequestParam Long memberId, @RequestBody PayOrderRequestDto request) {
     var command = mapper.of(request);
 
     PayOrderInfo result = payOrderUseCase.execute(memberId, command);
 
-    return ApiResponse.success(result);
+    return ApiCommonResponse.success(result);
   }
 }

@@ -1,12 +1,12 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.exception.PgExternalRequestErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.mapper.PGExternalRequestConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGExternalRequestRepository;
-import dev.teamuts.payment.shared.error.constant.PgExternalRequestErrorCode;
 import dev.teamuts.payment.shared.error.exception.BusinessException;
 import dev.teamuts.payment.shared.error.exception.ErrorArguments;
 import java.util.Optional;

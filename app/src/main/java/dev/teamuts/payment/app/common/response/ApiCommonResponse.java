@@ -8,16 +8,16 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponse<T> {
+public class ApiCommonResponse<T> {
   private ApiResultType result;
   private T data;
   private final ErrorResponse error;
 
-  public static <T> ApiResponse<T> success(T data) {
-    return new ApiResponse<>(ApiResultType.SUCCESS, data, null);
+  public static <T> ApiCommonResponse<T> success(T data) {
+    return new ApiCommonResponse<>(ApiResultType.SUCCESS, data, null);
   }
 
-  public static <T> ApiResponse<T> failure(ErrorResponse errorResponse) {
-    return new ApiResponse<>(ApiResultType.FAILURE, null, errorResponse);
+  public static <T> ApiCommonResponse<T> failure(ErrorResponse errorResponse) {
+    return new ApiCommonResponse<>(ApiResultType.FAILURE, null, errorResponse);
   }
 }

@@ -8,6 +8,8 @@ import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.payment.exception.PaymentErrorCode;
+import dev.teamuts.payment.domain.payment.exception.PaymentException;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
@@ -41,15 +43,7 @@ public class Payment {
 
   public static Payment processing(Order order, PaymentMethod paymentMethod, Money pointAmount) {
     if (order.hasLessAmountThan(pointAmount)) {
-      throw new RuntimeException(
-          "Order (id: %d) amount should be greater than point amount (%.2f)"
-              .formatted(order.getId(), pointAmount.getAmount()));
-    }
-
-    if (paymentMethod == null) {
-      throw new RuntimeException(
-          "Payment method is required for processing payment for order (id: %d)"
-              .formatted(order.getId()));
+      throw PaymentException.of(PaymentErrorCode.CANNOT_BE_GENERATED, order.getExtOrderNum());
     }
 
     return Payment.builder()
@@ -67,9 +61,8 @@ public class Payment {
 
   public static Payment processingOnlyPoint(Order order, Money pointAmount) {
     if (order.hasNotEqualAmount(pointAmount) && pointAmount.isGreaterThanZero()) {
-      throw new RuntimeException(
-          "Order (id: %d) amount and point amount (%.2f) must be equal and greater than zero"
-              .formatted(order.getId(), pointAmount.getAmount()));
+      throw PaymentException.of(
+          PaymentErrorCode.ONLY_FOR_POINT_CANNOT_BE_GENERATED, order.getExtOrderNum());
     }
 
     return Payment.builder()
@@ -129,7 +122,7 @@ public class Payment {
 
   public void checkProcessingStatus() {
     if (this.status != PaymentStatus.PROCESSING) {
-      throw new RuntimeException("Payment (id: %d) is not in PROCESSING status".formatted(this.id));
+      throw PaymentException.of(PaymentErrorCode.NOT_PROCESSING_STATUS, this.id);
     }
   }
 
@@ -168,9 +161,7 @@ public class Payment {
 
   public Currency getCurrency() {
     if (this.payAmount.hasNotSameCurrency(this.pointAmount)) {
-      throw new RuntimeException(
-          "Payment (id: %d) has different currencies for payAmount and pointAmount"
-              .formatted(this.id));
+      throw PaymentException.of(PaymentErrorCode.HAS_NOT_SAME_CURRENCY, this.id);
     }
 
     return this.payAmount.getCurrency();

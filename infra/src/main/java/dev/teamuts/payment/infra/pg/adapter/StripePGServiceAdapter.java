@@ -16,6 +16,7 @@ import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
+import dev.teamuts.payment.domain.pg.exception.PgProviderErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.common.annotation.PGAdapter;
@@ -25,6 +26,7 @@ import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
 import dev.teamuts.payment.infra.pg.webhook.stripe.StripeWebhookEventMapperProvider;
+import dev.teamuts.payment.shared.error.exception.SystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -175,12 +177,11 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
     } catch (SignatureVerificationException e) {
       log.error(e.getMessage());
 
-      // TODO: need to handle this exception properly, maybe return a 400 response to Stripe
-      throw new RuntimeException("[%s] Webhook verification failed".formatted(PG_PROVIDER));
+      throw SystemException.of(PgProviderErrorCode.WEBHOOK_VERIFICATION_FAILED);
     } catch (Exception e) {
       log.error(e.getMessage());
 
-      throw new RuntimeException("[%s] Webhook payload parsing failed".formatted(PG_PROVIDER));
+      throw SystemException.of(PgProviderErrorCode.WEBHOOK_PAYLOAD_PARSING_FAILED);
     }
   }
 }

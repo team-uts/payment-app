@@ -1,5 +1,6 @@
-package dev.teamuts.payment.shared.error.constant;
+package dev.teamuts.payment.domain.order.exception;
 
+import dev.teamuts.payment.shared.error.constant.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,12 +9,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum OrderErrorCode implements ErrorCode {
-  ORDER_NOT_FOUND("ORD-0001", HttpStatus.NOT_FOUND),
-  ORDER_ALREADY_PAID("ORD-0002", HttpStatus.CONFLICT),
-  ORDER_ALREADY_CANCELLED("ORD-0003", HttpStatus.CONFLICT),
-  ORDER_PAYMENT_FAILED("ORD-0004", HttpStatus.BAD_REQUEST),
+  NOT_FOUND("ORD-0001", HttpStatus.NOT_FOUND),
 
-  ORDER_MEMBER_MISMATCH("ORD-0011", HttpStatus.FORBIDDEN),
+  MEMBER_MISMATCH("ORD-0011", HttpStatus.FORBIDDEN),
   ;
 
   private final String code;

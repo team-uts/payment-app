@@ -1,5 +1,6 @@
-package dev.teamuts.payment.shared.error.constant;
+package dev.teamuts.payment.domain.pg.exception;
 
+import dev.teamuts.payment.shared.error.constant.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,9 +8,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum MoneyErrorCode implements ErrorCode {
-  LESS_THAN_ZERO("MNY-0001", HttpStatus.BAD_REQUEST),
-  CURRENCY_MISMATCH("MNY-0002", HttpStatus.BAD_REQUEST),
+public enum PgExternalRequestErrorCode implements ErrorCode {
+  NOT_FOUND("PER-0001", HttpStatus.NOT_FOUND),
+  NOT_FOUND_WITH_PARAMS("PER-0002", HttpStatus.NOT_FOUND),
   ;
 
   private final String code;
@@ -17,6 +18,6 @@ public enum MoneyErrorCode implements ErrorCode {
 
   @Override
   public String getMessageKey() {
-    return "money." + name();
+    return "pg_external_request." + name();
   }
 }

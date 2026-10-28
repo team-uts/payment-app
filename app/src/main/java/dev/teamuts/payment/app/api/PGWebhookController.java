@@ -1,6 +1,6 @@
 package dev.teamuts.payment.app.api;
 
-import dev.teamuts.payment.app.common.response.ApiResponse;
+import dev.teamuts.payment.app.common.response.ApiCommonResponse;
 import dev.teamuts.payment.app.pg.PGWebhookPayload;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.usecase.ProcessPGWebhookEventUseCase;
@@ -24,9 +24,10 @@ public class PGWebhookController {
       summary = "Receive Webhook Event",
       description = "Processes webhook events received from various payment gateway providers.")
   @PostMapping("/{requestType}/{pgProvider}")
-  public ApiResponse<String> processWebhookEvent(@PGWebhookPayload ExtPGWebhookEventDto event) {
+  public ApiCommonResponse<String> processWebhookEvent(
+      @PGWebhookPayload ExtPGWebhookEventDto event) {
     processPGWebhookEventUseCase.execute(event);
 
-    return ApiResponse.success("ok");
+    return ApiCommonResponse.success("ok");
   }
 }
