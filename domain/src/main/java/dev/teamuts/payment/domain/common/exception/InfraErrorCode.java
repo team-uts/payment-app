@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum InfraErrorCode implements ErrorCode {
+  PG_OPERATION_ERROR("INFRA-0011"),
   PG_WEBHOOK_DESERIALIZATION_FAILED("INFRA-0101"),
   ;
 
