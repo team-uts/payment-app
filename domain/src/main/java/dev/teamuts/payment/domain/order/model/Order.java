@@ -6,6 +6,8 @@ import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
+import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
+import dev.teamuts.payment.domain.order.exception.OrderException;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
@@ -81,11 +83,19 @@ public class Order extends BaseIdentifiableModel<Long> {
     return !this.amount.equals(amount);
   }
 
+  /**
+   * Calculate remaining amount from order's total amount.
+   *
+   * @param amount (e.g., point amount)
+   * @return remaining amount after subtracting the argument amount.
+   */
   public Money getRemainingAmount(Money amount) {
     if (hasLessAmountThan(amount)) {
-      throw new RuntimeException(
-          "Order (id: %d) have no remaining amount (amount: %.2f < minus amount: %.2f)"
-              .formatted(this.id, this.amount.getAmount(), amount.getAmount()));
+      throw OrderException.of(
+          OrderErrorCode.HAVE_NO_REMAINING_AMOUNT,
+          this.id,
+          this.amount.getAmount(),
+          amount.getAmount());
     }
 
     return this.amount.minus(amount);
@@ -100,11 +110,10 @@ public class Order extends BaseIdentifiableModel<Long> {
   }
 
   public void paymentPending() {
-    // TODO: check the persistence status
+    this.checkPersisted();
+
     if (this.status != OrderStatus.INIT) {
-      throw new RuntimeException(
-          "Order (id: %d) status must be INIT to change to PAYMENT_PENDING, but current status is %s"
-              .formatted(this.id, this.status));
+      throw OrderException.of(OrderErrorCode.STATUS_MUST_BE_INIT, this.id, this.status);
     }
 
     this.status = OrderStatus.PAYMENT_PENDING;

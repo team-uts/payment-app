@@ -2,6 +2,8 @@ package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.payment.exception.PaymentException;
+import dev.teamuts.payment.domain.payment.exception.PaymentTransactionErrorCode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +40,7 @@ public class PaymentTransactions {
    */
   public static PaymentTransactions initFromPayment(Payment payment) {
     if (!payment.isProcessing()) {
-      throw new RuntimeException("Payment cannot create pay transaction: " + payment.getId());
+      throw PaymentException.of(PaymentTransactionErrorCode.CANNOT_GENERATE_TXS, payment.getId());
     }
 
     // initialize new tx based on the pay sequence type condition.

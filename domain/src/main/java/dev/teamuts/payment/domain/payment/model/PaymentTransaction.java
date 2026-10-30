@@ -8,6 +8,8 @@ import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
+import dev.teamuts.payment.domain.payment.exception.PaymentException;
+import dev.teamuts.payment.domain.payment.exception.PaymentTransactionErrorCode;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.shared.utils.StringUtils;
@@ -46,8 +48,8 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
 
   public static PaymentTransaction initPay(Payment payment) {
     if (payment.hasNoPayAmount()) {
-      throw new RuntimeException(
-          "This Payment (id: %d) is invalid for payment transaction".formatted(payment.getId()));
+      throw PaymentException.of(
+          PaymentTransactionErrorCode.CANNOT_GENERATE_WITH_NO_PAY_AMOUNT, payment.getId());
     }
 
     return PaymentTransaction.builder()
@@ -66,8 +68,8 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
 
   public static PaymentTransaction initPoint(Payment payment) {
     if (payment.hasNoPointAmount()) {
-      throw new RuntimeException(
-          "This Payment (id: %d) is invalid for point transaction".formatted(payment.getId()));
+      throw PaymentException.of(
+          PaymentTransactionErrorCode.CANNOT_GENERATE_WITH_NO_POINT_AMOUNT, payment.getId());
     }
 
     return PaymentTransaction.builder()

@@ -1,4 +1,4 @@
-package dev.teamuts.payment.persistence.common.exception;
+package dev.teamuts.payment.domain.common.exception;
 
 import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.shared.error.constant.ErrorCode;
@@ -32,6 +32,13 @@ public class PersistenceException extends SystemException {
         PersistenceErrorCode.NOT_FOUND,
         "Entity (%s) not found with id (%d) in the persistence layer"
             .formatted(modelClazz.getSimpleName(), id),
+        null);
+  }
+
+  public static PersistenceException notPersisted(BaseIdentifiableModel<?> model) {
+    return new PersistenceException(
+        PersistenceErrorCode.NOT_PERSISTED,
+        "Entity (%s) is not persisted yet.".formatted(model.getClass().getSimpleName()),
         null);
   }
 }

@@ -1,4 +1,4 @@
-package dev.teamuts.payment.persistence.common.exception;
+package dev.teamuts.payment.domain.common.exception;
 
 import dev.teamuts.payment.shared.error.constant.ErrorCode;
 import lombok.AccessLevel;
@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PersistenceErrorCode implements ErrorCode {
   NOT_FOUND("PERS-0001"),
-  ;
+  NOT_PERSISTED("PERS-0002");
 
   private final String code;
   // Persistence layer errors > Internal Server Error (500)

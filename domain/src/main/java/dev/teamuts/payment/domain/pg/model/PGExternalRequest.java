@@ -90,8 +90,9 @@ public class PGExternalRequest extends BaseIdentifiableModel<Long> {
     return this.status == PGRequestStatus.COMPLETED;
   }
 
-  // TODO: check if this model is persistent in the database.
   public void completed() {
+    this.checkPersisted();
+
     this.status = PGRequestStatus.COMPLETED;
   }
 
@@ -100,8 +101,10 @@ public class PGExternalRequest extends BaseIdentifiableModel<Long> {
     this.status = processResultType.getPGRequestStatus();
   }
 
-  // TODO: check if these models are persistent in the database.
   public void associateWithSource(PGExternalRequest source) {
+    source.checkPersisted();
+    this.checkPersisted();
+
     Assert.state(
         this.isSameRequestTypeWith(source),
         () ->

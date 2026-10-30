@@ -1,9 +1,9 @@
 package dev.teamuts.payment.persistence.order.adapter;
 
+import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
-import dev.teamuts.payment.persistence.common.exception.PersistenceException;
 import dev.teamuts.payment.persistence.order.entity.OrderJpaEntity;
 import dev.teamuts.payment.persistence.order.repository.OrderRepository;
 import dev.teamuts.payment.shared.data.AppTransactional;

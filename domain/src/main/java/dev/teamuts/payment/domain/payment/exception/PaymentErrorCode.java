@@ -13,6 +13,8 @@ public enum PaymentErrorCode implements ErrorCode {
   ONLY_FOR_POINT_CANNOT_BE_GENERATED("PAY-0022", HttpStatus.BAD_REQUEST),
   NOT_PROCESSING_STATUS("PAY-0023", HttpStatus.BAD_REQUEST),
   HAS_NOT_SAME_CURRENCY("PAY-0024", HttpStatus.BAD_REQUEST),
+
+  CANNOT_PROCESS_PAY_TX("PAY-0101", HttpStatus.BAD_REQUEST),
   ;
 
   private final String code;

@@ -1,6 +1,6 @@
 package dev.teamuts.payment.app.common.response;
 
-import dev.teamuts.payment.persistence.common.exception.PersistenceException;
+import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.payment.shared.config.AppProfile;
 import dev.teamuts.payment.shared.error.ProblemDetailGenerator;
 import dev.teamuts.payment.shared.error.constant.CommonErrorCode;
