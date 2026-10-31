@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.payment.facade.pay;
 
+import dev.teamuts.payment.domain.common.process.DomainProcessStepPipeline;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
-import dev.teamuts.payment.domain.payment.facade.pay.helper.PayProcessStepPipeline;
 import dev.teamuts.payment.domain.payment.facade.pay.helper.PayTransactionHelperProcessor;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
@@ -34,7 +34,7 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
   public void pay(PaymentTransaction transaction) {
     // 1. retrieve tx from PG to check if the transaction is already created.
     // if the tx is already associated with PG, then execute synchronization with PG again.
-    PayProcessStepPipeline.start(transaction)
+    DomainProcessStepPipeline.start(transaction)
         .runIf(
             PaymentTransaction::isAlreadyAssociatedWithPg,
             tx -> {
