@@ -23,8 +23,11 @@ allprojects {
     apply {
         plugin(projectLibs.plugins.spotless.pluginId())
     }
+
     spotless {
         java {
+            target("src/**/*.java")
+            targetExclude("**/generated/**")
             googleJavaFormat()
             removeUnusedImports()
         }

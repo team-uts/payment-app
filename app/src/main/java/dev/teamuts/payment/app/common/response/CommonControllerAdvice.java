@@ -4,7 +4,7 @@ import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.payment.shared.config.AppProfile;
 import dev.teamuts.payment.shared.error.ProblemDetailGenerator;
 import dev.teamuts.payment.shared.error.constant.CommonErrorCode;
-import dev.teamuts.payment.shared.error.exception.ApiCommonException;
+import dev.teamuts.payment.shared.error.exception.ApiExternalException;
 import dev.teamuts.payment.shared.error.exception.BusinessException;
 import dev.teamuts.payment.shared.error.exception.SystemException;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -100,7 +100,7 @@ public class CommonControllerAdvice {
     return ApiCommonResponse.failure(errorResponse);
   }
 
-  private void logException(ApiCommonException e) {
+  private void logException(ApiExternalException e) {
     String logMessage = e.getMessage();
 
     if (Objects.requireNonNull(e) instanceof SystemException systemException) {

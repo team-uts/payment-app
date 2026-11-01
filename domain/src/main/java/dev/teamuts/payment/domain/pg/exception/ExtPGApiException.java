@@ -1,12 +1,13 @@
 package dev.teamuts.payment.domain.pg.exception;
 
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.payment.shared.error.exception.ApiInternalException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ExtPGApiException extends RuntimeException {
+public class ExtPGApiException extends ApiInternalException {
   private final Long transactionId;
   private final String pgResponseCode;
   private final String pgErrorCode;

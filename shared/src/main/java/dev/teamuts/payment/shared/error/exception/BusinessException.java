@@ -2,7 +2,7 @@ package dev.teamuts.payment.shared.error.exception;
 
 import dev.teamuts.payment.shared.error.constant.ErrorCode;
 
-public class BusinessException extends ApiCommonException {
+public class BusinessException extends ApiExternalException {
   protected BusinessException(ErrorCode errorCode) {
     super(errorCode);
   }

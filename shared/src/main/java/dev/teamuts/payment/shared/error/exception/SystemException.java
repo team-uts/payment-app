@@ -4,7 +4,7 @@ import dev.teamuts.payment.shared.error.constant.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class SystemException extends ApiCommonException {
+public class SystemException extends ApiExternalException {
   private final String logMessage;
   private final String detailedMessage;
 
