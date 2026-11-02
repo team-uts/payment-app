@@ -2,8 +2,12 @@ package dev.teamuts.payment.domain.payment.facade;
 
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
+import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
+import dev.teamuts.payment.domain.order.exception.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
+import dev.teamuts.payment.domain.payment.exception.PaymentErrorCode;
+import dev.teamuts.payment.domain.payment.exception.PaymentException;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.service.PaymentService;
@@ -30,9 +34,8 @@ public class OrderPaymentFacade {
    */
   public Payment processPayment(Order order, PayOrderCommand command) {
     if (order.cannotProcessPayment()) {
-      throw new RuntimeException(
-          "Cannot process payment for order (extOrderNum: %s) with status %s"
-              .formatted(order.getExtOrderNum(), order.getStatus()));
+      throw OrderException.of(
+          OrderErrorCode.CANNOT_PAY_PROCESS, order.getExtOrderNum(), order.getStatus());
     }
 
     // Retrieve or Create Payment (PROCESSING)
@@ -40,7 +43,7 @@ public class OrderPaymentFacade {
 
     // Check if the payment can be processed
     if (payment.cannotProcessPayTransaction()) {
-      throw new RuntimeException("Cannot process payment" + payment.getId());
+      throw PaymentException.of(PaymentErrorCode.CANNOT_PROCESS_PAY_TX, payment.getId());
     }
 
     // Prepare Order for Payment process

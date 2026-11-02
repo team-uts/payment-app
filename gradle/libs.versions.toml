@@ -8,7 +8,7 @@ querydsl = "5.1.0"
 mapstruct = "1.6.3"
 flywaydb = "13.2.0"
 
-spotless = "8.10.2"
+spotless = "8.10.3"
 stripe = "33.4.0"
 
 [plugins]

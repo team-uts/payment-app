@@ -16,12 +16,16 @@ import dev.teamuts.payment.domain.order.OrderFixtureFactory;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
+import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
+import dev.teamuts.payment.domain.order.exception.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
+import dev.teamuts.payment.domain.payment.exception.PaymentErrorCode;
+import dev.teamuts.payment.domain.payment.exception.PaymentException;
 import dev.teamuts.payment.domain.payment.factory.PaymentFixtureFactory;
 import dev.teamuts.payment.domain.payment.factory.PaymentTransactionFixtureFactory;
 import dev.teamuts.payment.domain.payment.model.Payment;
@@ -289,9 +293,8 @@ class OrderPaymentFacadeTest {
     Order order = OrderFixtureFactory.createSingle(finalStatus);
 
     assertThatThrownBy(() -> orderPaymentFacade.processPayment(order, command))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining(EXT_ORDER_NUM)
-        .hasMessageContaining(finalStatus.name());
+        .isInstanceOf(OrderException.class)
+        .hasMessageContaining(OrderErrorCode.CANNOT_PAY_PROCESS.name());
 
     // Then nothing is processed at all
     verifyNoInteractions(
@@ -322,8 +325,8 @@ class OrderPaymentFacadeTest {
         .thenReturn(givenPayment);
 
     assertThatThrownBy(() -> orderPaymentFacade.processPayment(givenOrder, command))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Cannot process payment" + givenPayment.getId());
+        .isInstanceOf(PaymentException.class)
+        .hasMessageContaining(PaymentErrorCode.CANNOT_PROCESS_PAY_TX.name());
 
     // Then the givenOrder is never prepared and no transaction is processed
     verifyNoInteractions(orderService, paymentTransactionService, paymentTransactionExecutor);
@@ -346,8 +349,8 @@ class OrderPaymentFacadeTest {
         .thenReturn(givenPayment);
 
     assertThatThrownBy(() -> orderPaymentFacade.processPayment(givenOrder, command))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("Cannot process payment" + givenPayment.getId());
+        .isInstanceOf(PaymentException.class)
+        .hasMessageContaining(PaymentErrorCode.CANNOT_PROCESS_PAY_TX.name());
 
     verifyNoInteractions(orderService, paymentTransactionService, paymentTransactionExecutor);
   }

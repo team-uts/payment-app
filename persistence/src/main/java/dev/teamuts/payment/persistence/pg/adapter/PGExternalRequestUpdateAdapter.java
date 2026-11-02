@@ -1,5 +1,6 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
+import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestUpdatePort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
@@ -19,10 +20,7 @@ public class PGExternalRequestUpdateAdapter implements PGExternalRequestUpdatePo
     PGExternalRequestJpaEntity entity =
         pgExternalRequestRepository
             .findLockById(pgExternalRequest.getId())
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "PGExternalRequest not found with id: " + pgExternalRequest.getId()));
+            .orElseThrow(() -> PersistenceException.notFound(pgExternalRequest));
 
     entity.updateStatus(pgExternalRequest.getStatus());
   }
@@ -32,10 +30,7 @@ public class PGExternalRequestUpdateAdapter implements PGExternalRequestUpdatePo
     PGExternalRequestJpaEntity entity =
         pgExternalRequestRepository
             .findLockById(pgExternalRequest.getId())
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "PGExternalRequest not found with id: " + pgExternalRequest.getId()));
+            .orElseThrow(() -> PersistenceException.notFound(pgExternalRequest));
 
     entity.updateStatus(pgExternalRequest.getStatus());
     entity.updateSourceRequestId(pgExternalRequest.getSourceRequestId());

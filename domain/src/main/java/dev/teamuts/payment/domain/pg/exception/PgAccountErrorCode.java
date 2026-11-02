@@ -1,0 +1,22 @@
+package dev.teamuts.payment.domain.pg.exception;
+
+import dev.teamuts.payment.shared.error.constant.ErrorCode;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public enum PgAccountErrorCode implements ErrorCode {
+  NOT_FOUND_WITH_MEMBER("PGA-0001", HttpStatus.NOT_FOUND),
+  ;
+
+  private final String code;
+  private final HttpStatus httpStatus;
+
+  @Override
+  public String getMessageKey() {
+    return "pg_account." + name();
+  }
+}

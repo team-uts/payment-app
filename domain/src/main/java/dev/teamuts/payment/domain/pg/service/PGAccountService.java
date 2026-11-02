@@ -22,8 +22,7 @@ public class PGAccountService {
   }
 
   public PGAccount getPGAccountByMemberId(Long memberId) {
-    return getPGAccountByMemberIdNullable(memberId)
-        .orElseThrow(() -> new RuntimeException("PGAccount not found for memberId: " + memberId));
+    return pgAccountReaderPort.retrievePGAccountByMemberId(memberId);
   }
 
   @AppTransactional

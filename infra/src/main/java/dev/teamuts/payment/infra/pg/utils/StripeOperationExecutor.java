@@ -1,6 +1,8 @@
 package dev.teamuts.payment.infra.pg.utils;
 
 import com.stripe.exception.StripeException;
+import dev.teamuts.payment.domain.common.exception.InfraErrorCode;
+import dev.teamuts.payment.domain.common.exception.InfraException;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import java.util.function.BiFunction;
@@ -32,7 +34,8 @@ public class StripeOperationExecutor {
         return stripeExceptionHandler.apply(e, operationType);
       }
 
-      throw new RuntimeException("[%s] %s - failed".formatted(PG_PROVIDER, operationType.name()));
+      throw InfraException.pgOperationError(
+          InfraErrorCode.PG_OPERATION_ERROR, PG_PROVIDER, operationType.name());
     } catch (Exception e) {
       log.error(e.getMessage());
 
@@ -40,7 +43,8 @@ public class StripeOperationExecutor {
         return exceptionHandler.apply(e, operationType);
       }
 
-      throw new RuntimeException("[%s] %s - failed".formatted(PG_PROVIDER, operationType.name()));
+      throw InfraException.pgOperationError(
+          InfraErrorCode.PG_OPERATION_ERROR, PG_PROVIDER, operationType.name());
     }
   }
 

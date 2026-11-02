@@ -1,5 +1,6 @@
 package dev.teamuts.payment.persistence.order.adapter;
 
+import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
@@ -19,7 +20,7 @@ public class OrderUpdateAdapter implements OrderUpdatePort {
     OrderJpaEntity entity =
         orderRepository
             .findLockById(order.getId())
-            .orElseThrow(() -> new RuntimeException("Order id not found: " + order.getId()));
+            .orElseThrow(() -> PersistenceException.notFound(order));
 
     entity.updateStatus(order.getStatus());
   }

@@ -4,7 +4,7 @@ import static dev.teamuts.payment.domain.pg.dto.app.ExtPGOperationInfo.*;
 
 import dev.teamuts.payment.app.api.dto.PaymentMethodDtoMapper;
 import dev.teamuts.payment.app.api.dto.SetupPaymentMethodRequestDto;
-import dev.teamuts.payment.app.common.response.ApiResponse;
+import dev.teamuts.payment.app.common.response.ApiCommonResponse;
 import dev.teamuts.payment.domain.payment.dto.app.PaymentMethodInfo;
 import dev.teamuts.payment.domain.payment.dto.app.SetupPaymentMethodCommand;
 import dev.teamuts.payment.domain.payment.usecase.GetPaymentMethodListUseCase;
@@ -33,13 +33,13 @@ public class PaymentMethodApiController {
       summary = "Initialize Payment Method Setup",
       description = "Initialize payment method setup with PG and store the request in database")
   @PostMapping("/setup")
-  public ApiResponse<SetupPaymentMethodInfo> setupPaymentMethod(
+  public ApiCommonResponse<SetupPaymentMethodInfo> setupPaymentMethod(
       @RequestBody SetupPaymentMethodRequestDto request) {
     SetupPaymentMethodCommand command = mapper.of(request);
 
     SetupPaymentMethodInfo result = setupPaymentMethodUseCase.execute(command);
 
-    return ApiResponse.success(result);
+    return ApiCommonResponse.success(result);
   }
 
   // TODO: member authentication should be added to this API
@@ -47,9 +47,10 @@ public class PaymentMethodApiController {
       summary = "Get Payment Method List",
       description = "Get the list of payment methods for a member")
   @GetMapping
-  public ApiResponse<List<PaymentMethodInfo>> getPaymentMethodList(@RequestParam Long memberId) {
+  public ApiCommonResponse<List<PaymentMethodInfo>> getPaymentMethodList(
+      @RequestParam Long memberId) {
     List<PaymentMethodInfo> paymentMethods = getPaymentMethodListUseCase.execute(memberId);
 
-    return ApiResponse.success(paymentMethods);
+    return ApiCommonResponse.success(paymentMethods);
   }
 }

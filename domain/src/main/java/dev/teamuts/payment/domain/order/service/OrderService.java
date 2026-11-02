@@ -1,6 +1,8 @@
 package dev.teamuts.payment.domain.order.service;
 
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
+import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
+import dev.teamuts.payment.domain.order.exception.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
@@ -31,9 +33,7 @@ public class OrderService {
                 });
 
     if (order.isNotTheSameMember(memberId)) {
-      throw new RuntimeException(
-          "Order (extOrderNum: %s) is not valid for processing payment for memberId %s"
-              .formatted(command.extOrderNum(), memberId));
+      throw OrderException.of(OrderErrorCode.MEMBER_MISMATCH, order.getExtOrderNum(), memberId);
     }
 
     return order;

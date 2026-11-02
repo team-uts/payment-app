@@ -1,11 +1,14 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.exception.PgExternalRequestErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.mapper.PGExternalRequestConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGExternalRequestRepository;
+import dev.teamuts.payment.shared.error.exception.BusinessException;
+import dev.teamuts.payment.shared.error.exception.ErrorArguments;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +32,9 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
         .map(pgExternalRequestConverter::covertToDomainModel)
         .orElseThrow(
             () ->
-                new RuntimeException(
-                    "PGExternalRequest not found with parameters: pgProvider=%s, memberId=%d, pgRequestId=%s, extOperation=%s"
-                        .formatted(pgProvider.name(), memberId, pgRequestId, extOperation)));
+                BusinessException.of(
+                    PgExternalRequestErrorCode.NOT_FOUND_WITH_PARAMS,
+                    ErrorArguments.of(pgProvider, memberId, pgRequestId, extOperation)));
   }
 
   @Override

@@ -22,10 +22,8 @@ management:
     os:
       enabled: true
   health:
-    readinessstate:
-      enabled: true
-    livenessstate:
-      enabled: true
+    db:
+      enabled: false
 
 springdoc:
   api-docs:

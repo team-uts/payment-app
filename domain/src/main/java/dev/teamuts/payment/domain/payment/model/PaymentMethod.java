@@ -1,21 +1,19 @@
 package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
+import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @DomainModel
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
-public class PaymentMethod {
-  private Long id;
+public class PaymentMethod extends BaseIdentifiableModel<Long> {
   private Long memberId;
   private PGProviderType pgProvider;
   private String providerToken;
@@ -59,16 +57,20 @@ public class PaymentMethod {
       Boolean defaultMethod,
       PaymentMethodStatus status,
       PaymentMethodDetail detail) {
-    return PaymentMethod.builder()
-        .id(id)
-        .memberId(memberId)
-        .pgProvider(pgProvider)
-        .providerToken(providerToken)
-        .methodType(methodType)
-        .defaultMethod(defaultMethod)
-        .status(status)
-        .detail(detail)
-        .build();
+    PaymentMethod pm =
+        PaymentMethod.builder()
+            .memberId(memberId)
+            .pgProvider(pgProvider)
+            .providerToken(providerToken)
+            .methodType(methodType)
+            .defaultMethod(defaultMethod)
+            .status(status)
+            .detail(detail)
+            .build();
+
+    pm.id = id;
+
+    return pm;
   }
 
   public void updateDetail(PaymentMethodDetail newDetail) {
@@ -78,7 +80,7 @@ public class PaymentMethod {
   // Return copy
   public PaymentMethodDetail getDetailOrNull() {
     if (detail instanceof Card cardDetail) {
-      return cardDetail.toBuilder().build();
+      return cardDetail.copy();
     }
 
     return null;

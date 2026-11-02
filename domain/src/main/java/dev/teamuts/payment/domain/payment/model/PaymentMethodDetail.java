@@ -1,10 +1,9 @@
 package dev.teamuts.payment.domain.payment.model;
 
+import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
-@SuperBuilder(toBuilder = true)
-public abstract class PaymentMethodDetail {
-  private Long payMethodId;
+public abstract class PaymentMethodDetail extends BaseIdentifiableModel<Long> {
+  protected Long payMethodId;
 }

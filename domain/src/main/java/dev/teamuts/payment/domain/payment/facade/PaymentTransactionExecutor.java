@@ -1,9 +1,9 @@
 package dev.teamuts.payment.domain.payment.facade;
 
-import dev.teamuts.payment.domain.common.exception.ExtPGApiException;
 import dev.teamuts.payment.domain.payment.facade.pay.PayTransactionProcessorProvider;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
+import dev.teamuts.payment.domain.pg.exception.ExtPGApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

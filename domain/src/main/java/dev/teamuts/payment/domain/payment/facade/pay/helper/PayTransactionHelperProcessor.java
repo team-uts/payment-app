@@ -1,8 +1,8 @@
 package dev.teamuts.payment.domain.payment.facade.pay.helper;
 
-import dev.teamuts.payment.domain.common.exception.ExtPGApiException;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
+import dev.teamuts.payment.domain.pg.exception.ExtPGApiException;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGPaymentServicePort;
 import dev.teamuts.payment.domain.pg.service.ExtPGPaymentServiceProvider;
