@@ -1,21 +1,13 @@
 package dev.teamuts.payment.domain.common.exception;
 
 import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
-import dev.teamuts.payment.shared.error.constant.ErrorCode;
-import dev.teamuts.payment.shared.error.exception.ErrorArguments;
+import dev.teamuts.payment.shared.error.constant.SystemErrorCode;
 import dev.teamuts.payment.shared.error.exception.SystemException;
 
 public class PersistenceException extends SystemException {
-  private PersistenceException(ErrorCode errorCode, String logMessage, String detailedMessage) {
+  private PersistenceException(
+      SystemErrorCode errorCode, String logMessage, String detailedMessage) {
     super(errorCode, logMessage, detailedMessage);
-  }
-
-  private PersistenceException(ErrorCode errorCode, Throwable cause) {
-    super(errorCode, cause, null, null);
-  }
-
-  private PersistenceException(ErrorCode errorCode, ErrorArguments errorArgs) {
-    super(errorCode, errorArgs, null, null);
   }
 
   public static PersistenceException notFound(BaseIdentifiableModel<Long> model) {

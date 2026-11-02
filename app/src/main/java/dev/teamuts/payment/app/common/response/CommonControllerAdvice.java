@@ -83,7 +83,7 @@ public class CommonControllerAdvice {
                             "result": "FAILURE",
                             "error": {
                               "code": "ORD-0011",
-                              "type": "ORDER_MEMBER_MISMATCH",
+                              "type": "MEMBER_MISMATCH",
                               "message": "Order (extOrderNum: {0}) does not belong to member (memberId: {1})."
                             }
                           }""")))

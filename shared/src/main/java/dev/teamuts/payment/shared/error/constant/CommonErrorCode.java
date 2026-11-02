@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum CommonErrorCode implements ErrorCode {
+public enum CommonErrorCode implements SystemErrorCode {
   INTERNAL_SERVER_ERROR("COM-0001", HttpStatus.INTERNAL_SERVER_ERROR),
   ;
 

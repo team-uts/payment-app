@@ -1,6 +1,6 @@
 package dev.teamuts.payment.shared.error.exception;
 
-import dev.teamuts.payment.shared.error.constant.ErrorCode;
+import dev.teamuts.payment.shared.error.constant.SystemErrorCode;
 import lombok.Getter;
 
 @Getter
@@ -8,31 +8,34 @@ public class SystemException extends ApiExternalException {
   private final String logMessage;
   private final String detailedMessage;
 
-  protected SystemException(ErrorCode errorCode, String logMessage, String detailedMessage) {
+  protected SystemException(SystemErrorCode errorCode, String logMessage, String detailedMessage) {
     super(errorCode);
     this.logMessage = logMessage;
     this.detailedMessage = detailedMessage;
   }
 
   protected SystemException(
-      ErrorCode errorCode, Throwable cause, String logMessage, String detailedMessage) {
+      SystemErrorCode errorCode, Throwable cause, String logMessage, String detailedMessage) {
     super(errorCode, cause);
     this.logMessage = logMessage;
     this.detailedMessage = detailedMessage;
   }
 
   protected SystemException(
-      ErrorCode errorCode, ErrorArguments errorArgs, String logMessage, String detailedMessage) {
+      SystemErrorCode errorCode,
+      ErrorArguments errorArgs,
+      String logMessage,
+      String detailedMessage) {
     super(errorCode, errorArgs);
     this.logMessage = logMessage;
     this.detailedMessage = detailedMessage;
   }
 
-  public static SystemException of(ErrorCode errorCode) {
+  public static SystemException of(SystemErrorCode errorCode) {
     return new SystemException(errorCode, null, null);
   }
 
-  public static SystemException fromOrDefault(Throwable cause, ErrorCode defaultCode) {
+  public static SystemException fromOrDefault(Throwable cause, SystemErrorCode defaultCode) {
     if (cause instanceof SystemException systemException) {
       return systemException;
     }
@@ -40,7 +43,12 @@ public class SystemException extends ApiExternalException {
     return new SystemException(defaultCode, cause, null, null);
   }
 
-  public static SystemException of(ErrorCode errorCode, ErrorArguments errorArgs) {
+  public static SystemException of(SystemErrorCode errorCode, ErrorArguments errorArgs) {
     return new SystemException(errorCode, errorArgs, null, null);
+  }
+
+  @Override
+  public SystemErrorCode getErrorCode() {
+    return (SystemErrorCode) super.getErrorCode();
   }
 }

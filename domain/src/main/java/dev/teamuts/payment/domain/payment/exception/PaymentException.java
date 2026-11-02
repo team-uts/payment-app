@@ -14,10 +14,10 @@ public class PaymentException extends BusinessException {
   }
 
   public static PaymentException of(PaymentErrorCode errorCode, Object... args) {
-    return new PaymentException(errorCode, ErrorArguments.of(args));
+    return new PaymentException(errorCode, args);
   }
 
   public static PaymentException of(PaymentTransactionErrorCode errorCode, Object... args) {
-    return new PaymentException(errorCode, ErrorArguments.of(args));
+    return new PaymentException(errorCode, args);
   }
 }

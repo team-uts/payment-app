@@ -5,8 +5,4 @@ public class ApiInternalException extends RuntimeException {
   protected ApiInternalException(String message) {
     super(message);
   }
-
-  protected ApiInternalException(String message, Throwable cause) {
-    super(message, cause);
-  }
 }

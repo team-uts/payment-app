@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.common.exception;
 
-import dev.teamuts.payment.shared.error.constant.ErrorCode;
+import dev.teamuts.payment.shared.error.constant.SystemErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum PersistenceErrorCode implements ErrorCode {
+public enum PersistenceErrorCode implements SystemErrorCode {
   NOT_FOUND("PERS-0001"),
   NOT_PERSISTED("PERS-0002");
 
