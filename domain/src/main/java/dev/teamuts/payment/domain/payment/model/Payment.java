@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.util.Assert;
 
 @DomainModel
 @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
@@ -40,6 +41,10 @@ public class Payment extends BaseIdentifiableModel<Long> {
   private PaymentTransactions transactions;
 
   public static Payment processing(Order order, PaymentMethod paymentMethod, Money pointAmount) {
+    // TODO: need refactoring
+    Assert.notNull(order, "order cannot be null");
+    Assert.notNull(paymentMethod, "paymentMethod cannot be null");
+
     if (order.hasLessAmountThan(pointAmount)) {
       throw PaymentException.of(PaymentErrorCode.CANNOT_BE_GENERATED, order.getExtOrderNum());
     }
@@ -58,6 +63,10 @@ public class Payment extends BaseIdentifiableModel<Long> {
   }
 
   public static Payment processingOnlyPoint(Order order, Money pointAmount) {
+    // TODO: need refactoring
+    Assert.notNull(order, "order cannot be null");
+    Assert.notNull(pointAmount, "pointAmount cannot be null");
+
     if (order.hasNotEqualAmount(pointAmount) && pointAmount.isGreaterThanZero()) {
       throw PaymentException.of(
           PaymentErrorCode.ONLY_FOR_POINT_CANNOT_BE_GENERATED, order.getExtOrderNum());

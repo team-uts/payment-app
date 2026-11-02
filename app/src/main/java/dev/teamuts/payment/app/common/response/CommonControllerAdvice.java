@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+// TODO: IllegalArgumentException, IllegalStateException, NullPointerException, etc. should be
+// handled as well
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
