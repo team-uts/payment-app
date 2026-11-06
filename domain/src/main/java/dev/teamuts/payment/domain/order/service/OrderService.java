@@ -25,12 +25,11 @@ public class OrderService {
     Order order =
         orderReaderPort
             .retrieveByExtOrderNumNullable(command.extOrderNum())
-            .orElseGet(
-                () -> {
-                  Order newOrder = Order.initPayment(memberId, command);
+            .orElseGet(() -> {
+              Order newOrder = Order.initPayment(memberId, command);
 
-                  return orderStorePort.store(newOrder);
-                });
+              return orderStorePort.store(newOrder);
+            });
 
     if (order.isNotTheSameMember(memberId)) {
       throw OrderException.of(OrderErrorCode.MEMBER_MISMATCH, order.getExtOrderNum(), memberId);

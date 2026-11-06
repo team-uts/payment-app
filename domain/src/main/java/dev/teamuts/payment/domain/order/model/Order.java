@@ -1,6 +1,7 @@
 package dev.teamuts.payment.domain.order.model;
 
 import dev.teamuts.payment.domain.common.annotation.DomainModel;
+import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
@@ -8,7 +9,6 @@ import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
 import dev.teamuts.payment.domain.order.exception.OrderException;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;

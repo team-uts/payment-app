@@ -28,7 +28,7 @@ allprojects {
         java {
             target("src/**/*.java")
             targetExclude("**/generated/**")
-            googleJavaFormat()
+            googleJavaFormat("2.0.0")
             removeUnusedImports()
         }
     }

@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.payment.factory;
 
+import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;

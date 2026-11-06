@@ -17,10 +17,9 @@ public abstract class StripeWebhookEventMapper implements ProviderService<Stripe
     return event
         .getDataObjectDeserializer()
         .getObject()
-        .orElseThrow(
-            () ->
-                InfraException.of(
-                    InfraErrorCode.PG_WEBHOOK_DESERIALIZATION_FAILED,
-                    "[%s] Webhook event deserialization failed".formatted(PGProviderType.STRIPE)));
+        .orElseThrow(() ->
+            InfraException.of(
+                InfraErrorCode.PG_WEBHOOK_DESERIALIZATION_FAILED,
+                "[%s] Webhook event deserialization failed".formatted(PGProviderType.STRIPE)));
   }
 }

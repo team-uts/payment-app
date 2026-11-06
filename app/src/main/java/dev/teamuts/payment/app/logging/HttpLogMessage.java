@@ -55,20 +55,29 @@ public class HttpLogMessage {
         .build();
   }
 
+  public String getLogMsg(AppProfile appProfile) {
+    if (appProfile.isLocal()) {
+      return this.toPrettierLog();
+    }
+
+    return this.toJson();
+  }
+
   private String toJson() {
     return gson.toJson(this);
   }
 
   private String toPrettierLog() {
     return """
-        [REQUEST] %s %s %s (%ss)
-        >> CLIENT_IP: %s
-        >> [INPUT]REQUEST_HEADERS: %s
-        >> [INPUT]REQUEST_PARAM: %s
-        >> [INPUT]REQUEST_BODY: %s
-        >> [OUTPUT]RESPONSE_HEADERS: %s
-        >> [OUTPUT]RESPONSE_BODY: %s
-        """
+
+    [REQUEST] %s %s %s (%ss)
+    >> CLIENT_IP: %s
+    >> [INPUT] REQUEST_HEADERS: %s
+    >> [INPUT] REQUEST_PARAM: %s
+    >> [INPUT] REQUEST_BODY: %s
+    >> [OUTPUT] RESPONSE_HEADERS: %s
+    >> [OUTPUT] RESPONSE_BODY: %s
+    """
         .formatted(
             this.httpMethod,
             UriEncoder.decode(this.requestUri),
@@ -81,13 +90,5 @@ public class HttpLogMessage {
             this.responseHeaders,
             this.responseBody)
         .stripTrailing();
-  }
-
-  public String getLogMsg(AppProfile appProfile) {
-    if (appProfile.isLocal()) {
-      return this.toPrettierLog();
-    }
-
-    return this.toJson();
   }
 }

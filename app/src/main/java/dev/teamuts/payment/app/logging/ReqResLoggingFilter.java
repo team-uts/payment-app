@@ -61,5 +61,7 @@ public class ReqResLoggingFilter extends OncePerRequestFilter {
     } catch (Exception e) {
       log.error("[{}] Logging failed", this.getClass().getSimpleName(), e);
     }
+
+    RequestLogType.removeAllMdcLogs();
   }
 }

@@ -22,10 +22,9 @@ public class AppRequestMatchers {
   public OrRequestMatcher toOrRequestMatcher() {
     return new OrRequestMatcher(
         matchers.stream()
-            .map(
-                matcher ->
-                    PathPatternRequestMatcher.withDefaults()
-                        .matcher(matcher.getHttpMethod(), matcher.getUrlPattern()))
+            .map(matcher ->
+                PathPatternRequestMatcher.withDefaults()
+                    .matcher(matcher.getHttpMethod(), matcher.getUrlPattern()))
             .toList());
   }
 }

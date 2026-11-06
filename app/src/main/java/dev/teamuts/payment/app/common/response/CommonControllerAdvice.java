@@ -58,7 +58,8 @@ public class CommonControllerAdvice {
                             "code": "COM-0001",
                             "detail": "An unexpected error occurred. Please try again later.",
                             "instance": "/v1/orders/12345"
-                          }""")))
+                          }\
+                          """)))
   @ExceptionHandler(Exception.class)
   public ProblemDetail handleException(Exception e, HttpServletRequest request, Locale locale) {
     SystemException systemException =
@@ -88,7 +89,8 @@ public class CommonControllerAdvice {
                               "type": "MEMBER_MISMATCH",
                               "message": "Order (extOrderNum: {0}) does not belong to member (memberId: {1})."
                             }
-                          }""")))
+                          }\
+                          """)))
   @ResponseStatus(HttpStatus.OK)
   @ExceptionHandler(BusinessException.class)
   public ApiCommonResponse<?> handleBusinessException(BusinessException e, Locale locale) {

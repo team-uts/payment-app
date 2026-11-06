@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.payment.constant;
+package dev.teamuts.payment.domain.common.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

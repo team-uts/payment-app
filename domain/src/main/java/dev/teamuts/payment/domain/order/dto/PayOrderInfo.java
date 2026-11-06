@@ -1,9 +1,9 @@
 package dev.teamuts.payment.domain.order.dto;
 
+import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import java.math.BigDecimal;
 
 public record PayOrderInfo(

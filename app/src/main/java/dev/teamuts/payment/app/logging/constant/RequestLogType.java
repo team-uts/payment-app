@@ -21,9 +21,15 @@ public enum RequestLogType {
 
   public static void putAllLogsToMdc(HttpServletRequest request) {
     Arrays.stream(RequestLogType.values())
-        .forEach(
-            logType -> {
-              MDC.put(logType.key, logType.valueExtractor.apply(request));
-            });
+        .forEach(logType -> {
+          MDC.put(logType.key, logType.valueExtractor.apply(request));
+        });
+  }
+
+  public static void removeAllMdcLogs() {
+    Arrays.stream(RequestLogType.values())
+        .forEach(logType -> {
+          MDC.remove(logType.key);
+        });
   }
 }

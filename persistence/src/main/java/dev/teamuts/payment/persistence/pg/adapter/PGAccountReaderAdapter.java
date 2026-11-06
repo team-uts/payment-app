@@ -29,9 +29,8 @@ public class PGAccountReaderAdapter implements PGAccountReaderPort {
     return pgAccountRepository
         .findByMemberId(memberId)
         .map(pgAccountConverter::covertToDomainModel)
-        .orElseThrow(
-            () ->
-                BusinessException.of(
-                    PgAccountErrorCode.NOT_FOUND_WITH_MEMBER, ErrorArguments.of(memberId)));
+        .orElseThrow(() ->
+            BusinessException.of(
+                PgAccountErrorCode.NOT_FOUND_WITH_MEMBER, ErrorArguments.of(memberId)));
   }
 }

@@ -30,11 +30,10 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
         .findTopByPgRequestIdAndMemberIdAndPgProviderAndExtOperationOrderByIdDesc(
             pgRequestId, memberId, pgProvider, extOperation)
         .map(pgExternalRequestConverter::covertToDomainModel)
-        .orElseThrow(
-            () ->
-                BusinessException.of(
-                    PgExternalRequestErrorCode.NOT_FOUND_WITH_PARAMS,
-                    ErrorArguments.of(pgProvider, memberId, pgRequestId, extOperation)));
+        .orElseThrow(() ->
+            BusinessException.of(
+                PgExternalRequestErrorCode.NOT_FOUND_WITH_PARAMS,
+                ErrorArguments.of(pgProvider, memberId, pgRequestId, extOperation)));
   }
 
   @Override

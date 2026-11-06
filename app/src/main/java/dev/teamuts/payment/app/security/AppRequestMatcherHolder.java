@@ -18,11 +18,11 @@ public class AppRequestMatcherHolder {
       WebEndpointProperties actuatorProperties,
       SwaggerUiConfigProperties swaggerUiProperties,
       SpringDocConfigProperties springDocProperties) {
-    System.out.println("swaggerUiProperties.getPath(): " + swaggerUiProperties.getPath());
     this.actuatorEndpoints =
         AppRequestMatchers.of(
             AppRequestMatcher.noneRoleOf(
                 "%s/**".formatted(actuatorProperties.getBasePath()), HttpMethod.GET));
+
     this.swaggerUrls =
         AppRequestMatchers.of(
             AppRequestMatcher.noneRoleOf(swaggerUiProperties.getPath(), HttpMethod.GET),

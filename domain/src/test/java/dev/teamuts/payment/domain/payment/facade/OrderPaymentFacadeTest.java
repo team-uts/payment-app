@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.OrderFixtureFactory;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
@@ -20,7 +21,6 @@ import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
 import dev.teamuts.payment.domain.order.exception.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;

@@ -29,11 +29,10 @@ public enum AppModule {
   public static String getApplicationModuleNames() {
     return getApplicationModules().stream()
         .map(AppModule::getModuleName)
-        .map(
-            name ->
-                name.isEmpty()
-                    ? APPLICATION_MODULE_PREFIX
-                    : "%s-%s".formatted(APPLICATION_MODULE_PREFIX, name))
+        .map(name ->
+            name.isEmpty()
+                ? APPLICATION_MODULE_PREFIX
+                : "%s-%s".formatted(APPLICATION_MODULE_PREFIX, name))
         .collect(Collectors.joining(","));
   }
 }
