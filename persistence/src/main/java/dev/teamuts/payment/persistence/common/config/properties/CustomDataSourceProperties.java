@@ -1,7 +1,7 @@
 package dev.teamuts.payment.persistence.common.config.properties;
 
 import dev.teamuts.payment.persistence.common.constant.DataSourceConstants;
-import dev.teamuts.payment.shared.utils.ConfigUtils;
+import dev.teamuts.shared.utils.ConfigUtils;
 import java.util.Properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

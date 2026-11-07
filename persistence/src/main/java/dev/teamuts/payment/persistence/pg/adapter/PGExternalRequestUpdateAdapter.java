@@ -6,7 +6,7 @@ import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestUpdatePor
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.entity.PGExternalRequestJpaEntity;
 import dev.teamuts.payment.persistence.pg.repository.PGExternalRequestRepository;
-import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 
 @AppTransactional

@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.order.exception;
 
-import dev.teamuts.payment.shared.error.exception.BusinessException;
-import dev.teamuts.payment.shared.error.exception.ErrorArguments;
+import dev.teamuts.shared.error.exception.BusinessException;
+import dev.teamuts.shared.error.exception.ErrorArguments;
 
 public class OrderException extends BusinessException {
   private OrderException(OrderErrorCode errorCode) {

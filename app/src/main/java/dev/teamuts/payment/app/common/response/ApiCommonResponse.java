@@ -9,8 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiCommonResponse<T> {
-  private ApiResultType result;
-  private T data;
+  private final ApiResultType result;
+  private final T data;
   private final ErrorResponse error;
 
   public static <T> ApiCommonResponse<T> success(T data) {

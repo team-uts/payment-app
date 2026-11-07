@@ -7,7 +7,6 @@ import dev.teamuts.payment.domain.pg.facade.PGExternalRequestFacade;
 import dev.teamuts.payment.domain.pg.facade.PGWebhookEventProcessorProvider;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.service.PGExternalRequestService;
-import dev.teamuts.payment.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

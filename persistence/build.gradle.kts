@@ -5,44 +5,44 @@ val jar: Jar by tasks
 val bootJar: BootJar by tasks
 
 bootJar.enabled = false
+
 jar.enabled = true
 
 plugins {
-    alias(libs.plugins.flyway)
+  alias(libs.plugins.flyway)
 }
 
 buildscript {
-    dependencies {
-        classpath(libs.flyway.mysql)
-    }
+  dependencies {
+    classpath(libs.flyway.mysql)
+  }
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(project(":shared"))
+  implementation(project(":domain"))
 
-    implementation(libs.flyway.core)
-    implementation(libs.flyway.mysql)
+  implementation(libs.flyway.core)
+  implementation(libs.flyway.mysql)
 
-    implementation(libs.spring.boot.h2console)
-    implementation(libs.spring.boot.starter.data.jpa)
+  implementation(libs.spring.boot.h2console)
+  implementation(libs.spring.boot.starter.data.jpa)
 
-    implementation(variantOf(libs.querydsl.jpa) { classifier("jakarta") })
-    annotationProcessor(variantOf(libs.querydsl.apt) { classifier("jakarta") })
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+  implementation(variantOf(libs.querydsl.jpa) { classifier("jakarta") })
+  annotationProcessor(variantOf(libs.querydsl.apt) { classifier("jakarta") })
+  annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
-    runtimeOnly(libs.database.mysql)
-    testRuntimeOnly(libs.database.h2)
-    testImplementation(libs.spring.boot.starter.data.jpa.test)
+  runtimeOnly(libs.database.mysql)
+  testRuntimeOnly(libs.database.h2)
+  testImplementation(libs.spring.boot.starter.data.jpa.test)
 }
 
 flyway {
-    val flywayManager = FlywayManager.init()
+  val flywayManager = FlywayManager.init()
 
-    baselineDescription = "Start Flyway Migration!"
-    baselineOnMigrate = true
-    locations = flywayManager.getLocations()
-    configFiles = flywayManager.getConfigFiles()
-    user = flywayManager.getUser()
-    password = flywayManager.getPassword()
+  baselineDescription = "Start Flyway Migration!"
+  baselineOnMigrate = true
+  locations = flywayManager.getLocations()
+  configFiles = flywayManager.getConfigFiles()
+  user = flywayManager.getUser()
+  password = flywayManager.getPassword()
 }

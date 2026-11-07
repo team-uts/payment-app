@@ -1,7 +1,7 @@
 package dev.teamuts.payment.infra.pg.webhook.stripe;
 
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
-import dev.teamuts.payment.shared.provider.Provider;
+import dev.teamuts.shared.provider.Provider;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

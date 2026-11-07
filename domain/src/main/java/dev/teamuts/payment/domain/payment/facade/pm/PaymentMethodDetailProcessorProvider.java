@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.payment.facade.pm;
 
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
-import dev.teamuts.payment.shared.provider.Provider;
+import dev.teamuts.shared.provider.Provider;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

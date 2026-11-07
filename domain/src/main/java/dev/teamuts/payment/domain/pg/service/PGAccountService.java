@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountStorePort;
-import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.shared.data.AppTransactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

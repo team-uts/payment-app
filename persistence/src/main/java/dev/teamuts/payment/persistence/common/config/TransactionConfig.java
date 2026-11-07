@@ -1,7 +1,7 @@
 package dev.teamuts.payment.persistence.common.config;
 
 import static dev.teamuts.payment.persistence.common.constant.JpaConstants.APP_ENTITY_MANAGER;
-import static dev.teamuts.payment.shared.data.TransactionConstants.APP_TRANSACTION_MANAGER;
+import static dev.teamuts.shared.data.TransactionConstants.APP_TRANSACTION_MANAGER;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

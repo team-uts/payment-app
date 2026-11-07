@@ -7,8 +7,8 @@ import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPor
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.mapper.PGExternalRequestConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGExternalRequestRepository;
-import dev.teamuts.payment.shared.error.exception.BusinessException;
-import dev.teamuts.payment.shared.error.exception.ErrorArguments;
+import dev.teamuts.shared.error.exception.BusinessException;
+import dev.teamuts.shared.error.exception.ErrorArguments;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 

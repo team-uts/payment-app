@@ -8,7 +8,7 @@ import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
 import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

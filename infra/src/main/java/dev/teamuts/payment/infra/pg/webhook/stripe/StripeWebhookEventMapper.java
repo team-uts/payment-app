@@ -7,7 +7,7 @@ import dev.teamuts.payment.domain.common.exception.InfraException;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
-import dev.teamuts.payment.shared.provider.ProviderService;
+import dev.teamuts.shared.provider.ProviderService;
 
 public abstract class StripeWebhookEventMapper implements ProviderService<StripeWebhookEventType> {
   public abstract StripeWebhookPayload convert(Event event);

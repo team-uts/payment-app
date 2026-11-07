@@ -1,8 +1,8 @@
 package dev.teamuts.payment.domain.common.exception;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.shared.error.constant.SystemErrorCode;
-import dev.teamuts.payment.shared.error.exception.SystemException;
+import dev.teamuts.shared.error.constant.SystemErrorCode;
+import dev.teamuts.shared.error.exception.SystemException;
 
 public class InfraException extends SystemException {
   private InfraException(SystemErrorCode errorCode, String logMessage, String detailedMessage) {

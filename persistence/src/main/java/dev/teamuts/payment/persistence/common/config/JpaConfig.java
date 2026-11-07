@@ -3,7 +3,7 @@ package dev.teamuts.payment.persistence.common.config;
 import static dev.teamuts.payment.persistence.common.constant.DataSourceConstants.APPLICATION_DATA_SOURCE;
 import static dev.teamuts.payment.persistence.common.constant.JpaConstants.APP_ENTITY_MANAGER;
 import static dev.teamuts.payment.persistence.common.constant.JpaConstants.APP_JPA_QUERY_FACTORY;
-import static dev.teamuts.payment.shared.data.TransactionConstants.APP_TRANSACTION_MANAGER;
+import static dev.teamuts.shared.data.TransactionConstants.APP_TRANSACTION_MANAGER;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

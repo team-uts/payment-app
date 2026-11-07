@@ -6,8 +6,8 @@ import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
 import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.mapper.PGAccountConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGAccountRepository;
-import dev.teamuts.payment.shared.error.exception.BusinessException;
-import dev.teamuts.payment.shared.error.exception.ErrorArguments;
+import dev.teamuts.shared.error.exception.BusinessException;
+import dev.teamuts.shared.error.exception.ErrorArguments;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 

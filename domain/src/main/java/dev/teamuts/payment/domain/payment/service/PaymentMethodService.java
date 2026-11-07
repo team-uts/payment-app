@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodReaderPo
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodStorePort;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
-import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.shared.data.AppTransactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

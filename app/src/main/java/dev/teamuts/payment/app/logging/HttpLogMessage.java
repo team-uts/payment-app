@@ -4,9 +4,9 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.teamuts.payment.app.logging.constant.HttpClientIpType;
-import dev.teamuts.payment.shared.config.AppProfile;
-import dev.teamuts.payment.shared.utils.HttpMsgUtils;
-import dev.teamuts.payment.shared.utils.StringUtils;
+import dev.teamuts.shared.config.AppProfile;
+import dev.teamuts.shared.utils.HttpMsgUtils;
+import dev.teamuts.shared.utils.StringUtils;
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
@@ -46,11 +46,11 @@ public class HttpLogMessage {
         .requestHeaders(HttpMsgUtils.getRequestHeaders(requestWrapper))
         .requestParam(HttpMsgUtils.getRequestParams(requestWrapper))
         .requestBody(
-            StringUtils.covertByteArrayToStr(
+            StringUtils.convertByteArrayToStr(
                 requestWrapper.getContentAsByteArray(), MAX_BODY_LENGTH))
         .responseHeaders(HttpMsgUtils.getResponseHeaders(responseWrapper))
         .responseBody(
-            StringUtils.covertByteArrayToStr(
+            StringUtils.convertByteArrayToStr(
                 responseWrapper.getContentAsByteArray(), MAX_BODY_LENGTH))
         .build();
   }

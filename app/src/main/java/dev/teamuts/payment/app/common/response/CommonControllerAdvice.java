@@ -1,12 +1,12 @@
 package dev.teamuts.payment.app.common.response;
 
 import dev.teamuts.payment.domain.common.exception.PersistenceException;
-import dev.teamuts.payment.shared.config.AppProfile;
-import dev.teamuts.payment.shared.error.ProblemDetailGenerator;
-import dev.teamuts.payment.shared.error.constant.CommonErrorCode;
-import dev.teamuts.payment.shared.error.exception.ApiExternalException;
-import dev.teamuts.payment.shared.error.exception.BusinessException;
-import dev.teamuts.payment.shared.error.exception.SystemException;
+import dev.teamuts.shared.config.AppProfile;
+import dev.teamuts.shared.error.ProblemDetailGenerator;
+import dev.teamuts.shared.error.constant.CommonErrorCode;
+import dev.teamuts.shared.error.exception.ApiExternalException;
+import dev.teamuts.shared.error.exception.BusinessException;
+import dev.teamuts.shared.error.exception.SystemException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;

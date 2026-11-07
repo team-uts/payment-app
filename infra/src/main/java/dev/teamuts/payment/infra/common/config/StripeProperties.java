@@ -1,6 +1,6 @@
 package dev.teamuts.payment.infra.common.config;
 
-import dev.teamuts.payment.shared.utils.TimeUtils;
+import dev.teamuts.shared.utils.TimeUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "stripe")
@@ -12,10 +12,10 @@ public record StripeProperties(
   }
 
   public int getConnectTimeoutInMillis() {
-    return TimeUtils.convertSecToMillis(connectTimeoutInSec);
+    return (int) TimeUtils.convertSecToMillis(connectTimeoutInSec);
   }
 
   public int getReadTimeoutInMillis() {
-    return TimeUtils.convertSecToMillis(readTimeoutInSec);
+    return (int) TimeUtils.convertSecToMillis(readTimeoutInSec);
   }
 }

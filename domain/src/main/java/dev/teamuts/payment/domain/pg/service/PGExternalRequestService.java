@@ -9,7 +9,7 @@ import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestStorePort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestUpdatePort;
-import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.shared.data.AppTransactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -6,7 +6,7 @@ import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.order.entity.OrderJpaEntity;
 import dev.teamuts.payment.persistence.order.mapper.OrderConverter;
 import dev.teamuts.payment.persistence.order.repository.OrderRepository;
-import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.shared.data.AppTransactional;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter

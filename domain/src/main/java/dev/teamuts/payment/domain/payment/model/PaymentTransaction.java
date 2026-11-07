@@ -12,7 +12,7 @@ import dev.teamuts.payment.domain.payment.exception.PaymentException;
 import dev.teamuts.payment.domain.payment.exception.PaymentTransactionErrorCode;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
-import dev.teamuts.payment.shared.utils.StringUtils;
+import dev.teamuts.shared.utils.StringUtils;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;

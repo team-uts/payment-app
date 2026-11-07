@@ -2,9 +2,9 @@ package dev.teamuts.payment.domain.common.model;
 
 import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.common.exception.MoneyErrorCode;
-import dev.teamuts.payment.shared.error.exception.BusinessException;
-import dev.teamuts.payment.shared.error.exception.ErrorArguments;
-import dev.teamuts.payment.shared.utils.MoneyCalculator;
+import dev.teamuts.shared.error.exception.BusinessException;
+import dev.teamuts.shared.error.exception.ErrorArguments;
+import dev.teamuts.shared.utils.MoneyCalculator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import lombok.AccessLevel;

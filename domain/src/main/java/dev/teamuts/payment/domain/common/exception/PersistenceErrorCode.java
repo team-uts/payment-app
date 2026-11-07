@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.common.exception;
 
-import dev.teamuts.payment.shared.error.constant.SystemErrorCode;
+import dev.teamuts.shared.error.constant.SystemErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

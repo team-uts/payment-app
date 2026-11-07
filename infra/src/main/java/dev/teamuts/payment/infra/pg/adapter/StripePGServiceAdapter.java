@@ -26,7 +26,7 @@ import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
 import dev.teamuts.payment.infra.pg.webhook.stripe.StripeWebhookEventMapperProvider;
-import dev.teamuts.payment.shared.error.exception.SystemException;
+import dev.teamuts.shared.error.exception.SystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
