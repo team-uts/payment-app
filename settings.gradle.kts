@@ -13,6 +13,7 @@ dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     mavenCentral()
+    // jitpack.io is used to fetch the payment-shared library
     maven { url = uri("https://jitpack.io") }
   }
 }

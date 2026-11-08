@@ -1,9 +1,9 @@
 package dev.teamuts.payment.app.api;
 
-import dev.teamuts.payment.app.common.response.ApiCommonResponse;
-import dev.teamuts.payment.app.pg.PGWebhookPayload;
+import dev.teamuts.payment.app.api.pg.PGWebhookPayload;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.usecase.ProcessPGWebhookEventUseCase;
+import dev.teamuts.shared.http.response.ApiCommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

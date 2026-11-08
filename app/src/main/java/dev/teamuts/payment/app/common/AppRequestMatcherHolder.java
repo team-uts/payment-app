@@ -1,5 +1,7 @@
-package dev.teamuts.payment.app.security;
+package dev.teamuts.payment.app.common;
 
+import dev.teamuts.shared.auth.AppRequestMatcher;
+import dev.teamuts.shared.auth.AppRequestMatchers;
 import java.util.Arrays;
 import java.util.List;
 import org.springdoc.core.properties.SpringDocConfigProperties;

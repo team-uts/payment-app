@@ -1,4 +1,4 @@
-package dev.teamuts.payment.app.common.response;
+package dev.teamuts.payment.app.common;
 
 import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.shared.config.AppProfile;
@@ -7,6 +7,8 @@ import dev.teamuts.shared.error.constant.CommonErrorCode;
 import dev.teamuts.shared.error.exception.ApiExternalException;
 import dev.teamuts.shared.error.exception.BusinessException;
 import dev.teamuts.shared.error.exception.SystemException;
+import dev.teamuts.shared.http.response.ApiCommonResponse;
+import dev.teamuts.shared.http.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,6 +1,6 @@
 package dev.teamuts.payment.app.common.config;
 
-import dev.teamuts.payment.app.pg.PGWebhookArgumentResolver;
+import dev.teamuts.payment.app.api.pg.PGWebhookArgumentResolver;
 import dev.teamuts.shared.error.ProblemDetailGenerator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

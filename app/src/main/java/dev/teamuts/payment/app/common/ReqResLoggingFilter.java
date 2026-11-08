@@ -1,8 +1,8 @@
-package dev.teamuts.payment.app.logging;
+package dev.teamuts.payment.app.common;
 
-import dev.teamuts.payment.app.logging.constant.RequestLogType;
-import dev.teamuts.payment.app.security.AppRequestMatcherHolder;
 import dev.teamuts.shared.config.AppProfile;
+import dev.teamuts.shared.http.logging.HttpLogMessage;
+import dev.teamuts.shared.http.logging.RequestLogType;
 import dev.teamuts.shared.utils.TimeUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

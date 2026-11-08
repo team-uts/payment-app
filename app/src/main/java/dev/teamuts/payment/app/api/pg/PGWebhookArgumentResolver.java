@@ -1,4 +1,4 @@
-package dev.teamuts.payment.app.pg;
+package dev.teamuts.payment.app.api.pg;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
+@NullMarked
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -42,6 +44,7 @@ public class PGWebhookArgumentResolver implements HandlerMethodArgumentResolver 
       @Nullable WebDataBinderFactory binderFactory)
       throws Exception {
     HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+    assert request != null;
 
     PGRequestType requestType = PGRequestType.fromPathName(getPathVariable(request, "requestType"));
     PGProviderType pgProvider = PGProviderType.fromPGName(getPathVariable(request, "pgProvider"));

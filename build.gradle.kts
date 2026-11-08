@@ -65,7 +65,7 @@ subprojects {
     compileOnly(projectLibs.lombok)
     annotationProcessor(projectLibs.lombok)
 
-    implementation("com.github.team-uts:payment-shared:v0.2.0")
+    implementation(projectLibs.teamuts.payment.shared)
 
     testImplementation(projectLibs.spring.boot.starter.webmvc.test)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

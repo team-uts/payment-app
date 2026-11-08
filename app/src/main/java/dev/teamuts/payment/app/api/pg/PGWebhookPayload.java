@@ -1,4 +1,4 @@
-package dev.teamuts.payment.app.pg;
+package dev.teamuts.payment.app.api.pg;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
