@@ -2,6 +2,8 @@
 
 pluginManagement {
   repositories {
+    // to use the payment-convention plugin
+    maven { url = uri("https://team-uts.github.io/payment-gradle-plugins") }
     gradlePluginPortal()
     mavenCentral()
   }

@@ -1,5 +1,6 @@
 package dev.teamuts.payment.app.common;
 
+import dev.teamuts.payment.domain.common.exception.InfraException;
 import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.shared.config.AppProfile;
 import dev.teamuts.shared.error.ProblemDetailGenerator;
@@ -40,7 +41,8 @@ public class CommonControllerAdvice {
    * Handle System Exception (Unexpected Exception). Default response status = 500 Internal Server
    * Error. Always return with problem detail.
    *
-   * @param e {@link Exception} {@link SystemException} {@link PersistenceException}
+   * @param e {@link Exception} {@link SystemException} {@link PersistenceException} {@link
+   *     InfraException}
    */
   @ApiResponse(
       responseCode = "500",
@@ -60,7 +62,7 @@ public class CommonControllerAdvice {
                             "code": "COM-0001",
                             "detail": "An unexpected error occurred. Please try again later.",
                             "instance": "/v1/orders/12345"
-                          }\
+                          }
                           """)))
   @ExceptionHandler(Exception.class)
   public ProblemDetail handleException(Exception e, HttpServletRequest request, Locale locale) {

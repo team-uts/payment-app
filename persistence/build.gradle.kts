@@ -1,5 +1,5 @@
+import dev.teamuts.gradle.flyway.FlywayManager
 import org.springframework.boot.gradle.tasks.bundling.BootJar
-import task.flyway.FlywayManager
 
 val jar: Jar by tasks
 val bootJar: BootJar by tasks

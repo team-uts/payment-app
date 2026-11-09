@@ -7,12 +7,12 @@
 
 ### Database
 - generate and validate the final docker compose configuration for 'local' profile.
-```shell
+```bash
 docker-compose --env-file .env.local -f docker-compose-local.yaml config
 ```
 - Start the database services:
 ```shell
-docker-compose --env-file .env.local -f docker-compose-local.yaml up -d         
+docker-compose --env-file .env.local -f docker-compose-local.yaml up -d
 ```
 you will see the following output if everything is up and running:
 ```shell
@@ -21,6 +21,13 @@ you will see the following output if everything is up and running:
  ✔ Container payment-source-db  Started                                                                                                                              0.1s
  ✔ Container payment-replica-db Started
 ```
+
+### Spotless
+configure Git hook for Spotless check
+```bash
+./gradlew spotlessInstallGitPrePushHook
+```
+
 
 ## DB Migration
 
