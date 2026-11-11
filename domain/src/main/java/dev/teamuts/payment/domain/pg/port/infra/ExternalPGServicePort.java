@@ -7,7 +7,7 @@ import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.shared.provider.ProviderService;
+import dev.teamuts.shared.utils.provider.ProviderService;
 
 public interface ExternalPGServicePort extends ProviderService<PGProviderType> {
   // Account (Customer)

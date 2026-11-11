@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.pg.facade;
 
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
-import dev.teamuts.shared.provider.Provider;
+import dev.teamuts.shared.utils.provider.Provider;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

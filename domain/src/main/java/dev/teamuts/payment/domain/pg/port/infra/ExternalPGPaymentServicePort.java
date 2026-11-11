@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.shared.provider.ProviderService;
+import dev.teamuts.shared.utils.provider.ProviderService;
 
 public interface ExternalPGPaymentServicePort extends ProviderService<PGProviderType> {
   // Payment

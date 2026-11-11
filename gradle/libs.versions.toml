@@ -1,5 +1,6 @@
 [versions]
-payment-convention = "0.1.0"
+payment-convention = "0.2.0"
+payment-shared = "0.4.2"
 
 java = "21"
 
@@ -15,7 +16,6 @@ flywaydb = "13.2.0"
 spotless = "8.10.3"
 stripe = "33.4.0"
 
-payment-shared = "0.3.0"
 
 easyRandom = "6.0.1"
 mockito = "5.23.0"
@@ -29,7 +29,7 @@ flyway = { id = "org.flywaydb.flyway", version.ref = "flywaydb" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
-teamuts-payment-shared = { module = "com.github.team-uts:payment-shared", version.ref = "payment-shared" }
+teamuts-payment-shared = { module = "dev.teamuts.shared:payment-shared", version.ref = "payment-shared" }
 
 spring-tx = { module = "org.springframework:spring-tx" }
 
