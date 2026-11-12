@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.payment.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
+import dev.teamuts.shared.domain.annotation.DomainModel;
 import lombok.Builder;
 import lombok.Getter;
 

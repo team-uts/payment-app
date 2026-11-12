@@ -12,6 +12,9 @@ plugins {
 }
 
 dependencies {
+  testCompileOnly(libs.teamuts.payment.shared)
+  testFixturesCompileOnly(libs.teamuts.payment.shared)
+
   testFixturesImplementation(libs.easyRandom)
   testFixturesCompileOnly(libs.lombok)
   testFixturesAnnotationProcessor(libs.lombok)

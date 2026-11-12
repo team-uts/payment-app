@@ -3,11 +3,11 @@ package dev.teamuts.payment.persistence.payment.adapter;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionStorePort;
-import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.payment.entity.PaymentTransactionJpaEntity;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentTransactionConverter;
 import dev.teamuts.payment.persistence.payment.repository.PaymentTransactionRepository;
 import dev.teamuts.shared.data.AppTransactional;
+import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 

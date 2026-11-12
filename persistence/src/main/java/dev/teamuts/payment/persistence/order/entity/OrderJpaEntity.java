@@ -1,10 +1,10 @@
 package dev.teamuts.payment.persistence.order.entity;
 
-import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
+import dev.teamuts.shared.domain.money.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

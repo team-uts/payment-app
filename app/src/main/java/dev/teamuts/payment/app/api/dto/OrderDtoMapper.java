@@ -1,7 +1,7 @@
 package dev.teamuts.payment.app.api.dto;
 
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
+import dev.teamuts.shared.domain.money.Money;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

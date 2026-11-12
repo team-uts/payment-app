@@ -1,9 +1,9 @@
 package dev.teamuts.payment.domain.payment.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGCardDetail;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
+import dev.teamuts.shared.domain.annotation.DomainModel;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -65,7 +65,7 @@ public class Card extends PaymentMethodDetail {
             .status(status)
             .build();
 
-    card.id = id;
+    card.setId(id);
     card.payMethodId = payMethodId;
 
     return card;
@@ -77,7 +77,7 @@ public class Card extends PaymentMethodDetail {
 
   public Card copy() {
     Card copy = this.toBuilder().build();
-    copy.id = this.id;
+    copy.setId(this.getId());
     copy.payMethodId = this.payMethodId;
 
     return copy;

@@ -1,6 +1,6 @@
 package dev.teamuts.payment.infra.pg.constant;
 
-import dev.teamuts.payment.domain.common.constant.Currency;
+import dev.teamuts.shared.domain.money.Currency;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;

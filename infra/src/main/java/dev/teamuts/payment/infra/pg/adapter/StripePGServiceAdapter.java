@@ -19,19 +19,19 @@ import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.exception.PgProviderErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
-import dev.teamuts.payment.infra.common.annotation.PGAdapter;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import dev.teamuts.payment.infra.pg.constant.StripePaymentMethodType;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.payment.infra.pg.utils.StripeWebhookSecretManager;
 import dev.teamuts.payment.infra.pg.webhook.stripe.StripeWebhookEventMapperProvider;
+import dev.teamuts.shared.domain.annotation.InfraAdapter;
 import dev.teamuts.shared.error.exception.SystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@PGAdapter
+@InfraAdapter
 @RequiredArgsConstructor
 public class StripePGServiceAdapter implements ExternalPGServicePort {
   private static final PGProviderType PG_PROVIDER = PGProviderType.STRIPE;

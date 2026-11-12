@@ -11,8 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import dev.teamuts.payment.domain.common.constant.Currency;
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.OrderFixtureFactory;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
@@ -33,6 +31,8 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.service.PaymentService;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
+import dev.teamuts.shared.domain.money.Currency;
+import dev.teamuts.shared.domain.money.Money;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

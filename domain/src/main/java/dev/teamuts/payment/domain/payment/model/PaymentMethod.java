@@ -1,11 +1,11 @@
 package dev.teamuts.payment.domain.payment.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
+import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,7 +68,7 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
             .detail(detail)
             .build();
 
-    pm.id = id;
+    pm.setId(id);
 
     return pm;
   }
@@ -95,7 +95,8 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
 
   public void checkIfActive() {
     if (this.status != PaymentMethodStatus.ACTIVE) {
-      throw new IllegalStateException("PaymentMethod (id: %s) is not active".formatted(this.id));
+      throw new IllegalStateException(
+          "PaymentMethod (id: %s) is not active".formatted(this.getId()));
     }
   }
 

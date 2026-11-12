@@ -1,9 +1,9 @@
 package dev.teamuts.payment.domain.payment.usecase;
 
-import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.payment.dto.app.PaymentMethodInfo;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
+import dev.teamuts.shared.domain.annotation.UseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 

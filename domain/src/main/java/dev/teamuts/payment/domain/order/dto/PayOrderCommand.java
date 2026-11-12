@@ -1,8 +1,8 @@
 package dev.teamuts.payment.domain.order.dto;
 
-import dev.teamuts.payment.domain.common.constant.Currency;
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
+import dev.teamuts.shared.domain.money.Currency;
+import dev.teamuts.shared.domain.money.Money;
 
 public record PayOrderCommand(
     String extOrderNum,

@@ -1,7 +1,7 @@
 package dev.teamuts.payment.app.api.dto;
 
-import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
+import dev.teamuts.shared.domain.money.Currency;
 import java.math.BigDecimal;
 
 public record PayOrderRequestDto(

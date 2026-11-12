@@ -13,14 +13,14 @@ import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGPaymentServicePort;
-import dev.teamuts.payment.infra.common.annotation.PGAdapter;
 import dev.teamuts.payment.infra.pg.constant.StripeCurrency;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import dev.teamuts.payment.infra.pg.constant.StripePaymentTransactionStatus;
 import dev.teamuts.payment.infra.pg.mapper.StripePayTransactionConverter;
+import dev.teamuts.shared.domain.annotation.InfraAdapter;
 import lombok.RequiredArgsConstructor;
 
-@PGAdapter
+@InfraAdapter
 @RequiredArgsConstructor
 public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePort {
   private static final PGProviderType PG_PROVIDER = PGProviderType.STRIPE;

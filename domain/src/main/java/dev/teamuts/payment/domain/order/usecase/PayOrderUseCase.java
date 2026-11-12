@@ -1,12 +1,12 @@
 package dev.teamuts.payment.domain.order.usecase;
 
-import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.facade.OrderPaymentFacade;
 import dev.teamuts.payment.domain.payment.model.Payment;
+import dev.teamuts.shared.domain.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 
 @UseCase

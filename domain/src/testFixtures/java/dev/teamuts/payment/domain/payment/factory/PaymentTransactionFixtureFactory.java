@@ -1,12 +1,12 @@
 package dev.teamuts.payment.domain.payment.factory;
 
-import dev.teamuts.payment.domain.common.constant.Currency;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.shared.domain.money.Currency;
 import java.math.BigDecimal;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

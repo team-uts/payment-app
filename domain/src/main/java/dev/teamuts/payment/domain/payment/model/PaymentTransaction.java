@@ -1,9 +1,5 @@
 package dev.teamuts.payment.domain.payment.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.common.constant.Currency;
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
@@ -12,6 +8,10 @@ import dev.teamuts.payment.domain.payment.exception.PaymentException;
 import dev.teamuts.payment.domain.payment.exception.PaymentTransactionErrorCode;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
+import dev.teamuts.shared.domain.money.Currency;
+import dev.teamuts.shared.domain.money.Money;
 import dev.teamuts.shared.utils.StringUtils;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
@@ -123,7 +123,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
             .sequenceType(PaySequenceType.of(sequence))
             .build();
 
-    pt.id = id;
+    pt.setId(id);
 
     return pt;
   }

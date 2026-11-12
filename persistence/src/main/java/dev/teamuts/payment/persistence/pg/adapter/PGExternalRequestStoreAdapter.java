@@ -2,10 +2,10 @@ package dev.teamuts.payment.persistence.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestStorePort;
-import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.entity.PGExternalRequestJpaEntity;
 import dev.teamuts.payment.persistence.pg.mapper.PGExternalRequestConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGExternalRequestRepository;
+import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter

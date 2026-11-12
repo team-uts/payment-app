@@ -1,8 +1,8 @@
 package dev.teamuts.payment.app.common;
 
 import dev.teamuts.payment.domain.common.exception.InfraException;
-import dev.teamuts.payment.domain.common.exception.PersistenceException;
 import dev.teamuts.shared.config.AppProfile;
+import dev.teamuts.shared.data.PersistenceException;
 import dev.teamuts.shared.error.ProblemDetailGenerator;
 import dev.teamuts.shared.error.constant.CommonErrorCode;
 import dev.teamuts.shared.error.exception.ApiExternalException;
