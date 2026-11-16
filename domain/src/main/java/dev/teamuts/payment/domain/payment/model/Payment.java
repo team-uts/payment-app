@@ -26,13 +26,8 @@ public class Payment extends BaseIdentifiableModel<Long> {
   private Long memberId;
   private AppServiceType serviceType;
   private PaymentStatus status;
-
-  @Getter(AccessLevel.NONE)
   private Money payAmount;
-
-  @Getter(AccessLevel.NONE)
   private Money pointAmount;
-
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private PGProviderType pgProvider;
@@ -113,22 +108,6 @@ public class Payment extends BaseIdentifiableModel<Long> {
     payment.setId(id);
 
     return payment;
-  }
-
-  public Money getPayAmountMoney() {
-    return payAmount.copy();
-  }
-
-  public Money getPointAmountMoney() {
-    return pointAmount.copy();
-  }
-
-  public BigDecimal getPayAmount() {
-    return payAmount.getAmount();
-  }
-
-  public BigDecimal getPointAmount() {
-    return pointAmount.getAmount();
   }
 
   public void checkProcessingStatus() {

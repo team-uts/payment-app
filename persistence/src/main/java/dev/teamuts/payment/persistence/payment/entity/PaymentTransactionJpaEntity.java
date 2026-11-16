@@ -96,7 +96,7 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
         .payMethodId(paymentTransaction.getPayMethodId())
         .payMethodType(paymentTransaction.getPayMethodType())
         .serviceType(paymentTransaction.getServiceType())
-        .amount(paymentTransaction.getAmount())
+        .amount(paymentTransaction.getAmount().getAmount())
         .currency(paymentTransaction.getCurrency())
         .pgProvider(paymentTransaction.getPgProvider())
         .pgTransactionId(paymentTransaction.getPgTransactionId())

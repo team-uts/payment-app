@@ -28,10 +28,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private AppServiceType serviceType;
-
-  @Getter(AccessLevel.NONE)
   private Money amount;
-
   private PGProviderType pgProvider;
   private String pgTransactionId;
   private String pgResponseCode;
@@ -59,7 +56,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         .payMethodId(payment.getPayMethodId())
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
-        .amount(payment.getPayAmountMoney())
+        .amount(payment.getPayAmount())
         .pgProvider(payment.getPgProvider())
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.PG_PAY)
@@ -79,7 +76,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         .payMethodId(payment.getPayMethodId())
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
-        .amount(payment.getPointAmountMoney())
+        .amount(payment.getPointAmount())
         .pgProvider(PGProviderType.NONE)
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.POINT)
@@ -163,10 +160,6 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         StringUtils.truncate(
             "[%s] %s".formatted(e.getClass().getSimpleName(), e.getMessage()),
             MAX_DETAIL_MSG_LENGTH);
-  }
-
-  public BigDecimal getAmount() {
-    return amount.getAmount();
   }
 
   public boolean cannotContinueProcessingPgPay() {
