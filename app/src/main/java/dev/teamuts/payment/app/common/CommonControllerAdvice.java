@@ -118,7 +118,7 @@ public class CommonControllerAdvice {
     if (appProfile.isLocal()) {
       log.error(
           "Code: {} / Exception: {} / Msg: {} /",
-          e.getErrorCode().name(),
+          e.getErrorCode().getName(),
           e.getClass().getSimpleName(),
           logMessage,
           e.getCause());
@@ -127,7 +127,7 @@ public class CommonControllerAdvice {
 
     log.error(
         "Code: {} / Exception: {} / Msg: {}",
-        e.getErrorCode().name(),
+        e.getErrorCode().getName(),
         e.getClass().getSimpleName(),
         logMessage);
   }

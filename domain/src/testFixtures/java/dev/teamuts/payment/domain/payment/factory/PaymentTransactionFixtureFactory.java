@@ -6,7 +6,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.shared.domain.money.Currency;
+import dev.teamuts.shared.domain.constant.Currency;
 import java.math.BigDecimal;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

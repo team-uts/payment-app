@@ -7,7 +7,7 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentReaderPort;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentStorePort;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentUpdatePort;
-import dev.teamuts.shared.domain.money.Money;
+import dev.teamuts.shared.domain.model.Money;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.shared.domain.money.Currency;
+import dev.teamuts.shared.domain.constant.Currency;
 import java.math.BigDecimal;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;

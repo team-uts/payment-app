@@ -6,7 +6,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
-import dev.teamuts.shared.domain.money.Currency;
+import dev.teamuts.shared.domain.constant.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

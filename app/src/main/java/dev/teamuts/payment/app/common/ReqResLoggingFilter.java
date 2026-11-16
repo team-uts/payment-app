@@ -3,7 +3,7 @@ package dev.teamuts.payment.app.common;
 import dev.teamuts.shared.config.AppProfile;
 import dev.teamuts.shared.http.logging.HttpLogMessage;
 import dev.teamuts.shared.http.logging.RequestLogType;
-import dev.teamuts.shared.utils.TimeUtils;
+import dev.teamuts.shared.utils.AppTimeUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +50,7 @@ public class ReqResLoggingFilter extends OncePerRequestFilter {
     filterChain.doFilter(requestWrapper, responseWrapper);
     long endTime = System.currentTimeMillis();
 
-    double elapsedTime = TimeUtils.convertMillisToSecWithPrecision(endTime - startTime);
+    double elapsedTime = AppTimeUtils.convertMillisToSecWithPrecision(endTime - startTime);
 
     try {
       log.info(

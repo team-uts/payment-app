@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.point.service;
 
-import dev.teamuts.shared.domain.money.Money;
+import dev.teamuts.shared.domain.model.Money;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
