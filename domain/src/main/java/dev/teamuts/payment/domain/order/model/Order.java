@@ -21,10 +21,7 @@ public class Order extends BaseIdentifiableModel<Long> {
   private String extOrderNum;
   private AppServiceType serviceType;
   private Long memberId;
-
-  @Getter(AccessLevel.NONE)
   private Money amount;
-
   private OrderStatus status;
 
   public static Order initPayment(Long memberId, PayOrderCommand command) {
@@ -99,10 +96,6 @@ public class Order extends BaseIdentifiableModel<Long> {
     }
 
     return this.amount.minus(amount);
-  }
-
-  public BigDecimal getAmount() {
-    return amount.getAmount();
   }
 
   public Currency getCurrency() {

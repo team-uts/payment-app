@@ -58,7 +58,7 @@ public class OrderJpaEntity extends BaseTimeEntity {
         .extOrderNum(order.getExtOrderNum())
         .serviceType(order.getServiceType())
         .memberId(order.getMemberId())
-        .amount(order.getAmount())
+        .amount(order.getAmount().getAmount())
         .currency(order.getCurrency())
         .status(order.getStatus())
         .build();
