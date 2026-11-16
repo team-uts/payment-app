@@ -1,7 +1,7 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.exception.PgExternalRequestErrorCode;
+import dev.teamuts.payment.domain.pg.error.PgExternalRequestErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.persistence.pg.mapper.PGExternalRequestConverter;

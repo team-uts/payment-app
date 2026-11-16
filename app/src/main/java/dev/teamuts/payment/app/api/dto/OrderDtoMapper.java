@@ -16,9 +16,9 @@ import org.mapstruct.ReportingPolicy;
 public interface OrderDtoMapper {
   @Mapping(
       target = "totalAmount",
-      expression = "java(Money.of(requestDto.totalAmount(), requestDto.currency()))")
+      expression = "java(Money.of(request.totalAmount(), request.currency()))")
   @Mapping(
       target = "pointAmount",
-      expression = "java(Money.of(requestDto.pointAmount(), requestDto.currency()))")
-  PayOrderCommand of(PayOrderRequestDto requestDto);
+      expression = "java(Money.of(request.pointAmount(), request.currency()))")
+  PayOrderCommand of(PayOrderRequestDto request);
 }

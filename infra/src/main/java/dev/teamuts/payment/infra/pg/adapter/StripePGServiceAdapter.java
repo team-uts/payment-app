@@ -16,7 +16,7 @@ import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
-import dev.teamuts.payment.domain.pg.exception.PgProviderErrorCode;
+import dev.teamuts.payment.domain.pg.error.PgProviderErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;

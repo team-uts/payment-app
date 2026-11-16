@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.pg.exception;
+package dev.teamuts.payment.domain.pg.error;
 
 import dev.teamuts.shared.error.constant.ErrorCode;
 import lombok.AccessLevel;
@@ -8,9 +8,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum PgExternalRequestErrorCode implements ErrorCode {
-  NOT_FOUND("PER-0001", HttpStatus.NOT_FOUND),
-  NOT_FOUND_WITH_PARAMS("PER-0002", HttpStatus.NOT_FOUND),
+public enum PgAccountErrorCode implements ErrorCode {
+  NOT_FOUND_WITH_MEMBER("PGA-0001", HttpStatus.NOT_FOUND),
   ;
 
   private final String code;
@@ -18,6 +17,6 @@ public enum PgExternalRequestErrorCode implements ErrorCode {
 
   @Override
   public String getMessageKey() {
-    return "pg_external_request." + name();
+    return "pg_account." + name();
   }
 }

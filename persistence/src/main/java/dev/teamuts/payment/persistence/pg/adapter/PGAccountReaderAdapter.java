@@ -1,6 +1,6 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
-import dev.teamuts.payment.domain.pg.exception.PgAccountErrorCode;
+import dev.teamuts.payment.domain.pg.error.PgAccountErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
 import dev.teamuts.payment.persistence.pg.mapper.PGAccountConverter;

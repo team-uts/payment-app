@@ -1,8 +1,8 @@
 package dev.teamuts.payment.domain.order.service;
 
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
-import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
-import dev.teamuts.payment.domain.order.exception.OrderException;
+import dev.teamuts.payment.domain.order.error.OrderErrorCode;
+import dev.teamuts.payment.domain.order.error.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;

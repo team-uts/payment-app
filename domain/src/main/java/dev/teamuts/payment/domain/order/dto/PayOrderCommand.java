@@ -1,7 +1,6 @@
 package dev.teamuts.payment.domain.order.dto;
 
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
-import dev.teamuts.shared.domain.money.Currency;
 import dev.teamuts.shared.domain.money.Money;
 
 public record PayOrderCommand(
@@ -9,7 +8,6 @@ public record PayOrderCommand(
     Long payMethodId,
     Money totalAmount,
     Money pointAmount,
-    Currency currency,
     AppServiceType serviceType) {
 
   public boolean hasAnyPointUsage() {

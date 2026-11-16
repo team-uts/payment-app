@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.pg.exception;
+package dev.teamuts.payment.domain.pg.error;
 
 import dev.teamuts.shared.error.constant.SystemErrorCode;
 import lombok.AccessLevel;

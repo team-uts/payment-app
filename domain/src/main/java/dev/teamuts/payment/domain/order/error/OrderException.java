@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.order.exception;
+package dev.teamuts.payment.domain.order.error;
 
 import dev.teamuts.shared.error.exception.BusinessException;
 import dev.teamuts.shared.error.exception.ErrorArguments;

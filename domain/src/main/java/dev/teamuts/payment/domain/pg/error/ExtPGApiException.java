@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.pg.exception;
+package dev.teamuts.payment.domain.pg.error;
 
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.shared.error.exception.ApiInternalException;
