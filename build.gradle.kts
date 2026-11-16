@@ -1,3 +1,4 @@
+import dev.teamuts.gradle.os.OsConstants.MACOS_SILICON
 import dev.teamuts.gradle.utils.pluginId
 
 plugins {
@@ -6,6 +7,8 @@ plugins {
   alias(libs.plugins.spring.dependencyManagement)
   alias(libs.plugins.spotless)
   alias(libs.plugins.teamuts.paymentConvention)
+
+  alias(libs.plugins.google.osdetector) // os checker
 }
 
 val projectLibs = libs
@@ -43,6 +46,7 @@ subprojects {
     plugin(projectLibs.plugins.spring.boot.pluginId())
     plugin(projectLibs.plugins.spring.dependencyManagement.pluginId())
     plugin(projectLibs.plugins.teamuts.paymentConvention.pluginId())
+    plugin(projectLibs.plugins.google.osdetector.pluginId())
   }
 
   java {
@@ -68,6 +72,13 @@ subprojects {
     testAnnotationProcessor(projectLibs.lombok)
     testImplementation(projectLibs.mockito)
     mockitoAgent(projectLibs.mockito) { isTransitive = false }
+
+    if (osdetector.classifier == MACOS_SILICON) {
+      runtimeOnly(projectLibs.netty.resolver.dns.native.macos) {
+        // Only for macOS silicon chip
+        artifact { classifier = MACOS_SILICON }
+      }
+    }
   }
 
   tasks.withType<Test> {

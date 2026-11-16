@@ -5,20 +5,21 @@
 
 ## Local Environment Setup
 
-### Database
+### Docker Compose
 - generate and validate the final docker compose configuration for 'local' profile.
 ```bash
 docker-compose --env-file .env.local -f docker-compose-local.yaml config
 ```
 - Start the database services:
-```shell
+```bash
 docker-compose --env-file .env.local -f docker-compose-local.yaml up -d
 ```
 you will see the following output if everything is up and running:
-```shell
-[+] up 3/3
- ✔ Network payment-db_default   Created                                                                                                                              0.0s
- ✔ Container payment-source-db  Started                                                                                                                              0.1s
+```bash
+[+] up 4/4
+ ✔ Network payment-db_default   Created
+ ✔ Container payment-redis      Started
+ ✔ Container payment-source-db  Started
  ✔ Container payment-replica-db Started
 ```
 
@@ -31,7 +32,7 @@ configure Git hook for Spotless check
 
 ## DB Migration
 
-```shell
+```bash
 $ ./gradlew :persistence:flywayMigrate -Dprofile=local
 $ ./gradlew :persistence:flywayInfo -Dprofile=local
 $ ./gradlew :persistence:flywayValidate -Dprofile=local

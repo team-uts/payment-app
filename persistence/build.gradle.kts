@@ -26,6 +26,9 @@ dependencies {
 
   implementation(libs.spring.boot.h2console)
   implementation(libs.spring.boot.starter.data.jpa)
+  implementation(libs.spring.boot.starter.data.redis)
+
+  implementation(libs.redisson.spring.boot) // for distributed lock
 
   implementation(variantOf(libs.querydsl.jpa) { classifier("jakarta") })
   annotationProcessor(variantOf(libs.querydsl.apt) { classifier("jakarta") })
