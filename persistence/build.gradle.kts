@@ -29,6 +29,7 @@ dependencies {
   implementation(libs.spring.boot.starter.data.redis)
 
   implementation(libs.redisson.spring.boot) // for distributed lock
+  implementation(libs.apache.commons.pool)
 
   implementation(variantOf(libs.querydsl.jpa) { classifier("jakarta") })
   annotationProcessor(variantOf(libs.querydsl.apt) { classifier("jakarta") })
