@@ -1,24 +1,16 @@
 package dev.teamuts.payment.domain.common.lock;
 
+import dev.teamuts.shared.data.constant.LockGroup;
 import dev.teamuts.shared.data.constant.LockTtl;
-import java.util.List;
-import lombok.Getter;
+import java.util.EnumSet;
+import java.util.Locale;
+import org.jspecify.annotations.NonNull;
 
-@Getter
-public enum PaymentLockGroup {
-  AUTH_TOKEN,
-  PRAYER_LIKE,
-  PRAYER_COMMENT,
-  MEMBER_UPDATE,
-  FOLLOW,
-  FOLLOW_REQUEST,
-  MEMBER_IMAGE_UPLOAD,
+public enum PaymentLockGroup implements LockGroup {
+  PAY_ORDER(LockTtl.TEN_SECONDS),
   ;
 
   private final LockTtl ttl;
-
-  private static final String DELIMITER = ":";
-  private static final String LOCK_PREFIX = "LOCK";
 
   PaymentLockGroup() {
     this.ttl = LockTtl.FIVE_SECONDS;
@@ -28,23 +20,17 @@ public enum PaymentLockGroup {
     this.ttl = ttl;
   }
 
-  public String generateLockKey(List<String> params) {
-    String paramStr = String.join(DELIMITER, params);
-    return String.join(DELIMITER, List.of(LOCK_PREFIX, this.name(), paramStr));
+  private static final EnumSet<PaymentLockGroup> ALL_GROUPS = EnumSet.allOf(PaymentLockGroup.class);
+
+  public static PaymentLockGroup of(String group) {
+    return ALL_GROUPS.stream()
+        .filter(g -> g.name().toLowerCase(Locale.ROOT).equals(group.toLowerCase(Locale.ROOT)))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Invalid lock group: " + group));
   }
 
-  /**
-   * 인자로 받은 ttl이 우선권을 가지게 된다.
-   *
-   * @param ttl 해당 ttl 값이 [LockTtl.ZERO]인 경우 type에 설정된 ttl로 반환
-   */
-  public long getValidTtlOrTypeDefaultMillis(LockTtl ttl) {
-    if (ttl == LockTtl.ZERO) {
-      // type의 ttl 값 반환
-      return this.ttl.millis();
-    }
-
-    // 인자로 받은 ttl 반환
-    return ttl.millis();
+  @Override
+  public @NonNull LockTtl getLockTtl() {
+    return this.ttl;
   }
 }

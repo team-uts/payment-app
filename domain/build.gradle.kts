@@ -12,6 +12,8 @@ plugins {
 }
 
 dependencies {
+  implementation(libs.spring.boot.starter.aspectj)
+
   testCompileOnly(libs.teamuts.payment.shared)
   testFixturesCompileOnly(libs.teamuts.payment.shared)
 

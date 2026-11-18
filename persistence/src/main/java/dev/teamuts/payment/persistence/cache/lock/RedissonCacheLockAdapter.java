@@ -5,19 +5,17 @@ import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 
 @Slf4j
-@PersistenceAdapter
+@PersistenceAdapter("redissonCacheLockAdapter")
+@RequiredArgsConstructor
 public class RedissonCacheLockAdapter implements CacheLockPort {
   private final RedissonClient redissonClient;
   private static final Map<String, RLock> lockMap = new ConcurrentHashMap<>();
-
-  public RedissonCacheLockAdapter(RedissonClient redissonClient) {
-    this.redissonClient = redissonClient;
-  }
 
   @Override
   public boolean lock(String key, long ttlInMillis) {

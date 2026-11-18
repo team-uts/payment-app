@@ -6,7 +6,7 @@ import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 
-@PersistenceAdapter
+@PersistenceAdapter("lettuceCacheLockAdapter")
 @RequiredArgsConstructor
 public class LettuceCacheLockAdapter implements CacheLockPort {
   private final RedisService redisService;
