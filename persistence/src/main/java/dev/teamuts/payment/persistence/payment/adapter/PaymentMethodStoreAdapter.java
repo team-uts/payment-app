@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodStorePor
 import dev.teamuts.payment.persistence.payment.entity.PaymentMethodJpaEntity;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentMethodConverter;
 import dev.teamuts.payment.persistence.payment.repository.PaymentMethodRepository;
-import dev.teamuts.shared.data.AppTransactional;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 

@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
 import dev.teamuts.payment.persistence.order.entity.OrderJpaEntity;
 import dev.teamuts.payment.persistence.order.mapper.OrderConverter;
 import dev.teamuts.payment.persistence.order.repository.OrderRepository;
-import dev.teamuts.shared.data.AppTransactional;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 

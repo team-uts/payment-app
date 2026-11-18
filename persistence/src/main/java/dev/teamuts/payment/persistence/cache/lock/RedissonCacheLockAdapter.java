@@ -1,6 +1,6 @@
 package dev.teamuts.payment.persistence.cache.lock;
 
-import dev.teamuts.payment.domain.common.cache.CacheLockPort;
+import dev.teamuts.shared.data.lock.CacheLockPort;
 import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,14 +20,14 @@ public class RedissonCacheLockAdapter implements CacheLockPort {
   }
 
   @Override
-  public boolean lock(String key, long ttl) {
+  public boolean lock(String key, long ttlInMillis) {
 
     RLock rLock = redissonClient.getLock(key);
 
     String storageKey = getStorageKey(key, Thread.currentThread().threadId());
 
     try {
-      boolean result = rLock.tryLock(ttl, ttl, TimeUnit.MILLISECONDS);
+      boolean result = rLock.tryLock(ttlInMillis, ttlInMillis, TimeUnit.MILLISECONDS);
       lockMap.put(storageKey, rLock);
       return result;
     } catch (Exception e) {

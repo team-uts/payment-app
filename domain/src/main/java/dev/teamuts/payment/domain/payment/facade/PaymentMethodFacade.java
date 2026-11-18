@@ -8,7 +8,7 @@ import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentMethodDetail;
 import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
-import dev.teamuts.shared.data.AppTransactional;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
