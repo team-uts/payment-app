@@ -2,6 +2,7 @@ package dev.teamuts.payment.domain.order.usecase;
 
 import static dev.teamuts.shared.data.annotation.LockKeyPath.*;
 
+import dev.teamuts.payment.domain.common.lock.PaymentLockGroup;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.model.Order;
@@ -11,6 +12,7 @@ import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.shared.data.annotation.LockKeyPath;
 import dev.teamuts.shared.data.annotation.TryLock;
 import dev.teamuts.shared.data.constant.LockKeyType;
+import dev.teamuts.shared.data.constant.LockTtl;
 import dev.teamuts.shared.domain.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +23,14 @@ public class PayOrderUseCase {
   private final OrderPaymentFacade paymentTransactionFacade;
 
   @TryLock(
-      group = "PAY_ORDER",
+      group = PaymentLockGroup.PAY_ORDER_NAME,
       keyPaths = {
         @LockKeyPath(keyType = LockKeyType.NON_OBJECT, keyParams = @LockKeyParam(key = "memberId")),
         @LockKeyPath(
             keyType = LockKeyType.OBJECT,
             keyParams = @LockKeyParam(key = "command", field = "extOrderNum")),
-      })
+      },
+      timeToLive = LockTtl.ONE_MINUTE)
   public PayOrderInfo execute(Long memberId, PayOrderCommand command) {
     // Retrieve or Create new Order data (PAYMENT_PENDING)
     Order order = orderService.getPaymentOrderOrCreateInit(memberId, command);

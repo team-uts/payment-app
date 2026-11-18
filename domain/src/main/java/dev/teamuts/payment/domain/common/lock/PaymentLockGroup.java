@@ -7,7 +7,7 @@ import java.util.Locale;
 import org.jspecify.annotations.NonNull;
 
 public enum PaymentLockGroup implements LockGroup {
-  PAY_ORDER(LockTtl.TEN_SECONDS),
+  PAY_ORDER(LockTtl.ONE_MINUTE),
   ;
 
   private final LockTtl ttl;
@@ -19,6 +19,8 @@ public enum PaymentLockGroup implements LockGroup {
   PaymentLockGroup(LockTtl ttl) {
     this.ttl = ttl;
   }
+
+  public static final String PAY_ORDER_NAME = "PAY_ORDER";
 
   private static final EnumSet<PaymentLockGroup> ALL_GROUPS = EnumSet.allOf(PaymentLockGroup.class);
 
