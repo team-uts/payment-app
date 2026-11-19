@@ -10,11 +10,7 @@ import org.springframework.stereotype.Component;
 public class RedisService {
   private final RedisTemplate<String, Object> redisTemplate;
 
-  public boolean setIfAbsent(String key, String value, Duration duration) {
+  public Boolean setIfAbsent(String key, String value, Duration duration) {
     return redisTemplate.opsForValue().setIfAbsent(key, value, duration);
-  }
-
-  public boolean delete(String key) {
-    return redisTemplate.delete(key);
   }
 }

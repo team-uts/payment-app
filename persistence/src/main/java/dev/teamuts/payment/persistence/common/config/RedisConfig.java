@@ -24,6 +24,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration(proxyBeanMethods = false)
@@ -33,22 +34,31 @@ public class RedisConfig {
   private final DataRedisProperties redisProps;
   private final RedissonPoolProperties redissonPoolProps;
 
+  @Primary
   @Bean
   public RedisTemplate<String, Object> redisTemplate(
-      @Qualifier("lettuceConnectionFactory") RedisConnectionFactory lettuceConnectionFactory) {
-    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-    redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+      @Qualifier("lettuceConnectionFactory") RedisConnectionFactory connectionFactory) {
+    RedisTemplate<String, Object> template = new RedisTemplate<>();
+    template.setConnectionFactory(connectionFactory);
 
     StringRedisSerializer stringSerializer = new StringRedisSerializer();
-    redisTemplate.setKeySerializer(stringSerializer);
-    redisTemplate.setValueSerializer(stringSerializer);
-    redisTemplate.setHashKeySerializer(stringSerializer);
-    redisTemplate.setHashValueSerializer(stringSerializer);
+    template.setKeySerializer(stringSerializer);
+    template.setValueSerializer(stringSerializer);
+    template.setHashKeySerializer(stringSerializer);
+    template.setHashValueSerializer(stringSerializer);
 
     // synchronize app transaction with redis transaction.
-    redisTemplate.setEnableTransactionSupport(true);
+    template.setEnableTransactionSupport(true);
 
-    return redisTemplate;
+    return template;
+  }
+
+  @Bean("lockRedisTemplate")
+  public StringRedisTemplate lockRedisTemplate(
+      @Qualifier("lettuceConnectionFactory") RedisConnectionFactory connectionFactory) {
+    StringRedisTemplate template = new StringRedisTemplate(connectionFactory);
+    template.setEnableTransactionSupport(false);
+    return template;
   }
 
   @Primary

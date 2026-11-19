@@ -1,6 +1,6 @@
 [versions]
 payment-convention = "0.2.2"
-payment-shared = "0.7.4"
+payment-shared = "0.7.8"
 
 java = "21"
 

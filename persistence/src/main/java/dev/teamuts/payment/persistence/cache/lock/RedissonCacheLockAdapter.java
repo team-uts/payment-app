@@ -1,9 +1,9 @@
 package dev.teamuts.payment.persistence.cache.lock;
 
 import dev.teamuts.shared.data.lock.CacheLockPort;
+import dev.teamuts.shared.data.lock.LockReleaseCallback;
 import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,38 +15,34 @@ import org.redisson.api.RedissonClient;
 @RequiredArgsConstructor
 public class RedissonCacheLockAdapter implements CacheLockPort {
   private final RedissonClient redissonClient;
-  private static final Map<String, RLock> lockMap = new ConcurrentHashMap<>();
 
   @Override
-  public boolean lock(String key, long ttlInMillis) {
-
+  public Optional<LockReleaseCallback> lock(String key, long ttlInMillis) {
     RLock rLock = redissonClient.getLock(key);
 
-    String storageKey = getStorageKey(key, Thread.currentThread().threadId());
-
     try {
-      boolean result = rLock.tryLock(ttlInMillis, ttlInMillis, TimeUnit.MILLISECONDS);
-      lockMap.put(storageKey, rLock);
-      return result;
+      boolean isAcquired = rLock.tryLock(ttlInMillis, ttlInMillis, TimeUnit.MILLISECONDS);
+
+      if (!isAcquired) {
+        return Optional.empty();
+      }
+
+      return Optional.of(() -> unlock(rLock));
     } catch (Exception e) {
       log.error("Failed to acquire lock for key: {}", key, e);
-      return false;
+      return Optional.empty();
     }
   }
 
-  @Override
-  public void unlock(String key) {
-    String storageKey = getStorageKey(key, Thread.currentThread().threadId());
-    RLock rLock = lockMap.get(storageKey);
-
-    if (rLock != null) {
-      lockMap.remove(storageKey);
-      rLock.unlock();
+  private void unlock(RLock rLock) {
+    try {
+      if (rLock.isHeldByCurrentThread()) {
+        rLock.unlock();
+      }
+    } catch (IllegalMonitorStateException e) {
+      log.warn("Attempted to unlock a lock not held by the current thread: {}", rLock.getName(), e);
+    } catch (Exception e) {
+      log.error("Failed to unlock the lock: {}", rLock.getName(), e);
     }
-  }
-
-  // only in synchronized block, threadId is unique
-  private String getStorageKey(String key, Long threadId) {
-    return "%d-%s".formatted(threadId, key);
   }
 }

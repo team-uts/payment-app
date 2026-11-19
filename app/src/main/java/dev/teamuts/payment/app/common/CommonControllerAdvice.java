@@ -93,13 +93,14 @@ public class CommonControllerAdvice {
                               "type": "MEMBER_MISMATCH",
                               "message": "Order (extOrderNum: {0}) does not belong to member (memberId: {1})."
                             }
-                          }\
+                          }
                           """)))
   @ResponseStatus(HttpStatus.OK)
   @ExceptionHandler(BusinessException.class)
   public ApiCommonResponse<?> handleBusinessException(BusinessException e, Locale locale) {
     logException(e);
 
+    // BusinessException has its own error message to be shown to user aspect.
     ErrorResponse errorResponse =
         ErrorResponse.of(
             e.getErrorCode(),
@@ -108,6 +109,7 @@ public class CommonControllerAdvice {
     return ApiCommonResponse.failure(errorResponse);
   }
 
+  /** Log the exception. */
   private void logException(ApiExternalException e) {
     String logMessage = e.getMessage();
 

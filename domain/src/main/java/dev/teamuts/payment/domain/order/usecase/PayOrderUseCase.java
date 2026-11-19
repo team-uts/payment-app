@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PayOrderUseCase {
   private final OrderService orderService;
-  private final OrderPaymentFacade paymentTransactionFacade;
+  private final OrderPaymentFacade orderPaymentFacade;
 
   @TryLock(
       group = PaymentLockGroup.PAY_ORDER_NAME,
@@ -36,7 +36,7 @@ public class PayOrderUseCase {
     Order order = orderService.getPaymentOrderOrCreateInit(memberId, command);
 
     // Process Payment with Order
-    Payment resultPayment = paymentTransactionFacade.processPayment(order, command);
+    Payment resultPayment = orderPaymentFacade.processPayment(order, command);
 
     // Update Order status to "CONFIRMED"
     orderService.updateStatusWithPayment(order, resultPayment);
