@@ -1,6 +1,6 @@
 package dev.teamuts.payment;
 
-import dev.teamuts.payment.shared.config.AppModule;
+import dev.teamuts.shared.config.AppModule;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 

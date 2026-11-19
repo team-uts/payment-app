@@ -3,8 +3,8 @@ package dev.teamuts.payment.persistence.order.entity;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
+import dev.teamuts.shared.domain.constant.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -58,7 +58,7 @@ public class OrderJpaEntity extends BaseTimeEntity {
         .extOrderNum(order.getExtOrderNum())
         .serviceType(order.getServiceType())
         .memberId(order.getMemberId())
-        .amount(order.getAmount())
+        .amount(order.getAmount().getAmount())
         .currency(order.getCurrency())
         .status(order.getStatus())
         .build();

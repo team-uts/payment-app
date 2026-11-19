@@ -11,14 +11,11 @@ import dev.teamuts.payment.domain.payment.factory.PaymentTransactionFixtureFacto
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class PaymentStatusRuleResolverTest {
-  private PaymentTransactionFixtureFactory paymentTransactionFactory;
-
   static Stream<Arguments> provideTwoTxsForResolvingPaymentStatusTest() {
     return Stream.of(
         arguments(
@@ -114,11 +111,6 @@ class PaymentStatusRuleResolverTest {
             PaymentStatus.PENDING));
   }
 
-  @BeforeEach
-  void setup() {
-    paymentTransactionFactory = new PaymentTransactionFixtureFactory();
-  }
-
   @ParameterizedTest
   @MethodSource({
     "provideTwoTxsForResolvingPaymentStatusTest",
@@ -131,7 +123,7 @@ class PaymentStatusRuleResolverTest {
     // Given a list of test cases and an expected payment status
     List<PaymentTransaction> txs =
         testCases.stream()
-            .map(e -> paymentTransactionFactory.createSingleRandom(e.getValue(), e.getKey()))
+            .map(e -> PaymentTransactionFixtureFactory.createSingleRandom(e.getValue(), e.getKey()))
             .toList();
 
     PaymentStatus resultStatus = PaymentStatusRuleResolver.resolve(txs);
@@ -148,7 +140,7 @@ class PaymentStatusRuleResolverTest {
     // Given a list of test cases and an expected payment status
     List<PaymentTransaction> txs =
         testCases.stream()
-            .map(e -> paymentTransactionFactory.createSingleRandom(e.getValue(), e.getKey()))
+            .map(e -> PaymentTransactionFixtureFactory.createSingleRandom(e.getValue(), e.getKey()))
             .toList();
 
     assertThatThrownBy(() -> PaymentStatusRuleResolver.resolve(txs))

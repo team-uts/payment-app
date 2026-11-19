@@ -1,14 +1,14 @@
 package dev.teamuts.payment.domain.order.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
-import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
-import dev.teamuts.payment.domain.order.exception.OrderException;
-import dev.teamuts.payment.domain.payment.constant.Currency;
+import dev.teamuts.payment.domain.order.error.OrderErrorCode;
+import dev.teamuts.payment.domain.order.error.OrderException;
+import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
+import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,10 +21,7 @@ public class Order extends BaseIdentifiableModel<Long> {
   private String extOrderNum;
   private AppServiceType serviceType;
   private Long memberId;
-
-  @Getter(AccessLevel.NONE)
   private Money amount;
-
   private OrderStatus status;
 
   public static Order initPayment(Long memberId, PayOrderCommand command) {
@@ -54,7 +51,7 @@ public class Order extends BaseIdentifiableModel<Long> {
             .status(status)
             .build();
 
-    order.id = id;
+    order.setId(id);
 
     return order;
   }
@@ -93,16 +90,12 @@ public class Order extends BaseIdentifiableModel<Long> {
     if (hasLessAmountThan(amount)) {
       throw OrderException.of(
           OrderErrorCode.HAVE_NO_REMAINING_AMOUNT,
-          this.id,
+          this.getId(),
           this.amount.getAmount(),
           amount.getAmount());
     }
 
     return this.amount.minus(amount);
-  }
-
-  public BigDecimal getAmount() {
-    return amount.getAmount();
   }
 
   public Currency getCurrency() {
@@ -113,7 +106,7 @@ public class Order extends BaseIdentifiableModel<Long> {
     this.checkPersisted();
 
     if (this.status != OrderStatus.INIT) {
-      throw OrderException.of(OrderErrorCode.STATUS_MUST_BE_INIT, this.id, this.status);
+      throw OrderException.of(OrderErrorCode.STATUS_MUST_BE_INIT, this.getId(), this.status);
     }
 
     this.status = OrderStatus.PAYMENT_PENDING;

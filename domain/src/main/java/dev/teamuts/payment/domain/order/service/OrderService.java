@@ -1,14 +1,14 @@
 package dev.teamuts.payment.domain.order.service;
 
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
-import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
-import dev.teamuts.payment.domain.order.exception.OrderException;
+import dev.teamuts.payment.domain.order.error.OrderErrorCode;
+import dev.teamuts.payment.domain.order.error.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
 import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.shared.data.AppTransactional;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,12 +25,11 @@ public class OrderService {
     Order order =
         orderReaderPort
             .retrieveByExtOrderNumNullable(command.extOrderNum())
-            .orElseGet(
-                () -> {
-                  Order newOrder = Order.initPayment(memberId, command);
+            .orElseGet(() -> {
+              Order newOrder = Order.initPayment(memberId, command);
 
-                  return orderStorePort.store(newOrder);
-                });
+              return orderStorePort.store(newOrder);
+            });
 
     if (order.isNotTheSameMember(memberId)) {
       throw OrderException.of(OrderErrorCode.MEMBER_MISMATCH, order.getExtOrderNum(), memberId);

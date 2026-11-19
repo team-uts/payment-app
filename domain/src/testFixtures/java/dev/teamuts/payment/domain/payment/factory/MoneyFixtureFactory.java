@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.payment.factory;
 
-import dev.teamuts.payment.domain.common.model.Money;
-import dev.teamuts.payment.domain.payment.constant.Currency;
+import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;

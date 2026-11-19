@@ -2,9 +2,9 @@ package dev.teamuts.payment.app.api;
 
 import dev.teamuts.payment.app.api.dto.OrderDtoMapper;
 import dev.teamuts.payment.app.api.dto.PayOrderRequestDto;
-import dev.teamuts.payment.app.common.response.ApiCommonResponse;
 import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.usecase.PayOrderUseCase;
+import dev.teamuts.shared.http.response.ApiCommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.payment.model;
 
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import lombok.Getter;
 
 @Getter

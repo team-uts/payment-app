@@ -1,12 +1,12 @@
 package dev.teamuts.payment.domain.payment.usecase;
 
-import dev.teamuts.payment.domain.common.annotation.UseCase;
 import dev.teamuts.payment.domain.payment.dto.app.SetupPaymentMethodCommand;
 import dev.teamuts.payment.domain.pg.dto.app.ExtPGOperationInfo.SetupPaymentMethodInfo;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
 import dev.teamuts.payment.domain.pg.service.PGExternalRequestService;
+import dev.teamuts.shared.domain.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 
 @UseCase

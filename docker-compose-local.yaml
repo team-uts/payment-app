@@ -27,3 +27,10 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "3307:3306"
+
+  redis:
+    image: redis:8.8.4-alpine
+    container_name: payment-redis
+    restart: "no"
+    ports:
+      - "6379:6379"

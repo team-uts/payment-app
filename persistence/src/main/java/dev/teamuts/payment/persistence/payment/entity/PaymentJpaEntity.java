@@ -1,12 +1,12 @@
 package dev.teamuts.payment.persistence.payment.entity;
 
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
+import dev.teamuts.shared.domain.constant.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -76,8 +76,8 @@ public class PaymentJpaEntity extends BaseTimeEntity {
         .memberId(model.getMemberId())
         .serviceType(model.getServiceType())
         .status(model.getStatus())
-        .payAmount(model.getPayAmount())
-        .pointAmount(model.getPointAmount())
+        .payAmount(model.getPayAmount().getAmount())
+        .pointAmount(model.getPointAmount().getAmount())
         .currency(model.getCurrency())
         .payMethodId(model.getPayMethodId())
         .payMethodType(model.getPayMethodType())

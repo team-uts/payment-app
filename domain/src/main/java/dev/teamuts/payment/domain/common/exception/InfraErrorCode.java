@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.common.exception;
 
-import dev.teamuts.payment.shared.error.constant.SystemErrorCode;
+import dev.teamuts.shared.error.constant.SystemErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +16,6 @@ public enum InfraErrorCode implements SystemErrorCode {
   private final String code;
   // Infra layer errors > Internal Server Error (500)
   private final HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-
-  private static final String DEFAULT_DETAILED_MESSAGE =
-      "Unidentified error occurred. Please contact the administrator.";
 
   @Override
   public String getMessageKey() {

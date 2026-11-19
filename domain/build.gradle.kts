@@ -4,16 +4,20 @@ val jar: Jar by tasks
 val bootJar: BootJar by tasks
 
 bootJar.enabled = false
+
 jar.enabled = true
 
 plugins {
-    `java-test-fixtures`
+  `java-test-fixtures`
 }
 
 dependencies {
-    implementation(project(":shared"))
+  implementation(libs.spring.boot.starter.aspectj)
 
-    testFixturesImplementation(libs.easyRandom)
-    testFixturesCompileOnly(libs.lombok)
-    testFixturesAnnotationProcessor(libs.lombok)
+  testCompileOnly(libs.teamuts.payment.shared)
+  testFixturesCompileOnly(libs.teamuts.payment.shared)
+
+  testFixturesImplementation(libs.easyRandom)
+  testFixturesCompileOnly(libs.lombok)
+  testFixturesAnnotationProcessor(libs.lombok)
 }

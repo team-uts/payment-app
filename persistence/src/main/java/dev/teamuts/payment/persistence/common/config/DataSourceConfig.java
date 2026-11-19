@@ -28,7 +28,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @EnableConfigurationProperties(CustomDataSourceProperties.class)
 @RequiredArgsConstructor
 public class DataSourceConfig {
-
   private final CustomDataSourceProperties dataSourceProperties;
 
   @Primary
@@ -96,10 +95,8 @@ public class DataSourceConfig {
       return Arrays.stream(values())
           .filter(dbType -> dbType.readOnly == readOnly)
           .findFirst()
-          .orElseThrow(
-              () ->
-                  new DatabaseException(
-                      "Not Found DB(%s) type".formatted(Arrays.toString(values()))));
+          .orElseThrow(() ->
+              new DatabaseException("Not Found DB(%s) type".formatted(Arrays.toString(values()))));
     }
   }
 }

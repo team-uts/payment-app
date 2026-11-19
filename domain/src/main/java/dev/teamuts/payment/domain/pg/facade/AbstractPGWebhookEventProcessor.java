@@ -5,8 +5,8 @@ import static dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResult
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResultType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
-import dev.teamuts.payment.shared.data.AppTransactional;
-import dev.teamuts.payment.shared.provider.ProviderService;
+import dev.teamuts.shared.data.annotation.AppTransactional;
+import dev.teamuts.shared.utils.provider.ProviderService;
 import lombok.extern.slf4j.Slf4j;
 
 /**

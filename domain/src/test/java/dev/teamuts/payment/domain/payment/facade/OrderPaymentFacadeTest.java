@@ -11,21 +11,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.OrderFixtureFactory;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
-import dev.teamuts.payment.domain.order.exception.OrderErrorCode;
-import dev.teamuts.payment.domain.order.exception.OrderException;
+import dev.teamuts.payment.domain.order.error.OrderErrorCode;
+import dev.teamuts.payment.domain.order.error.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
-import dev.teamuts.payment.domain.payment.exception.PaymentErrorCode;
-import dev.teamuts.payment.domain.payment.exception.PaymentException;
+import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
+import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.factory.PaymentFixtureFactory;
 import dev.teamuts.payment.domain.payment.factory.PaymentTransactionFixtureFactory;
 import dev.teamuts.payment.domain.payment.model.Payment;
@@ -33,6 +31,8 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.service.PaymentService;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
+import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +73,6 @@ class OrderPaymentFacadeTest {
             PAY_METHOD_ID,
             Money.of(TOTAL_AMOUNT, CURRENCY),
             Money.zero(CURRENCY),
-            CURRENCY,
             AppServiceType.TAXI);
   }
 

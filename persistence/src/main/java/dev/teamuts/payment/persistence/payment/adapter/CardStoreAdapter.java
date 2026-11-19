@@ -2,10 +2,10 @@ package dev.teamuts.payment.persistence.payment.adapter;
 
 import dev.teamuts.payment.domain.payment.model.Card;
 import dev.teamuts.payment.domain.payment.port.persistence.CardStorePort;
-import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.payment.entity.CardJpaEntity;
 import dev.teamuts.payment.persistence.payment.mapper.CardConverter;
 import dev.teamuts.payment.persistence.payment.repository.CardRepository;
+import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter

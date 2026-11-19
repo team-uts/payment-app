@@ -2,8 +2,8 @@ package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
-import dev.teamuts.payment.domain.payment.exception.PaymentException;
-import dev.teamuts.payment.domain.payment.exception.PaymentTransactionErrorCode;
+import dev.teamuts.payment.domain.payment.error.PaymentException;
+import dev.teamuts.payment.domain.payment.error.PaymentTransactionErrorCode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;

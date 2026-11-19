@@ -1,18 +1,18 @@
 package dev.teamuts.payment.domain.payment.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
-import dev.teamuts.payment.domain.payment.exception.PaymentException;
-import dev.teamuts.payment.domain.payment.exception.PaymentTransactionErrorCode;
+import dev.teamuts.payment.domain.payment.error.PaymentException;
+import dev.teamuts.payment.domain.payment.error.PaymentTransactionErrorCode;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
-import dev.teamuts.payment.shared.utils.StringUtils;
+import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
+import dev.teamuts.shared.domain.model.Money;
+import dev.teamuts.shared.utils.StringUtils;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,10 +28,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private AppServiceType serviceType;
-
-  @Getter(AccessLevel.NONE)
   private Money amount;
-
   private PGProviderType pgProvider;
   private String pgTransactionId;
   private String pgResponseCode;
@@ -59,7 +56,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         .payMethodId(payment.getPayMethodId())
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
-        .amount(payment.getPayAmountMoney())
+        .amount(payment.getPayAmount())
         .pgProvider(payment.getPgProvider())
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.PG_PAY)
@@ -79,7 +76,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         .payMethodId(payment.getPayMethodId())
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
-        .amount(payment.getPointAmountMoney())
+        .amount(payment.getPointAmount())
         .pgProvider(PGProviderType.NONE)
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.POINT)
@@ -123,7 +120,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
             .sequenceType(PaySequenceType.of(sequence))
             .build();
 
-    pt.id = id;
+    pt.setId(id);
 
     return pt;
   }
@@ -163,10 +160,6 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         StringUtils.truncate(
             "[%s] %s".formatted(e.getClass().getSimpleName(), e.getMessage()),
             MAX_DETAIL_MSG_LENGTH);
-  }
-
-  public BigDecimal getAmount() {
-    return amount.getAmount();
   }
 
   public boolean cannotContinueProcessingPgPay() {

@@ -1,17 +1,17 @@
 package dev.teamuts.payment.domain.payment.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
-import dev.teamuts.payment.domain.common.model.Money;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
-import dev.teamuts.payment.domain.payment.exception.PaymentErrorCode;
-import dev.teamuts.payment.domain.payment.exception.PaymentException;
+import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
+import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
+import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,13 +26,8 @@ public class Payment extends BaseIdentifiableModel<Long> {
   private Long memberId;
   private AppServiceType serviceType;
   private PaymentStatus status;
-
-  @Getter(AccessLevel.NONE)
   private Money payAmount;
-
-  @Getter(AccessLevel.NONE)
   private Money pointAmount;
-
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private PGProviderType pgProvider;
@@ -110,30 +105,14 @@ public class Payment extends BaseIdentifiableModel<Long> {
             .payMethodType(payMethodType)
             .build();
 
-    payment.id = id;
+    payment.setId(id);
 
     return payment;
   }
 
-  public Money getPayAmountMoney() {
-    return payAmount.copy();
-  }
-
-  public Money getPointAmountMoney() {
-    return pointAmount.copy();
-  }
-
-  public BigDecimal getPayAmount() {
-    return payAmount.getAmount();
-  }
-
-  public BigDecimal getPointAmount() {
-    return pointAmount.getAmount();
-  }
-
   public void checkProcessingStatus() {
     if (this.status != PaymentStatus.PROCESSING) {
-      throw PaymentException.of(PaymentErrorCode.NOT_PROCESSING_STATUS, this.id);
+      throw PaymentException.of(PaymentErrorCode.NOT_PROCESSING_STATUS, this.getId());
     }
   }
 
@@ -172,7 +151,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
 
   public Currency getCurrency() {
     if (this.payAmount.hasNotSameCurrency(this.pointAmount)) {
-      throw PaymentException.of(PaymentErrorCode.HAS_NOT_SAME_CURRENCY, this.id);
+      throw PaymentException.of(PaymentErrorCode.HAS_NOT_SAME_CURRENCY, this.getId());
     }
 
     return this.payAmount.getCurrency();

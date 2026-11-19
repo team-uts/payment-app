@@ -4,11 +4,11 @@ import static dev.teamuts.payment.domain.pg.dto.app.ExtPGOperationInfo.*;
 
 import dev.teamuts.payment.app.api.dto.PaymentMethodDtoMapper;
 import dev.teamuts.payment.app.api.dto.SetupPaymentMethodRequestDto;
-import dev.teamuts.payment.app.common.response.ApiCommonResponse;
 import dev.teamuts.payment.domain.payment.dto.app.PaymentMethodInfo;
 import dev.teamuts.payment.domain.payment.dto.app.SetupPaymentMethodCommand;
 import dev.teamuts.payment.domain.payment.usecase.GetPaymentMethodListUseCase;
 import dev.teamuts.payment.domain.payment.usecase.SetupPaymentMethodRegistrationUseCase;
+import dev.teamuts.shared.http.response.ApiCommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;

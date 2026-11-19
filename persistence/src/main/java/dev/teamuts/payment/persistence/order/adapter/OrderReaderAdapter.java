@@ -2,9 +2,9 @@ package dev.teamuts.payment.persistence.order.adapter;
 
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
-import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.order.mapper.OrderConverter;
 import dev.teamuts.payment.persistence.order.repository.OrderRepository;
+import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 

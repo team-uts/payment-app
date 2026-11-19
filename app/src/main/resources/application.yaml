@@ -11,5 +11,10 @@ spring:
     encoding: UTF-8
     fallback-to-system-locale: false
 
+  mvc:
+    problemdetails:
+      enabled: true
+      base-url: "${PROBLEM_DETAIL_BASE_URL}"
+
 server:
   shutdown: graceful

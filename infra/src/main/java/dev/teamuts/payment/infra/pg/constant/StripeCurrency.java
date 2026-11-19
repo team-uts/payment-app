@@ -1,7 +1,7 @@
 package dev.teamuts.payment.infra.pg.constant;
 
-import dev.teamuts.payment.domain.payment.constant.Currency;
-import java.math.BigDecimal;
+import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.model.Money;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,7 +34,7 @@ public enum StripeCurrency {
     return stripeCurrency;
   }
 
-  public Long getTransactionAmount(BigDecimal amount) {
-    return amount.movePointRight(decimalScale).longValueExact();
+  public Long getTransactionAmount(Money amount) {
+    return amount.getAmount().movePointRight(decimalScale).longValueExact();
   }
 }

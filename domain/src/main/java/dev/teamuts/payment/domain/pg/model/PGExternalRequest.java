@@ -1,13 +1,13 @@
 package dev.teamuts.payment.domain.pg.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResultType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
+import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -77,7 +77,7 @@ public class PGExternalRequest extends BaseIdentifiableModel<Long> {
             .status(status)
             .build();
 
-    pgRequest.id = id;
+    pgRequest.setId(id);
 
     return pgRequest;
   }
@@ -111,6 +111,6 @@ public class PGExternalRequest extends BaseIdentifiableModel<Long> {
             "Request types must match for association. (target: %s, source: %s)"
                 .formatted(this.requestType, source.requestType));
 
-    this.sourceRequestId = source.id;
+    this.sourceRequestId = source.getId();
   }
 }

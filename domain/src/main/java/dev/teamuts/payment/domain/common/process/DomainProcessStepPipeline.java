@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.common.process;
 
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import lombok.AccessLevel;

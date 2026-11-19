@@ -16,7 +16,7 @@
     <root level="INFO">
       <appender-ref ref="THREAD_CONSOLE"/>
     </root>
-    <logger additivity="false" name="dev.teamuts.payment" level="INFO">
+    <logger additivity="false" name="dev.teamuts" level="DEBUG">
       <appender-ref ref="THREAD_CONSOLE"/>
     </logger>
   </springProfile>
@@ -25,7 +25,7 @@
     <root level="INFO">
       <appender-ref ref="THREAD_CONSOLE"/>
     </root>
-    <logger additivity="false" name="dev.teamuts.payment" level="INFO">
+    <logger additivity="false" name="dev.teamuts" level="INFO">
       <appender-ref ref="THREAD_CONSOLE"/>
     </logger>
     <logger additivity="false" name="org.hibernate.SQL" level="DEBUG">

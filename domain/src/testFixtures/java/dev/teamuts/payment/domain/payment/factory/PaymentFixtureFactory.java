@@ -1,11 +1,11 @@
 package dev.teamuts.payment.domain.payment.factory;
 
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
-import dev.teamuts.payment.domain.payment.constant.Currency;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.shared.domain.constant.Currency;
 import java.math.BigDecimal;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
@@ -47,7 +47,6 @@ public class PaymentFixtureFactory {
                 field -> field.getName().equals("pointAmount"),
                 () -> MoneyFixtureFactory.createSingle(pointAmount, Currency.AUD))
             .randomize(field -> field.getName().equals("transactions"), () -> null);
-    ;
 
     return new EasyRandom(params).nextObject(Payment.class);
   }

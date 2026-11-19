@@ -2,10 +2,10 @@ package dev.teamuts.payment.persistence.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountStorePort;
-import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.entity.PGAccountJpaEntity;
 import dev.teamuts.payment.persistence.pg.mapper.PGAccountConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGAccountRepository;
+import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
 import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter

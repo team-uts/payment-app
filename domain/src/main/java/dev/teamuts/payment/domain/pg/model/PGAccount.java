@@ -1,10 +1,10 @@
 package dev.teamuts.payment.domain.pg.model;
 
-import dev.teamuts.payment.domain.common.annotation.DomainModel;
-import dev.teamuts.payment.domain.common.model.BaseIdentifiableModel;
 import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
+import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class PGAccount extends BaseIdentifiableModel<Long> {
             .status(status)
             .build();
 
-    pga.id = id;
+    pga.setId(id);
 
     return pga;
   }

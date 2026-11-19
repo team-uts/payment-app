@@ -1,14 +1,14 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
-import dev.teamuts.payment.domain.pg.exception.PgExternalRequestErrorCode;
+import dev.teamuts.payment.domain.pg.error.PgExternalRequestErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
-import dev.teamuts.payment.persistence.common.annotation.PersistenceAdapter;
 import dev.teamuts.payment.persistence.pg.mapper.PGExternalRequestConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGExternalRequestRepository;
-import dev.teamuts.payment.shared.error.exception.BusinessException;
-import dev.teamuts.payment.shared.error.exception.ErrorArguments;
+import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
+import dev.teamuts.shared.error.exception.BusinessException;
+import dev.teamuts.shared.error.exception.ErrorArguments;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
@@ -30,11 +30,10 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
         .findTopByPgRequestIdAndMemberIdAndPgProviderAndExtOperationOrderByIdDesc(
             pgRequestId, memberId, pgProvider, extOperation)
         .map(pgExternalRequestConverter::covertToDomainModel)
-        .orElseThrow(
-            () ->
-                BusinessException.of(
-                    PgExternalRequestErrorCode.NOT_FOUND_WITH_PARAMS,
-                    ErrorArguments.of(pgProvider, memberId, pgRequestId, extOperation)));
+        .orElseThrow(() ->
+            BusinessException.of(
+                PgExternalRequestErrorCode.NOT_FOUND_WITH_PARAMS,
+                ErrorArguments.of(pgProvider, memberId, pgRequestId, extOperation)));
   }
 
   @Override
