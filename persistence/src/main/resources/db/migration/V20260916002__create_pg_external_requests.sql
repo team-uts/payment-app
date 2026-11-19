@@ -14,9 +14,9 @@ CREATE TABLE if not exists `pg_external_requests`
 
     status                  VARCHAR(32)         NOT NULL COMMENT 'INIT/SUCCESS/PENDING/FAILED',
 
-    created_at              DATETIME(6)         NOT NULL,
+    created_at              DATETIME(6)         NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     created_by              VARCHAR(30)         NOT NULL COMMENT 'creator',
-    updated_at              DATETIME(6)         NULL,
+    updated_at              DATETIME(6)         NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
     updated_by              VARCHAR(30)         NULL COMMENT 'updater'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

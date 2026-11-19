@@ -1,5 +1,7 @@
 package dev.teamuts.payment.persistence.payment.entity;
 
+import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
+
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
@@ -7,14 +9,7 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import dev.teamuts.shared.domain.constant.Currency;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,7 +20,14 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @DynamicUpdate
 @Entity
-@Table(catalog = "payment", name = "payment_transactions")
+@Table(
+    catalog = "payment",
+    name = "payment_transactions",
+    indexes = {
+      @Index(name = PREFIX_INDEX + "_pt_memberid", columnList = "member_id"),
+      @Index(name = PREFIX_INDEX + "_pt_paymentid", columnList = "payment_id"),
+      @Index(name = PREFIX_INDEX + "_pt_orderid", columnList = "order_id"),
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

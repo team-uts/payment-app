@@ -1,5 +1,7 @@
 package dev.teamuts.payment.persistence.payment.entity;
 
+import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
+
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
@@ -12,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,7 +23,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(catalog = "payment", name = "payment_methods")
+@Table(
+    catalog = "payment",
+    name = "payment_methods",
+    indexes = {
+      @Index(name = PREFIX_INDEX + "_pm_memberid", columnList = "member_id"),
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

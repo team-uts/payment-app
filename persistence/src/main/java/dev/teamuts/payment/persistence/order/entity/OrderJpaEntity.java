@@ -1,18 +1,14 @@
 package dev.teamuts.payment.persistence.order.entity;
 
+import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
+import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_UNIQUE;
+
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import dev.teamuts.shared.domain.constant.Currency;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,7 +17,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(catalog = "payment", name = "orders")
+@Table(
+    catalog = "payment",
+    name = "orders",
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = PREFIX_UNIQUE + "_o_extorderno",
+          columnNames = {"ext_order_no"})
+    },
+    indexes = {
+      @Index(name = PREFIX_INDEX + "_memberid", columnList = "member_id"),
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

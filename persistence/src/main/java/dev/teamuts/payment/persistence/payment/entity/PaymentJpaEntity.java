@@ -1,5 +1,7 @@
 package dev.teamuts.payment.persistence.payment.entity;
 
+import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
+
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
@@ -14,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
@@ -25,7 +28,13 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @DynamicUpdate
 @Entity
-@Table(catalog = "payment", name = "payments")
+@Table(
+    catalog = "payment",
+    name = "payments",
+    indexes = {
+      @Index(name = PREFIX_INDEX + "_p_orderid", columnList = "order_id"),
+      @Index(name = PREFIX_INDEX + "_p_memberid", columnList = "member_id"),
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS `orders`
     amount              DECIMAL(15, 2)      NOT NULL COMMENT 'order total totalAmount',
     currency            CHAR(3)             NOT NULL COMMENT 'currency type (AUD)',
     status              VARCHAR(32)         NOT NULL COMMENT 'order status',
-    created_at          DATETIME(6)         NOT NULL,
-    updated_at          DATETIME(6)         NULL
+    created_at          DATETIME(6)         NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at          DATETIME(6)         NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE UNIQUE INDEX ux_o_extorderno ON orders (ext_order_no);

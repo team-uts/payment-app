@@ -8,6 +8,7 @@ import org.jspecify.annotations.NonNull;
 
 public enum PaymentLockGroup implements LockGroup {
   PAY_ORDER(LockTtl.ONE_MINUTE),
+  SETUP_PAYMENT_METHOD(LockTtl.ONE_MINUTE),
   ;
 
   private final LockTtl ttl;
@@ -21,6 +22,7 @@ public enum PaymentLockGroup implements LockGroup {
   }
 
   public static final String PAY_ORDER_NAME = "PAY_ORDER";
+  public static final String SETUP_PAYMENT_METHOD_NAME = "SETUP_PAYMENT_METHOD";
 
   private static final EnumSet<PaymentLockGroup> ALL_GROUPS = EnumSet.allOf(PaymentLockGroup.class);
 

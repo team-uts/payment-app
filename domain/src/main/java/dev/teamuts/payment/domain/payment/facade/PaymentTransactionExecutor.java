@@ -33,6 +33,8 @@ public class PaymentTransactionExecutor {
           "Transaction (id: {}) processed successfully with status: {}",
           transaction.getId(),
           transaction.getStatus());
+
+      // TODO: produce kafka events for granting earned points.
     } catch (Exception e) {
       // In case of PG API exception
       if (e instanceof ExtPGApiException extException) {

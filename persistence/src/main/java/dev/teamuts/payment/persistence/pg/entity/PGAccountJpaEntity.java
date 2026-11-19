@@ -1,16 +1,11 @@
 package dev.teamuts.payment.persistence.pg.entity;
 
+import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_UNIQUE;
+
 import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +13,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(catalog = "payment", name = "pg_accounts")
+@Table(
+    catalog = "payment",
+    name = "pg_accounts",
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = PREFIX_UNIQUE + "_pga_memberid",
+          columnNames = {"member_id"})
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
