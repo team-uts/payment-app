@@ -1,5 +1,6 @@
 package dev.teamuts.payment.domain.order.service;
 
+import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.error.OrderErrorCode;
 import dev.teamuts.payment.domain.order.error.OrderException;
@@ -21,12 +22,13 @@ public class OrderService {
   private final OrderUpdatePort orderUpdatePort;
 
   @AppTransactional(propagation = Propagation.REQUIRES_NEW)
-  public Order getPaymentOrderOrCreateInit(Long memberId, PayOrderCommand command) {
+  public Order getPaymentOrderOrCreateInit(
+      Long memberId, AppServiceType serviceType, PayOrderCommand command) {
     Order order =
         orderReaderPort
             .retrieveByExtOrderNumNullable(command.extOrderNum())
             .orElseGet(() -> {
-              Order newOrder = Order.initPayment(memberId, command);
+              Order newOrder = Order.initPayment(memberId, serviceType, command);
 
               return orderStorePort.store(newOrder);
             });

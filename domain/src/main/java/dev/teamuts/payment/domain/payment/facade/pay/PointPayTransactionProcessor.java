@@ -17,4 +17,9 @@ public class PointPayTransactionProcessor implements PayTransactionProcessor {
   public void pay(PaymentTransaction transaction) {
     // TODO: Implement point payment processing logic here
   }
+
+  @Override
+  public void afterPay(PaymentTransaction transaction) {
+    // Nothing to do here.
+  }
 }

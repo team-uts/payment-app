@@ -54,8 +54,8 @@ public class OrderJpaEntity extends BaseTimeEntity {
   @Column(name = "currency", columnDefinition = "CHAR(3)", nullable = false, length = 3)
   private Currency currency;
 
-  @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
   private OrderStatus status;
 
   public static OrderJpaEntity fromDomain(Order order) {

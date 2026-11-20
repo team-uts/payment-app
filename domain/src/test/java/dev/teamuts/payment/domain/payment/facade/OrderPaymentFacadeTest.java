@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import dev.teamuts.payment.domain.order.OrderFixtureFactory;
-import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.error.OrderErrorCode;
@@ -22,6 +21,7 @@ import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.factory.PaymentFixtureFactory;
@@ -54,6 +54,7 @@ class OrderPaymentFacadeTest {
   private static final BigDecimal TOTAL_AMOUNT = BigDecimal.valueOf(10_000);
   private static final BigDecimal POINT_AMOUNT = BigDecimal.valueOf(2_000);
   private static final Long PAY_METHOD_ID = 1_000L;
+  private static final PaymentType TEST_PAYMENT_TYPE = PaymentType.TAXI_FARE;
 
   @Mock private InitPaymentFacade initPaymentFacade;
   @Mock private PaymentTransactionExecutor paymentTransactionExecutor;
@@ -69,11 +70,7 @@ class OrderPaymentFacadeTest {
   void setup() {
     command =
         new PayOrderCommand(
-            EXT_ORDER_NUM,
-            PAY_METHOD_ID,
-            Money.of(TOTAL_AMOUNT, CURRENCY),
-            Money.zero(CURRENCY),
-            AppServiceType.TAXI);
+            EXT_ORDER_NUM, PAY_METHOD_ID, Money.of(TOTAL_AMOUNT, CURRENCY), Money.zero(CURRENCY));
   }
 
   @Test
@@ -98,7 +95,7 @@ class OrderPaymentFacadeTest {
             PaySequenceType.PG_PAY);
     PaymentTransactions transactions = PaymentTransactions.of(List.of(givenTransaction));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command))
+    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
         .thenReturn(givenPayment);
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
@@ -128,7 +125,7 @@ class OrderPaymentFacadeTest {
         .integrateTransactions(givenPayment, transactions);
 
     // When
-    Payment result = orderPaymentFacade.processPayment(givenOrder, command);
+    Payment result = orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
 
     // Then
     assertThat(result).isSameAs(givenPayment);
@@ -143,7 +140,9 @@ class OrderPaymentFacadeTest {
             paymentTransactionExecutor,
             paymentService);
 
-    inOrder.verify(initPaymentFacade).getProcessingPaymentOrCreate(givenOrder, command);
+    inOrder
+        .verify(initPaymentFacade)
+        .getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE);
     inOrder.verify(orderService).prepareForPayment(givenOrder);
     inOrder.verify(paymentTransactionService).getTransactionsOrCreateInit(givenPayment);
     inOrder.verify(paymentTransactionExecutor).executeProcessing(any(PaymentTransaction.class));
@@ -185,12 +184,12 @@ class OrderPaymentFacadeTest {
     PaymentTransactions transactions =
         PaymentTransactions.of(List.of(givenPayTransaction, givenPointTransaction));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command))
+    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
         .thenReturn(givenPayment);
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
 
-    orderPaymentFacade.processPayment(givenOrder, command);
+    orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
 
     // Then both transactions are executed in the pay sequence givenOrder
     InOrder inOrder = inOrder(paymentTransactionExecutor);
@@ -234,12 +233,12 @@ class OrderPaymentFacadeTest {
     PaymentTransactions transactions =
         PaymentTransactions.of(List.of(givenPayTransaction, givenPointTransaction));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command))
+    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
         .thenReturn(givenPayment);
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
 
-    orderPaymentFacade.processPayment(givenOrder, command);
+    orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
 
     // Then the following POINT transaction is never executed
     verify(paymentTransactionExecutor).executeProcessing(givenPayTransaction);
@@ -271,12 +270,12 @@ class OrderPaymentFacadeTest {
             PaySequenceType.POINT);
     PaymentTransactions transactions = PaymentTransactions.of(List.of(pointTransaction));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command))
+    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
         .thenReturn(givenPayment);
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
 
-    Payment result = orderPaymentFacade.processPayment(givenOrder, command);
+    Payment result = orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
 
     assertThat(result).isSameAs(givenPayment);
     verify(paymentTransactionExecutor).executeProcessing(pointTransaction);
@@ -291,7 +290,7 @@ class OrderPaymentFacadeTest {
     // Given an order which is already closed
     Order order = OrderFixtureFactory.createSingle(finalStatus);
 
-    assertThatThrownBy(() -> orderPaymentFacade.processPayment(order, command))
+    assertThatThrownBy(() -> orderPaymentFacade.processPayment(order, command, TEST_PAYMENT_TYPE))
         .isInstanceOf(OrderException.class)
         .hasMessageContaining(OrderErrorCode.CANNOT_PAY_PROCESS.name());
 
@@ -320,10 +319,11 @@ class OrderPaymentFacadeTest {
             TOTAL_AMOUNT,
             BigDecimal.ZERO);
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command))
+    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
         .thenReturn(givenPayment);
 
-    assertThatThrownBy(() -> orderPaymentFacade.processPayment(givenOrder, command))
+    assertThatThrownBy(
+            () -> orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE))
         .isInstanceOf(PaymentException.class)
         .hasMessageContaining(PaymentErrorCode.CANNOT_PROCESS_PAY_TX.name());
 
@@ -344,10 +344,11 @@ class OrderPaymentFacadeTest {
             BigDecimal.ZERO,
             BigDecimal.ZERO);
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command))
+    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
         .thenReturn(givenPayment);
 
-    assertThatThrownBy(() -> orderPaymentFacade.processPayment(givenOrder, command))
+    assertThatThrownBy(
+            () -> orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE))
         .isInstanceOf(PaymentException.class)
         .hasMessageContaining(PaymentErrorCode.CANNOT_PROCESS_PAY_TX.name());
 
@@ -367,13 +368,14 @@ class OrderPaymentFacadeTest {
             TOTAL_AMOUNT,
             BigDecimal.ZERO);
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command))
+    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
         .thenReturn(givenPayment);
     doThrow(new RuntimeException("givenOrder status conflict"))
         .when(orderService)
         .prepareForPayment(givenOrder);
 
-    assertThatThrownBy(() -> orderPaymentFacade.processPayment(givenOrder, command))
+    assertThatThrownBy(
+            () -> orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE))
         .isInstanceOf(RuntimeException.class)
         .hasMessage("givenOrder status conflict");
 

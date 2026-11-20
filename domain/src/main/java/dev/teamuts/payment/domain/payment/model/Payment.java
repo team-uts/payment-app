@@ -5,6 +5,7 @@ import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
@@ -25,6 +26,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
   private Long orderId;
   private Long memberId;
   private AppServiceType serviceType;
+  private PaymentType paymentType;
   private PaymentStatus status;
   private Money payAmount;
   private Money pointAmount;
@@ -35,7 +37,8 @@ public class Payment extends BaseIdentifiableModel<Long> {
   @Getter(AccessLevel.NONE)
   private PaymentTransactions transactions;
 
-  public static Payment processing(Order order, PaymentMethod paymentMethod, Money pointAmount) {
+  public static Payment processing(
+      Order order, PaymentMethod paymentMethod, Money pointAmount, PaymentType paymentType) {
     // TODO: need refactoring
     Assert.notNull(order, "order cannot be null");
     Assert.notNull(paymentMethod, "paymentMethod cannot be null");
@@ -48,6 +51,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
         .orderId(order.getId())
         .memberId(order.getMemberId())
         .serviceType(order.getServiceType())
+        .paymentType(paymentType)
         .status(PaymentStatus.PROCESSING)
         .payAmount(order.getRemainingAmount(pointAmount))
         .pointAmount(pointAmount)
@@ -57,7 +61,8 @@ public class Payment extends BaseIdentifiableModel<Long> {
         .build();
   }
 
-  public static Payment processingOnlyPoint(Order order, Money pointAmount) {
+  public static Payment processingOnlyPoint(
+      Order order, Money pointAmount, PaymentType paymentType) {
     // TODO: need refactoring
     Assert.notNull(order, "order cannot be null");
     Assert.notNull(pointAmount, "pointAmount cannot be null");
@@ -71,6 +76,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
         .orderId(order.getId())
         .memberId(order.getMemberId())
         .serviceType(order.getServiceType())
+        .paymentType(paymentType)
         .status(PaymentStatus.PROCESSING)
         .payAmount(Money.zero(order.getCurrency()))
         .pointAmount(pointAmount)
@@ -85,6 +91,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
       Long orderId,
       Long memberId,
       AppServiceType serviceType,
+      PaymentType paymentType,
       PaymentStatus status,
       PGProviderType pgProvider,
       BigDecimal payAmount,
@@ -97,6 +104,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
             .orderId(orderId)
             .memberId(memberId)
             .serviceType(serviceType)
+            .paymentType(paymentType)
             .status(status)
             .pgProvider(pgProvider)
             .payAmount(Money.of(payAmount, currency))

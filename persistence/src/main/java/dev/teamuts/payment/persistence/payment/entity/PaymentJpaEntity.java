@@ -5,6 +5,7 @@ import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
@@ -50,12 +51,16 @@ public class PaymentJpaEntity extends BaseTimeEntity {
   @Column(name = "member_id", nullable = false)
   private Long memberId;
 
-  @Column(name = "service_type", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "service_type", nullable = false)
   private AppServiceType serviceType;
 
-  @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "payment_type", nullable = false)
+  private PaymentType paymentType;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
   private PaymentStatus status;
 
   @Column(name = "pay_amount", nullable = false)
@@ -71,12 +76,12 @@ public class PaymentJpaEntity extends BaseTimeEntity {
   @Column(name = "payment_method_id")
   private Long payMethodId;
 
-  @Column(name = "payment_method_type", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "payment_method_type", nullable = false)
   private PaymentMethodType payMethodType;
 
-  @Column(name = "pg_provider", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "pg_provider", nullable = false)
   private PGProviderType pgProvider;
 
   public static PaymentJpaEntity fromDomain(Payment model) {
@@ -84,6 +89,7 @@ public class PaymentJpaEntity extends BaseTimeEntity {
         .orderId(model.getOrderId())
         .memberId(model.getMemberId())
         .serviceType(model.getServiceType())
+        .paymentType(model.getPaymentType())
         .status(model.getStatus())
         .payAmount(model.getPayAmount().getAmount())
         .pointAmount(model.getPointAmount().getAmount())

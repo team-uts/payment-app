@@ -3,7 +3,9 @@ package dev.teamuts.payment;
 import dev.teamuts.shared.config.AppModule;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.scheduling.annotation.EnableAsync;
 
+@EnableAsync
 @SpringBootApplication
 public class PaymentApplication {
 

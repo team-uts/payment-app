@@ -11,5 +11,8 @@ jar.enabled = true
 dependencies {
   implementation(project(":domain"))
 
+  // payment gateway (stripe)
   implementation(libs.stripe.java)
+  // event streaming (kafka)
+  implementation(libs.spring.boot.starter.kafka)
 }

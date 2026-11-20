@@ -24,11 +24,12 @@ public class Order extends BaseIdentifiableModel<Long> {
   private Money amount;
   private OrderStatus status;
 
-  public static Order initPayment(Long memberId, PayOrderCommand command) {
+  public static Order initPayment(
+      Long memberId, AppServiceType serviceType, PayOrderCommand command) {
     return Order.builder()
         .memberId(memberId)
         .extOrderNum(command.extOrderNum())
-        .serviceType(command.serviceType())
+        .serviceType(serviceType)
         .amount(command.totalAmount())
         .status(OrderStatus.INIT)
         .build();

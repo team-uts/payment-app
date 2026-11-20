@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `payments`
     member_id               BIGINT UNSIGNED     NOT NULL COMMENT 'member ID',
 
     service_type            VARCHAR(32)         NOT NULL COMMENT 'app service type',
+    payment_type            VARCHAR(32)         NOT NULL COMMENT 'payment type',
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
 
     pay_amount              DECIMAL(15, 2)      NOT NULL COMMENT 'actual payment amount through pg',

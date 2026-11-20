@@ -49,12 +49,12 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "payment_method_id")
   private Long payMethodId;
 
-  @Column(name = "payment_method_type", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "payment_method_type", nullable = false)
   private PaymentMethodType payMethodType;
 
-  @Column(name = "service_type", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "service_type", nullable = false)
   private AppServiceType serviceType;
 
   @Column(name = "amount", nullable = false)
@@ -64,8 +64,8 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "currency", columnDefinition = "CHAR(3)", nullable = false, length = 3)
   private Currency currency;
 
-  @Column(name = "pg_provider", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "pg_provider", nullable = false)
   private PGProviderType pgProvider;
 
   @Column(name = "pg_transaction_id")
@@ -83,12 +83,15 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "detail_message")
   private String detailMessage;
 
-  @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
   private PaymentTransactionStatus status;
 
   @Column(name = "seq", nullable = false)
   private Integer sequence;
+
+  @Column(name = "outbox_event_id", comment = "associated outbox event ID")
+  private Long outboxEventId;
 
   public static PaymentTransactionJpaEntity newEntity(PaymentTransaction paymentTransaction) {
     return PaymentTransactionJpaEntity.builder()

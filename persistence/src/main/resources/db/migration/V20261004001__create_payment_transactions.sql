@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions`
     payment_method_id       BIGINT UNSIGNED     NULL     COMMENT 'payment method ID',
     payment_method_type     VARCHAR(32)         NOT NULL COMMENT 'payment method type (CARD/BANK_ACCOUNT/PAYPAL/APPLEPAY)',
     service_type            VARCHAR(32)         NOT NULL COMMENT 'app service type',
+    payment_type            VARCHAR(32)         NOT NULL COMMENT 'payment type',
     amount                  DECIMAL(15, 2)      NOT NULL COMMENT 'payment transaction totalAmount',
     currency                CHAR(3)             NOT NULL COMMENT 'currency type (AUD)',
     pg_provider             VARCHAR(32)         NOT NULL COMMENT 'PG provider',
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions`
     detail_message          VARCHAR(255)        NULL     COMMENT 'detail message',
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
     seq                     INT UNSIGNED        NOT NULL COMMENT 'payment transaction sequence',
+    outbox_event_id         BIGINT UNSIGNED     NULL     COMMENT 'associated outbox event ID',
     created_at              DATETIME(6)         NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updated_at              DATETIME(6)         NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -28,6 +28,7 @@ public class PaymentTransactionConverter {
         entity.getPgErrorMessage(),
         entity.getDetailMessage(),
         entity.getStatus(),
-        entity.getSequence());
+        entity.getSequence(),
+        entity.getOutboxEventId());
   }
 }

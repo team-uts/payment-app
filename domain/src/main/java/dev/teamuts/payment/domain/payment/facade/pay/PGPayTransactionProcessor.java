@@ -1,6 +1,8 @@
 package dev.teamuts.payment.domain.payment.facade.pay;
 
 import dev.teamuts.payment.domain.common.process.DomainProcessStepPipeline;
+import dev.teamuts.payment.domain.event.message.OrderEventMessage;
+import dev.teamuts.payment.domain.event.service.OutboxEventPublisher;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.facade.pay.helper.PayTransactionHelperProcessor;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
@@ -9,6 +11,7 @@ import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.service.PGAccountService;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +21,7 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
   private final PayTransactionHelperProcessor payTransactionHelperProcessor;
   private final PGAccountService pgAccountService;
   private final PaymentMethodService paymentMethodService;
+  private final OutboxEventPublisher outboxEventPublisher;
 
   @Override
   public boolean supports(PaySequenceType key) {
@@ -25,8 +29,10 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
   }
 
   /**
-   * Ultimately, this process aims to confirm the payment. 1. check the previously created PG tx. 2.
-   * create new PG tx. 3. confirm the PG tx. >> require to handle ReadTimeout error (PENDING)
+   * Ultimately, this process aims to confirm the payment.<br>
+   * 1. check the previously created PG tx.<br>
+   * 2. create new PG tx.<br>
+   * 3. confirm the PG tx. >> require to handle ReadTimeout error (PENDING)
    *
    * @param transaction the payment transaction to process
    */
@@ -49,7 +55,7 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
         .stopWhen(PaymentTransaction::cannotContinueProcessingPgPay)
         // 3. In case app tx is not associated with PG tx
         .runIf(
-            PaymentTransaction::requiresPgAssociation,
+            PaymentTransaction::needsPgAssociation,
             tx -> {
               // 3-1. Retrieve PGAccount to create new PG tx
               PGAccount pgAccount = pgAccountService.getPGAccountByMemberId(tx.getMemberId());
@@ -71,5 +77,15 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
               payTransactionHelperProcessor.callPgWithSync(
                   tx, pgService -> pgService.confirmPayment(tx));
             });
+  }
+
+  @Override
+  @AppTransactional
+  public void afterPay(PaymentTransaction transaction) {
+    if (transaction.alreadyHasOutboxEvent()) {
+      return;
+    }
+
+    outboxEventPublisher.publish(OrderEventMessage.PayCustomerOrder.of(transaction));
   }
 }

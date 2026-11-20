@@ -3,6 +3,7 @@ package dev.teamuts.payment.domain.payment.factory;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.shared.domain.constant.Currency;
@@ -26,6 +27,7 @@ public class PaymentFixtureFactory {
         orderId,
         memberId,
         AppServiceType.TAXI,
+        PaymentType.TAXI_FARE,
         status,
         PGProviderType.STRIPE,
         payAmount,

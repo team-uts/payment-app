@@ -16,6 +16,7 @@ public class PaymentTransactionExecutor {
   private final PaymentTransactionService paymentTransactionService;
 
   public void executeProcessing(PaymentTransaction transaction) {
+    // if the tx is already processed (COMPLETED or CANCELED), skip the processing.
     if (transaction.isNotProcessable()) {
       log.info(
           "Transaction (id: {}) already processed ({})",
@@ -29,12 +30,15 @@ public class PaymentTransactionExecutor {
       // execute Pay based on the pay type (PG or Point)
       payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
 
+      // when the transaction is completed, call afterPay.
+      if (transaction.isCompleted()) {
+        payTxProcessorProvider.getInstance(transaction.getSequenceType()).afterPay(transaction);
+      }
+
       log.info(
           "Transaction (id: {}) processed successfully with status: {}",
           transaction.getId(),
           transaction.getStatus());
-
-      // TODO: produce kafka events for granting earned points.
     } catch (Exception e) {
       // In case of PG API exception
       if (e instanceof ExtPGApiException extException) {

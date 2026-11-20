@@ -1,6 +1,6 @@
 [versions]
 payment-convention = "0.2.2"
-payment-shared = "0.7.8"
+payment-shared = "0.8.1"
 
 java = "21"
 
@@ -49,6 +49,7 @@ spring-boot-starter-aspectj = { module = "org.springframework.boot:spring-boot-s
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test" }
 spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-kafka = { module = "org.springframework.boot:spring-boot-starter-kafka" }
 spring-boot-h2console = { module = "org.springframework.boot:spring-boot-h2console" }
 
 # cache

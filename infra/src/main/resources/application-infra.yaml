@@ -3,6 +3,14 @@ spring:
     import:
     - optional:file:.env.${spring.profiles.active}[.properties]
 
+  kafka:
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    properties:
+      transaction.timeout.ms: 30000
+
 stripe:
   webhook:
     secret:

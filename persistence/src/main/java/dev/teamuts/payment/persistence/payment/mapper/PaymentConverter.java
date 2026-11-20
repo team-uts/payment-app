@@ -6,22 +6,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PaymentConverter {
-  public PaymentJpaEntity convertToJpaEntity(Payment payment) {
-    return PaymentJpaEntity.fromDomain(payment);
+  public PaymentJpaEntity convertToJpaEntity(Payment model) {
+    return PaymentJpaEntity.fromDomain(model);
   }
 
-  public Payment convertToDomainModel(PaymentJpaEntity paymentJpaEntity) {
+  public Payment convertToDomainModel(PaymentJpaEntity entity) {
     return Payment.fromDatabase(
-        paymentJpaEntity.getId(),
-        paymentJpaEntity.getOrderId(),
-        paymentJpaEntity.getMemberId(),
-        paymentJpaEntity.getServiceType(),
-        paymentJpaEntity.getStatus(),
-        paymentJpaEntity.getPgProvider(),
-        paymentJpaEntity.getPayAmount(),
-        paymentJpaEntity.getPointAmount(),
-        paymentJpaEntity.getCurrency(),
-        paymentJpaEntity.getPayMethodId(),
-        paymentJpaEntity.getPayMethodType());
+        entity.getId(),
+        entity.getOrderId(),
+        entity.getMemberId(),
+        entity.getServiceType(),
+        entity.getPaymentType(),
+        entity.getStatus(),
+        entity.getPgProvider(),
+        entity.getPayAmount(),
+        entity.getPointAmount(),
+        entity.getCurrency(),
+        entity.getPayMethodId(),
+        entity.getPayMethodType());
   }
 }

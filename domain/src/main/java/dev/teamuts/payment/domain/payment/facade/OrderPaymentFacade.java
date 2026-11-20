@@ -6,6 +6,7 @@ import dev.teamuts.payment.domain.order.error.OrderErrorCode;
 import dev.teamuts.payment.domain.order.error.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
+import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.model.Payment;
@@ -30,16 +31,17 @@ public class OrderPaymentFacade {
    * @param order only for Order with {@link OrderStatus#INIT} or {@link
    *     OrderStatus#PAYMENT_PENDING} status
    * @param command request data for payment processing
+   * @param paymentType the type of payment to be processed
    * @return result payment
    */
-  public Payment processPayment(Order order, PayOrderCommand command) {
+  public Payment processPayment(Order order, PayOrderCommand command, PaymentType paymentType) {
     if (order.cannotProcessPayment()) {
       throw OrderException.of(
           OrderErrorCode.CANNOT_PAY_PROCESS, order.getExtOrderNum(), order.getStatus());
     }
 
     // Retrieve or Create Payment (PROCESSING)
-    Payment payment = initPaymentFacade.getProcessingPaymentOrCreate(order, command);
+    Payment payment = initPaymentFacade.getProcessingPaymentOrCreate(order, command, paymentType);
 
     // Check if the payment can be processed
     if (payment.cannotProcessPayTransaction()) {
@@ -53,7 +55,7 @@ public class OrderPaymentFacade {
     PaymentTransactions transactions =
         paymentTransactionService.getTransactionsOrCreateInit(payment);
 
-    // process transaction list in PaySequenceType sequence
+    // **IMPORTANT** process transaction list in PaySequenceType sequence
     transactions.processInSequence(paymentTransactionExecutor::executeProcessing);
 
     // update payment status based on the result txs
