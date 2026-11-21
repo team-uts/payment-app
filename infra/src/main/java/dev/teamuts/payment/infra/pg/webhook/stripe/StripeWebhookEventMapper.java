@@ -4,7 +4,7 @@ import com.stripe.model.Event;
 import com.stripe.model.StripeObject;
 import dev.teamuts.payment.domain.common.exception.InfraErrorCode;
 import dev.teamuts.payment.domain.common.exception.InfraException;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
 import dev.teamuts.payment.infra.pg.dto.StripeWebhookPayload;
 import dev.teamuts.shared.utils.provider.ProviderService;
@@ -20,6 +20,6 @@ public abstract class StripeWebhookEventMapper implements ProviderService<Stripe
         .orElseThrow(() ->
             InfraException.of(
                 InfraErrorCode.PG_WEBHOOK_DESERIALIZATION_FAILED,
-                "[%s] Webhook event deserialization failed".formatted(PGProviderType.STRIPE)));
+                "[%s] Webhook event deserialization failed".formatted(PgProviderType.STRIPE)));
   }
 }

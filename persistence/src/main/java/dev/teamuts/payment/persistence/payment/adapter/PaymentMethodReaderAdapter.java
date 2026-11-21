@@ -2,7 +2,7 @@ package dev.teamuts.payment.persistence.payment.adapter;
 
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentMethodReaderPort;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.payment.dto.PaymentMethodListRow;
 import dev.teamuts.payment.persistence.payment.entity.PaymentMethodJpaEntity;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentMethodConverter;
@@ -37,7 +37,7 @@ public class PaymentMethodReaderAdapter implements PaymentMethodReaderPort {
 
   @Override
   public boolean existsByParameters(
-      Long memberId, String pgProviderToken, PGProviderType pgProvider) {
+      Long memberId, String pgProviderToken, PgProviderType pgProvider) {
     return paymentMethodRepository.existsByMemberIdAndProviderTokenAndPgProvider(
         memberId, pgProviderToken, pgProvider);
   }

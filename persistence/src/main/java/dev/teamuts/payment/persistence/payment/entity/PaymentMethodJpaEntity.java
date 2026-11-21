@@ -5,7 +5,7 @@ import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,7 +43,7 @@ public class PaymentMethodJpaEntity extends BaseAuditableEntity {
 
   @Column(name = "pg_provider", nullable = false)
   @Enumerated(EnumType.STRING)
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
 
   @Column(name = "method_type", nullable = false)
   @Enumerated(EnumType.STRING)

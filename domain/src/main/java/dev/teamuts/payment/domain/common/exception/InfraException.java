@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.common.exception;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.shared.error.constant.SystemErrorCode;
 import dev.teamuts.shared.error.exception.SystemException;
 
@@ -14,7 +14,7 @@ public class InfraException extends SystemException {
   }
 
   public static InfraException pgOperationError(
-      InfraErrorCode errorCode, PGProviderType pgProvider, String operationType) {
+      InfraErrorCode errorCode, PgProviderType pgProvider, String operationType) {
     return new InfraException(
         errorCode, "[%s] %s - failed".formatted(pgProvider, operationType), null);
   }

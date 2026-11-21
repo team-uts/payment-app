@@ -7,7 +7,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import dev.teamuts.shared.domain.constant.Currency;
 import jakarta.persistence.Column;
@@ -82,7 +82,7 @@ public class PaymentJpaEntity extends BaseTimeEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "pg_provider", nullable = false)
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
 
   public static PaymentJpaEntity fromDomain(Payment model) {
     return PaymentJpaEntity.builder()

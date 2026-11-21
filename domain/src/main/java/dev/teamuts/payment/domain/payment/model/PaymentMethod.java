@@ -2,7 +2,7 @@ package dev.teamuts.payment.domain.payment.model;
 
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
@@ -15,7 +15,7 @@ import lombok.Getter;
 @Getter
 public class PaymentMethod extends BaseIdentifiableModel<Long> {
   private Long memberId;
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
   private String providerToken;
   private PaymentMethodType methodType;
   private Boolean defaultMethod;
@@ -40,7 +40,7 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
   public static PaymentMethod point(Long memberId) {
     return PaymentMethod.builder()
         .memberId(memberId)
-        .pgProvider(PGProviderType.NONE)
+        .pgProvider(PgProviderType.NONE)
         .providerToken(null)
         .methodType(PaymentMethodType.POINT)
         .defaultMethod(false)
@@ -51,7 +51,7 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
   public static PaymentMethod fromDatabase(
       Long id,
       Long memberId,
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       String providerToken,
       PaymentMethodType methodType,
       Boolean defaultMethod,

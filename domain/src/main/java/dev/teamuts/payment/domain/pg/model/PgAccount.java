@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.pg.model;
 
-import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgAccountStatus;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
@@ -12,29 +12,29 @@ import lombok.Getter;
 @DomainModel
 @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
-public class PGAccount extends BaseIdentifiableModel<Long> {
+public class PgAccount extends BaseIdentifiableModel<Long> {
   private Long memberId;
   private String pgAccountId;
-  private PGProviderType pgProvider;
-  private PGAccountStatus status;
+  private PgProviderType pgProvider;
+  private PgAccountStatus status;
 
-  public static PGAccount newActivated(ExtPGAccountDto extPGAccount) {
-    return PGAccount.builder()
+  public static PgAccount newActivated(ExtPGAccountDto extPGAccount) {
+    return PgAccount.builder()
         .memberId(extPGAccount.getMemberId())
         .pgAccountId(extPGAccount.getPgAccountId())
         .pgProvider(extPGAccount.getPgProvider())
-        .status(PGAccountStatus.ACTIVATED)
+        .status(PgAccountStatus.ACTIVATED)
         .build();
   }
 
-  public static PGAccount fromDatabase(
+  public static PgAccount fromDatabase(
       Long id,
       Long memberId,
       String pgAccountId,
-      PGProviderType pgProvider,
-      PGAccountStatus status) {
-    PGAccount pga =
-        PGAccount.builder()
+      PgProviderType pgProvider,
+      PgAccountStatus status) {
+    PgAccount pga =
+        PgAccount.builder()
             .memberId(memberId)
             .pgAccountId(pgAccountId)
             .pgProvider(pgProvider)

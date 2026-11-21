@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.pg.dto.infra;
 
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +10,7 @@ import lombok.Getter;
 public class ExtPGPaymentMethodDto {
   private Long memberId;
   private String pgPaymentMethodId;
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
   private ExtPGPaymentMethodDetail detail;
 
   public sealed interface ExtPGPaymentMethodDetail {

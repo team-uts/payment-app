@@ -1,10 +1,10 @@
 package dev.teamuts.payment.domain.pg.port.persistence;
 
-import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 import java.util.Optional;
 
 public interface PGAccountReaderPort {
-  Optional<PGAccount> retrievePGAccountOptionalByMemberId(Long memberId);
+  Optional<PgAccount> retrievePGAccountOptionalByMemberId(Long memberId);
 
-  PGAccount retrievePGAccountByMemberId(Long memberId);
+  PgAccount retrievePGAccountByMemberId(Long memberId);
 }

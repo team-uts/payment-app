@@ -8,18 +8,19 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum PGProviderType {
+public enum PgProviderType {
   NONE("none"),
+  TEST("local-test"),
   STRIPE("stripe"),
   ;
 
   private final String pgName;
 
-  private static final Map<String, PGProviderType> PG_NAME_MAP =
-      Arrays.stream(PGProviderType.values())
-          .collect(Collectors.toUnmodifiableMap(PGProviderType::getPgName, e -> e));
+  private static final Map<String, PgProviderType> PG_NAME_MAP =
+      Arrays.stream(PgProviderType.values())
+          .collect(Collectors.toUnmodifiableMap(PgProviderType::getPgName, e -> e));
 
-  public static PGProviderType fromPGName(String pgName) {
+  public static PgProviderType fromPGName(String pgName) {
     return PG_NAME_MAP.getOrDefault(pgName, NONE);
   }
 }

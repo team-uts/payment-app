@@ -2,8 +2,8 @@ package dev.teamuts.payment.persistence.pg.entity;
 
 import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_UNIQUE;
 
-import dev.teamuts.payment.domain.pg.constant.PGAccountStatus;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgAccountStatus;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -38,14 +38,14 @@ public class PGAccountJpaEntity extends BaseAuditableEntity {
 
   @Column(name = "pg_provider", nullable = false)
   @Enumerated(EnumType.STRING)
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
 
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
-  private PGAccountStatus status;
+  private PgAccountStatus status;
 
   public static PGAccountJpaEntity newEntity(
-      Long memberId, String pgAccountId, PGProviderType pgProvider, PGAccountStatus status) {
+      Long memberId, String pgAccountId, PgProviderType pgProvider, PgAccountStatus status) {
     return PGAccountJpaEntity.builder()
         .memberId(memberId)
         .pgAccountId(pgAccountId)

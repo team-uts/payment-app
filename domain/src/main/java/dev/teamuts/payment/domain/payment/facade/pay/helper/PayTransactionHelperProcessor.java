@@ -2,9 +2,9 @@ package dev.teamuts.payment.domain.payment.facade.pay.helper;
 
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
-import dev.teamuts.payment.domain.pg.error.ExtPGApiException;
+import dev.teamuts.payment.domain.pg.error.ExtPgApiException;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
-import dev.teamuts.payment.domain.pg.port.infra.ExternalPGPaymentServicePort;
+import dev.teamuts.payment.domain.pg.port.infra.ExternalPgPaymentServicePort;
 import dev.teamuts.payment.domain.pg.service.ExtPGPaymentServiceProvider;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -19,7 +19,7 @@ public class PayTransactionHelperProcessor {
 
   public void callPgWithConditionalSync(
       PaymentTransaction transaction,
-      Function<ExternalPGPaymentServicePort, ExtPgPaymentTransaction> pgCall,
+      Function<ExternalPgPaymentServicePort, ExtPgPaymentTransaction> pgCall,
       Predicate<ExtPgPaymentTransaction> doSyncCondition) {
     // call PG API service
     ExtPgPaymentTransaction pgTransaction =
@@ -32,13 +32,13 @@ public class PayTransactionHelperProcessor {
 
     // If PG tx call was failed, throw exception to stop the process.
     if (pgTransaction.isFailed()) {
-      throw ExtPGApiException.transactionFailed(pgTransaction);
+      throw ExtPgApiException.transactionFailed(pgTransaction);
     }
   }
 
   public void callPgWithSync(
       PaymentTransaction transaction,
-      Function<ExternalPGPaymentServicePort, ExtPgPaymentTransaction> pgCall) {
+      Function<ExternalPgPaymentServicePort, ExtPgPaymentTransaction> pgCall) {
     callPgWithConditionalSync(transaction, pgCall, null);
   }
 }

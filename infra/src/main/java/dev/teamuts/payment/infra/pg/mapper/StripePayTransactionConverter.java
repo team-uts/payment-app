@@ -23,7 +23,7 @@ public class StripePayTransactionConverter {
 
     Optional<StripeError> errorNullable = Optional.ofNullable(paymentIntent.getLastPaymentError());
 
-    return ExtPgPaymentTransaction.fromPG(
+    return ExtPgPaymentTransaction.fromPg(
         transaction,
         paymentIntent.getId(),
         pgTxStatus.name(),

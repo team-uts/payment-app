@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.event.port.infra;
 
-import dev.teamuts.shared.event.BaseEventMessage;
+import dev.teamuts.payment.domain.event.model.OutboxEvent;
 
 public interface EventMessageProducePort {
-  void produce(BaseEventMessage eventMessage);
+  void produce(OutboxEvent outboxEvent);
 }

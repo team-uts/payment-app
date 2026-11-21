@@ -15,15 +15,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Entity
 @Table(
     catalog = "payment",
     name = "orders",
     uniqueConstraints = {
       @UniqueConstraint(
-          name = PREFIX_UNIQUE + "_o_extorderno",
-          columnNames = {"ext_order_no"})
+          name = PREFIX_UNIQUE + "_o_extorderno_servicetype",
+          columnNames = {"ext_order_no", "service_type"})
     },
     indexes = {
       @Index(name = PREFIX_INDEX + "_memberid", columnList = "member_id"),
@@ -37,17 +39,21 @@ public class OrderJpaEntity extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "ext_order_no", nullable = false)
+  @Column(
+      name = "ext_order_no",
+      nullable = false,
+      updatable = false,
+      comment = "external order number")
   private String extOrderNum;
 
-  @Column(name = "service_type", nullable = false)
+  @Column(name = "service_type", nullable = false, updatable = false, comment = "app service type")
   @Enumerated(EnumType.STRING)
   private AppServiceType serviceType;
 
-  @Column(name = "member_id", nullable = false)
+  @Column(name = "member_id", nullable = false, updatable = false)
   private Long memberId;
 
-  @Column(name = "amount", nullable = false)
+  @Column(name = "amount", nullable = false, updatable = false)
   private BigDecimal amount;
 
   @Enumerated(EnumType.STRING)

@@ -1,7 +1,7 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
 import dev.teamuts.payment.domain.pg.error.PgAccountErrorCode;
-import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountReaderPort;
 import dev.teamuts.payment.persistence.pg.mapper.PGAccountConverter;
 import dev.teamuts.payment.persistence.pg.repository.PGAccountRepository;
@@ -18,14 +18,14 @@ public class PGAccountReaderAdapter implements PGAccountReaderPort {
   private final PGAccountConverter pgAccountConverter;
 
   @Override
-  public Optional<PGAccount> retrievePGAccountOptionalByMemberId(Long memberId) {
+  public Optional<PgAccount> retrievePGAccountOptionalByMemberId(Long memberId) {
     return pgAccountRepository
         .findByMemberId(memberId)
         .map(pgAccountConverter::covertToDomainModel);
   }
 
   @Override
-  public PGAccount retrievePGAccountByMemberId(Long memberId) {
+  public PgAccount retrievePGAccountByMemberId(Long memberId) {
     return pgAccountRepository
         .findByMemberId(memberId)
         .map(pgAccountConverter::covertToDomainModel)

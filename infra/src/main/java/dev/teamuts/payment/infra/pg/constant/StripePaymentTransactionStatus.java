@@ -10,8 +10,9 @@ import lombok.Getter;
 /**
  * Status of this PaymentIntent, one of {@code requires_payment_method}, {@code
  * requires_confirmation}, {@code requires_action}, {@code processing}, {@code requires_capture},
- * {@code canceled}, or {@code succeeded}. Read more about each PaymentIntent <a
- * href="https://docs.stripe.com/payments/intents#intent-statuses">status</a>.
+ * {@code canceled}, or {@code succeeded}.<br>
+ * Read more about each <a
+ * href="https://docs.stripe.com/payments/intents#intent-statuses">PaymentIntent status</a>.
  */
 @Getter
 @AllArgsConstructor

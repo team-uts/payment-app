@@ -1,11 +1,11 @@
 package dev.teamuts.payment.domain.pg.service;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResultType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
-import dev.teamuts.payment.domain.pg.model.PGAccount;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestStorePort;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestUpdatePort;
@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @AppTransactional
-public class PGExternalRequestService {
+public class PgExternalRequestService {
   private final PGExternalRequestReaderPort pgExternalRequestReaderPort;
   private final PGExternalRequestStorePort pgExternalRequestStorePort;
   private final PGExternalRequestUpdatePort pgExternalRequestUpdatePort;
   private final ExtPGServiceProvider pgServiceProvider;
 
-  public PGExternalRequest storeInitPaymentMethodRequest(PGAccount pgAccount) {
+  public PGExternalRequest storeInitPaymentMethodRequest(PgAccount pgAccount) {
     ExtPGPaymentMethodOperationDto response =
         pgServiceProvider
             .getInstance(pgAccount.getPgProvider())
@@ -35,13 +35,13 @@ public class PGExternalRequestService {
   }
 
   public PGExternalRequest getPGExternalRequest(
-      PGProviderType pgProvider, Long memberId, String pgRequestId, String extOperation) {
+      PgProviderType pgProvider, Long memberId, String pgRequestId, String extOperation) {
     return pgExternalRequestReaderPort.retrieveSingleByParameters(
         pgRequestId, pgProvider, memberId, extOperation);
   }
 
   public Optional<PGExternalRequest> getPGExternalRequestNullable(
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       Long memberId,
       String pgRequestId,
       String extOperation,

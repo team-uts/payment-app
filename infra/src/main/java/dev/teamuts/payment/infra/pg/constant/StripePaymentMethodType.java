@@ -3,7 +3,7 @@ package dev.teamuts.payment.infra.pg.constant;
 import com.stripe.model.PaymentMethod;
 import com.stripe.model.PaymentMethod.Card;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGCardDetail;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
 import java.util.EnumSet;
@@ -32,7 +32,7 @@ public enum StripePaymentMethodType {
       pm -> {
         // TODO: Implement US_BANK_ACCOUNT support in the future.
         throw new UnsupportedOperationException(
-            "[%s] BANK_ACCOUNT is not supported yet".formatted(PGProviderType.STRIPE));
+            "[%s] BANK_ACCOUNT is not supported yet".formatted(PgProviderType.STRIPE));
       }),
   NZ_BANK_ACCOUNT(
       "nz_bank_account",
@@ -40,7 +40,7 @@ public enum StripePaymentMethodType {
       pm -> {
         // TODO: Implement NZ_BANK_ACCOUNT support in the future.
         throw new UnsupportedOperationException(
-            "[%s] BANK_ACCOUNT is not supported yet".formatted(PGProviderType.STRIPE));
+            "[%s] BANK_ACCOUNT is not supported yet".formatted(PgProviderType.STRIPE));
       });
 
   private final String typeName;

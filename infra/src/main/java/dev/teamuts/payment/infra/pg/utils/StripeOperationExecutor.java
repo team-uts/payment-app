@@ -3,7 +3,7 @@ package dev.teamuts.payment.infra.pg.utils;
 import com.stripe.exception.StripeException;
 import dev.teamuts.payment.domain.common.exception.InfraErrorCode;
 import dev.teamuts.payment.domain.common.exception.InfraException;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 // TODO: handle other exceptions
 @Slf4j
 public class StripeOperationExecutor {
-  private static final PGProviderType PG_PROVIDER = PGProviderType.STRIPE;
+  private static final PgProviderType PG_PROVIDER = PgProviderType.STRIPE;
 
   public static <T> T executeStripeHandlingException(
       StripeOperationType operationType,

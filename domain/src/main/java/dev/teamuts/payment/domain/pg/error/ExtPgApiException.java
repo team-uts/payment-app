@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ExtPGApiException extends ApiInternalException {
+public class ExtPgApiException extends ApiInternalException {
   private final Long transactionId;
   private final String pgResponseCode;
   private final String pgErrorCode;
@@ -15,7 +15,7 @@ public class ExtPGApiException extends ApiInternalException {
   private final String pgOperationName;
 
   @Builder(access = AccessLevel.PRIVATE)
-  private ExtPGApiException(
+  private ExtPgApiException(
       String errorMessage,
       Long transactionId,
       String pgResponseCode,
@@ -30,8 +30,8 @@ public class ExtPGApiException extends ApiInternalException {
     this.pgOperationName = pgOperationName;
   }
 
-  public static ExtPGApiException transactionFailed(ExtPgPaymentTransaction pgTransaction) {
-    return ExtPGApiException.builder()
+  public static ExtPgApiException transactionFailed(ExtPgPaymentTransaction pgTransaction) {
+    return ExtPgApiException.builder()
         .errorMessage("External Payment Gateway Transaction API call failed")
         .transactionId(pgTransaction.getTransactionId())
         .pgResponseCode(pgTransaction.getPgResponseCode())

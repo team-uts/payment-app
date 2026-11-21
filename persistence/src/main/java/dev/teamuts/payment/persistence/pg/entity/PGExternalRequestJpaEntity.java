@@ -2,9 +2,9 @@ package dev.teamuts.payment.persistence.pg.entity;
 
 import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseAuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,7 +53,7 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
 
   @Column(name = "pg_provider", nullable = false)
   @Enumerated(EnumType.STRING)
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
 
   @Column(name = "request_type", nullable = false)
   @Enumerated(EnumType.STRING)
@@ -76,7 +76,7 @@ public class PGExternalRequestJpaEntity extends BaseAuditableEntity {
       String pgRequestId,
       Long memberId,
       Long sourceRequestId,
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       PGRequestType requestType,
       String extOperation,
       String extDetailedMessage,

@@ -5,8 +5,9 @@ import static dev.teamuts.shared.data.constant.DatabaseNaming.PREFIX_INDEX;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import dev.teamuts.shared.domain.constant.Currency;
 import jakarta.persistence.*;
@@ -57,6 +58,10 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "service_type", nullable = false)
   private AppServiceType serviceType;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "payment_type", nullable = false)
+  private PaymentType paymentType;
+
   @Column(name = "amount", nullable = false)
   private BigDecimal amount;
 
@@ -66,7 +71,7 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "pg_provider", nullable = false)
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
 
   @Column(name = "pg_transaction_id")
   private String pgTransactionId;
@@ -101,6 +106,7 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
         .payMethodId(paymentTransaction.getPayMethodId())
         .payMethodType(paymentTransaction.getPayMethodType())
         .serviceType(paymentTransaction.getServiceType())
+        .paymentType(paymentTransaction.getPaymentType())
         .amount(paymentTransaction.getAmount().getAmount())
         .currency(paymentTransaction.getCurrency())
         .pgProvider(paymentTransaction.getPgProvider())

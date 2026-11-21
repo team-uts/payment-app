@@ -20,7 +20,7 @@ public class ExtPgPaymentTransaction {
   private ExtPGOperationResultStatus resultStatus;
   private PaymentTransactionStatus domainStatus;
 
-  public static ExtPgPaymentTransaction fromPG(
+  public static ExtPgPaymentTransaction fromPg(
       PaymentTransaction transaction,
       String pgTransactionId,
       String pgResponseCode,
@@ -28,14 +28,29 @@ public class ExtPgPaymentTransaction {
       String errMsg,
       String pgOperationName,
       PaymentTransactionStatus domainStatus) {
-    // if the tx has pgTransactionId, it must match the provided pgTransactionId
-    // there is a case where the transaction is not associated with pgTransactionId yet.
-    if (transaction.getPgTransactionId() != null
-        && !Objects.equals(transaction.getPgTransactionId(), pgTransactionId)) {
-      throw new IllegalArgumentException(
-          "PG transaction ID does not match (txId: %d, pgTxId: %s)"
-              .formatted(transaction.getId(), pgTransactionId));
-    }
+
+    checkPgTransactionIdConsistency(transaction, pgTransactionId);
+
+    return ExtPgPaymentTransaction.builder()
+        .transactionId(transaction.getId())
+        .pgTransactionId(pgTransactionId)
+        .pgResponseCode(pgResponseCode)
+        .pgErrCode(errCode)
+        .pgErrMessage(errMsg)
+        .pgOperationName(pgOperationName)
+        .resultStatus(ExtPGOperationResultStatus.SUCCEEDED)
+        .domainStatus(domainStatus)
+        .build();
+  }
+
+  public static ExtPgPaymentTransaction fromPgTest(
+      PaymentTransaction transaction,
+      String pgTransactionId,
+      String pgResponseCode,
+      String errCode,
+      String errMsg,
+      String pgOperationName,
+      PaymentTransactionStatus domainStatus) {
 
     return ExtPgPaymentTransaction.builder()
         .transactionId(transaction.getId())
@@ -101,6 +116,20 @@ public class ExtPgPaymentTransaction {
         .resultStatus(ExtPGOperationResultStatus.TIMEOUT)
         .domainStatus(PaymentTransactionStatus.PENDING)
         .build();
+  }
+
+  /**
+   * if the tx has pgTransactionId, it must match the provided pgTransactionId there is a case where
+   * the transaction is not associated with pgTransactionId yet.
+   */
+  private static void checkPgTransactionIdConsistency(
+      PaymentTransaction transaction, String pgTransactionId) {
+    if (transaction.getPgTransactionId() != null
+        && !Objects.equals(transaction.getPgTransactionId(), pgTransactionId)) {
+      throw new IllegalArgumentException(
+          "PG transaction ID does not match (txId: %d, pgTxId: %s)"
+              .formatted(transaction.getId(), pgTransactionId));
+    }
   }
 
   public boolean isFailed() {

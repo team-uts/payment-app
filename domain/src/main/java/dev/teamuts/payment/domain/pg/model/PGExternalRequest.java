@@ -1,9 +1,9 @@
 package dev.teamuts.payment.domain.pg.model;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestStatus;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventProcessResultType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.shared.domain.annotation.DomainModel;
@@ -21,7 +21,7 @@ public class PGExternalRequest extends BaseIdentifiableModel<Long> {
   private Long memberId;
   // the ID of the original request that triggered this external request
   private Long sourceRequestId;
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
   private PGRequestType requestType;
   private String extOperation;
   private String extDetailedMessage;
@@ -58,7 +58,7 @@ public class PGExternalRequest extends BaseIdentifiableModel<Long> {
       String pgRequestId,
       Long memberId,
       Long sourceRequestId,
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       PGRequestType requestType,
       String extOperation,
       String extDetailedMessage,

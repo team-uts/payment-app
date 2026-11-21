@@ -3,7 +3,7 @@ package dev.teamuts.payment.persistence.payment.dto;
 import dev.teamuts.payment.domain.payment.constant.CardStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class PaymentMethodListRow {
   private Long id;
   private Long memberId;
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
   private PaymentMethodType methodType;
   private Boolean defaultMethod;
   private PaymentMethodStatus status;

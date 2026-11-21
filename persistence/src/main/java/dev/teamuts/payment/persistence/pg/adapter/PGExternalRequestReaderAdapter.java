@@ -1,6 +1,6 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.error.PgExternalRequestErrorCode;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.port.persistence.PGExternalRequestReaderPort;
@@ -25,7 +25,7 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
    */
   @Override
   public PGExternalRequest retrieveSingleByParameters(
-      String pgRequestId, PGProviderType pgProvider, Long memberId, String extOperation) {
+      String pgRequestId, PgProviderType pgProvider, Long memberId, String extOperation) {
     return pgExternalRequestRepository
         .findTopByPgRequestIdAndMemberIdAndPgProviderAndExtOperationOrderByIdDesc(
             pgRequestId, memberId, pgProvider, extOperation)
@@ -39,7 +39,7 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
   @Override
   public Optional<PGExternalRequest> retrieveSingleByParametersNullable(
       String pgRequestId,
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       Long memberId,
       String extOperation,
       String extDetailedMessage) {

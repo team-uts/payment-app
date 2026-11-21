@@ -1,8 +1,8 @@
 package dev.teamuts.payment.domain.pg.dto.infra;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.constant.PGWebhookEventStatus;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.port.infra.spec.PGWebhookPayloadParsable;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 public class ExtPGWebhookEventDto {
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
   private PGRequestType requestType;
   private Long memberId;
   private String pgRequestId;
@@ -22,7 +22,7 @@ public class ExtPGWebhookEventDto {
   private PGWebhookEventStatus status;
 
   public static ExtPGWebhookEventDto of(
-      PGProviderType pgProvider, PGRequestType requestType, PGWebhookPayloadParsable payload) {
+      PgProviderType pgProvider, PGRequestType requestType, PGWebhookPayloadParsable payload) {
     return ExtPGWebhookEventDto.builder()
         .pgProvider(pgProvider)
         .requestType(requestType)

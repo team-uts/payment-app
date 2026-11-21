@@ -9,8 +9,8 @@ import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
-import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.service.PGAccountService;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
+import dev.teamuts.payment.domain.pg.service.PgAccountService;
 import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PGPayTransactionProcessor implements PayTransactionProcessor {
   private final PayTransactionHelperProcessor payTransactionHelperProcessor;
-  private final PGAccountService pgAccountService;
+  private final PgAccountService pgAccountService;
   private final PaymentMethodService paymentMethodService;
   private final OutboxEventPublisher outboxEventPublisher;
 
@@ -58,7 +58,7 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
             PaymentTransaction::needsPgAssociation,
             tx -> {
               // 3-1. Retrieve PGAccount to create new PG tx
-              PGAccount pgAccount = pgAccountService.getPGAccountByMemberId(tx.getMemberId());
+              PgAccount pgAccount = pgAccountService.getPGAccountByMemberId(tx.getMemberId());
 
               // 3-2. Retrieve PaymentMethod to create new PG tx
               PaymentMethod paymentMethod =
@@ -82,6 +82,8 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
   @Override
   @AppTransactional
   public void afterPay(PaymentTransaction transaction) {
+    // delegate to batch processing to publish the outbox events again
+    // if they were not processed yet.
     if (transaction.alreadyHasOutboxEvent()) {
       return;
     }

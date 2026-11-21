@@ -1,22 +1,22 @@
 package dev.teamuts.payment.domain.pg.port.infra;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
-import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 import dev.teamuts.shared.utils.provider.ProviderService;
 
-public interface ExternalPGServicePort extends ProviderService<PGProviderType> {
+public interface ExternalPgServicePort extends ProviderService<PgProviderType> {
   // Account (Customer)
   ExtPGAccountDto createNewAccount(Long memberId, String email);
 
   // Payment Method
-  ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PGAccount pgAccount);
+  ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PgAccount pgAccount);
 
-  ExtPGPaymentMethodDto retrievePGPaymentMethod(PGAccount pgAccount, String pgPaymentMethodId);
+  ExtPGPaymentMethodDto retrievePGPaymentMethod(PgAccount pgAccount, String pgPaymentMethodId);
 
   // Webhook
   String getWebhookHeaderName();

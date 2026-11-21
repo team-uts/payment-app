@@ -7,7 +7,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.error.PaymentTransactionErrorCode;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.constant.Currency;
@@ -31,7 +31,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
   private AppServiceType serviceType;
   private PaymentType paymentType;
   private Money amount;
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
   private String pgTransactionId;
   private String pgResponseCode;
   private String pgErrorCode;
@@ -59,6 +59,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         .payMethodId(payment.getPayMethodId())
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
+        .paymentType(payment.getPaymentType())
         .amount(payment.getPayAmount())
         .pgProvider(payment.getPgProvider())
         .status(PaymentTransactionStatus.INIT)
@@ -79,8 +80,9 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
         .payMethodId(payment.getPayMethodId())
         .payMethodType(payment.getPayMethodType())
         .serviceType(payment.getServiceType())
+        .paymentType(payment.getPaymentType())
         .amount(payment.getPointAmount())
-        .pgProvider(PGProviderType.NONE)
+        .pgProvider(PgProviderType.NONE)
         .status(PaymentTransactionStatus.INIT)
         .sequenceType(PaySequenceType.POINT)
         .build();
@@ -94,9 +96,10 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
       Long payMethodId,
       PaymentMethodType payMethodType,
       AppServiceType serviceType,
+      PaymentType paymentType,
       BigDecimal amount,
       Currency currency,
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       String pgTransactionId,
       String pgResponseCode,
       String pgErrorCode,
@@ -113,6 +116,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
             .payMethodId(payMethodId)
             .payMethodType(payMethodType)
             .serviceType(serviceType)
+            .paymentType(paymentType)
             .amount(Money.of(amount, currency))
             .pgProvider(pgProvider)
             .pgTransactionId(pgTransactionId)

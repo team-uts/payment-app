@@ -8,7 +8,9 @@ import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Entity
 @Table(catalog = "payment", name = "outbox_events")
 @Getter
@@ -41,5 +43,9 @@ public class OutboxEventJpaEntity extends BaseTimeEntity {
         .payload(outboxEvent.getPayload())
         .status(outboxEvent.getStatus())
         .build();
+  }
+
+  public void updateStatus(OutboxEventStatus status) {
+    this.status = status;
   }
 }

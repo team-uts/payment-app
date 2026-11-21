@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.facade.PGExternalRequestFacade;
 import dev.teamuts.payment.domain.pg.facade.PGWebhookEventProcessorProvider;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
-import dev.teamuts.payment.domain.pg.service.PGExternalRequestService;
+import dev.teamuts.payment.domain.pg.service.PgExternalRequestService;
 import dev.teamuts.shared.domain.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class ProcessPGWebhookEventUseCase {
-  private final PGExternalRequestService pgExternalRequestService;
+  private final PgExternalRequestService pgExternalRequestService;
   private final PGExternalRequestFacade pgExternalRequestFacade;
   private final PGWebhookEventProcessorProvider webhookEventProcessorProvider;
 

@@ -1,5 +1,6 @@
 package dev.teamuts.payment.persistence.order.adapter;
 
+import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.persistence.order.mapper.OrderConverter;
@@ -15,7 +16,9 @@ public class OrderReaderAdapter implements OrderReaderPort {
   private final OrderConverter orderConverter;
 
   @Override
-  public Optional<Order> retrieveByExtOrderNumNullable(String extOrderNum) {
-    return orderRepository.findByExtOrderNum(extOrderNum).map(orderConverter::convertToDomainModel);
+  public Optional<Order> retrieveOrNullByUnique(String extOrderNum, AppServiceType serviceType) {
+    return orderRepository
+        .findByExtOrderNumAndServiceType(extOrderNum, serviceType)
+        .map(orderConverter::convertToDomainModel);
   }
 }

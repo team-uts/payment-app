@@ -10,15 +10,15 @@ import com.stripe.model.PaymentMethod;
 import com.stripe.model.SetupIntent;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.SetupIntentCreateParams;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGAccountDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodOperationDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.error.PgProviderErrorCode;
-import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.port.infra.ExternalPGServicePort;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
+import dev.teamuts.payment.domain.pg.port.infra.ExternalPgServicePort;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import dev.teamuts.payment.infra.pg.constant.StripePaymentMethodType;
 import dev.teamuts.payment.infra.pg.constant.StripeWebhookEventType;
@@ -33,8 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @InfraAdapter
 @RequiredArgsConstructor
-public class StripePGServiceAdapter implements ExternalPGServicePort {
-  private static final PGProviderType PG_PROVIDER = PGProviderType.STRIPE;
+public class StripePgServiceAdapter implements ExternalPgServicePort {
+  private static final PgProviderType PG_PROVIDER = PgProviderType.STRIPE;
   private static final String WEBHOOK_HEADER_NAME = "Stripe-Signature";
 
   private final StripeClient stripeClient;
@@ -42,7 +42,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
   private final StripeWebhookEventMapperProvider webhookEventMapperProvider;
 
   @Override
-  public boolean supports(PGProviderType key) {
+  public boolean supports(PgProviderType key) {
     return key == PG_PROVIDER;
   }
 
@@ -84,7 +84,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
    * @return The result of the payment method setup.
    */
   @Override
-  public ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PGAccount pgAccount) {
+  public ExtPGPaymentMethodOperationDto setupPaymentMethodRequest(PgAccount pgAccount) {
     return executeStripe(
         StripeOperationType.CREATE_SETUP_INTENT,
         operationType -> {
@@ -125,7 +125,7 @@ public class StripePGServiceAdapter implements ExternalPGServicePort {
    */
   @Override
   public ExtPGPaymentMethodDto retrievePGPaymentMethod(
-      PGAccount pgAccount, String pgPaymentMethodId) {
+      PgAccount pgAccount, String pgPaymentMethodId) {
     return executeStripe(
         StripeOperationType.RETRIEVE_PAYMENT_METHOD,
         operationType -> {

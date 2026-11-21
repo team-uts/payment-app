@@ -8,7 +8,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.constant.Currency;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
@@ -32,7 +32,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
   private Money pointAmount;
   private Long payMethodId;
   private PaymentMethodType payMethodType;
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
 
   @Getter(AccessLevel.NONE)
   private PaymentTransactions transactions;
@@ -82,7 +82,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
         .pointAmount(pointAmount)
         .payMethodId(null)
         .payMethodType(PaymentMethodType.POINT)
-        .pgProvider(PGProviderType.NONE)
+        .pgProvider(PgProviderType.NONE)
         .build();
   }
 
@@ -93,7 +93,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
       AppServiceType serviceType,
       PaymentType paymentType,
       PaymentStatus status,
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       BigDecimal payAmount,
       BigDecimal pointAmount,
       Currency currency,

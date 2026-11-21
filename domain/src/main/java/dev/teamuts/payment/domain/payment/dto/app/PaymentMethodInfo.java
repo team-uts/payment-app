@@ -3,7 +3,7 @@ package dev.teamuts.payment.domain.payment.dto.app;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import lombok.Getter;
 @Builder
 public class PaymentMethodInfo {
   private Long id;
-  private PGProviderType pgProvider;
+  private PgProviderType pgProvider;
   private PaymentMethodType methodType;
   private Boolean defaultMethod;
   private PaymentMethodStatus status;

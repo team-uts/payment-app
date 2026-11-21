@@ -4,8 +4,9 @@ import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
+import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.shared.domain.constant.Currency;
 import java.math.BigDecimal;
 import java.util.Random;
@@ -23,7 +24,7 @@ public class PaymentTransactionFixtureFactory {
       AppServiceType serviceType,
       BigDecimal amount,
       Currency currency,
-      PGProviderType pgProvider,
+      PgProviderType pgProvider,
       PaymentTransactionStatus status,
       PaySequenceType sequenceType) {
     return PaymentTransaction.fromDatabase(
@@ -34,6 +35,7 @@ public class PaymentTransactionFixtureFactory {
         ThreadLocalRandom.current().nextLong(1L, 10_000L),
         methodType,
         serviceType,
+        PaymentType.fromCustomerServiceType(serviceType),
         amount,
         currency,
         pgProvider,
@@ -72,7 +74,7 @@ public class PaymentTransactionFixtureFactory {
             .randomize(FieldPredicates.named("currency"), () -> Currency.AUD)
             .randomize(
                 FieldPredicates.named("pgProvider"),
-                () -> PGProviderType.values()[new Random().nextInt(PGProviderType.values().length)])
+                () -> PgProviderType.values()[new Random().nextInt(PgProviderType.values().length)])
             .randomize(
                 FieldPredicates.named("status"),
                 () ->
@@ -121,7 +123,7 @@ public class PaymentTransactionFixtureFactory {
             .randomize(FieldPredicates.named("currency"), () -> Currency.AUD)
             .randomize(
                 FieldPredicates.named("pgProvider"),
-                () -> PGProviderType.values()[new Random().nextInt(PGProviderType.values().length)])
+                () -> PgProviderType.values()[new Random().nextInt(PgProviderType.values().length)])
             .randomize(
                 FieldPredicates.named("status"),
                 () ->

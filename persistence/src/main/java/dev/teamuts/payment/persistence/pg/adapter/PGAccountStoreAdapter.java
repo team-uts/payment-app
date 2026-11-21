@@ -1,6 +1,6 @@
 package dev.teamuts.payment.persistence.pg.adapter;
 
-import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 import dev.teamuts.payment.domain.pg.port.persistence.PGAccountStorePort;
 import dev.teamuts.payment.persistence.pg.entity.PGAccountJpaEntity;
 import dev.teamuts.payment.persistence.pg.mapper.PGAccountConverter;
@@ -15,7 +15,7 @@ public class PGAccountStoreAdapter implements PGAccountStorePort {
   private final PGAccountConverter pgAccountConverter;
 
   @Override
-  public PGAccount storeNew(PGAccount pgAccount) {
+  public PgAccount storeNew(PgAccount pgAccount) {
     PGAccountJpaEntity newEntity = pgAccountConverter.covertToJpaEntity(pgAccount);
 
     PGAccountJpaEntity savedEntity = pgAccountRepository.save(newEntity);

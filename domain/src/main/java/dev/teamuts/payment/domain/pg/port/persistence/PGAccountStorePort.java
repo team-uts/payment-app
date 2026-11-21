@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.pg.port.persistence;
 
-import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 
 public interface PGAccountStorePort {
-  PGAccount storeNew(PGAccount pgAccount);
+  PgAccount storeNew(PgAccount pgAccount);
 }

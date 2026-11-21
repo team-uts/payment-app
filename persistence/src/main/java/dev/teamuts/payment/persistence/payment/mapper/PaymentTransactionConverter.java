@@ -19,6 +19,7 @@ public class PaymentTransactionConverter {
         entity.getPayMethodId(),
         entity.getPayMethodType(),
         entity.getServiceType(),
+        entity.getPaymentType(),
         entity.getAmount(),
         entity.getCurrency(),
         entity.getPgProvider(),

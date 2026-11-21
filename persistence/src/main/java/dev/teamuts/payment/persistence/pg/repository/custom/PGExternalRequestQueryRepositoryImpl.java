@@ -3,7 +3,7 @@ package dev.teamuts.payment.persistence.pg.repository.custom;
 import static dev.teamuts.payment.persistence.pg.entity.QPGExternalRequestJpaEntity.pGExternalRequestJpaEntity;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +14,7 @@ public class PGExternalRequestQueryRepositoryImpl implements PGExternalRequestQu
 
   @Override
   public Long findTheLatestIdByPgRequestIdAndMemberIdAndPgProviderAndExtOperation(
-      String pgRequestId, Long memberId, PGProviderType pgProvider, String extOperation) {
+      String pgRequestId, Long memberId, PgProviderType pgProvider, String extOperation) {
     return jpaQueryFactory
         .select(pGExternalRequestJpaEntity.id)
         .from(pGExternalRequestJpaEntity)

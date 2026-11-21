@@ -5,7 +5,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.shared.domain.constant.Currency;
 import java.math.BigDecimal;
 import org.jeasy.random.EasyRandom;
@@ -29,7 +29,7 @@ public class PaymentFixtureFactory {
         AppServiceType.TAXI,
         PaymentType.TAXI_FARE,
         status,
-        PGProviderType.STRIPE,
+        PgProviderType.STRIPE,
         payAmount,
         pointAmount,
         CURRENCY,

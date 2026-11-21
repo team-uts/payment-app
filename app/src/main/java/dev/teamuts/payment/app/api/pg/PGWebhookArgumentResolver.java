@@ -1,7 +1,7 @@
 package dev.teamuts.payment.app.api.pg;
 
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.usecase.GetPGWebhookHeaderNameUseCase;
 import dev.teamuts.payment.domain.pg.usecase.ParseValidPGWebhookEventUseCase;
@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
@@ -24,7 +23,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
 @NullMarked
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class PGWebhookArgumentResolver implements HandlerMethodArgumentResolver {
@@ -47,7 +45,7 @@ public class PGWebhookArgumentResolver implements HandlerMethodArgumentResolver 
     assert request != null;
 
     PGRequestType requestType = PGRequestType.fromPathName(getPathVariable(request, "requestType"));
-    PGProviderType pgProvider = PGProviderType.fromPGName(getPathVariable(request, "pgProvider"));
+    PgProviderType pgProvider = PgProviderType.fromPGName(getPathVariable(request, "pgProvider"));
 
     // Get the webhook header name based on the PG provider
     String secretHeaderName = getPGWebhookHeaderNameUseCase.execute(pgProvider);

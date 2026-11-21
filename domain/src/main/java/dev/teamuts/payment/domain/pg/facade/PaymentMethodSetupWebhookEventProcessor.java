@@ -6,9 +6,9 @@ import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.pg.constant.PGRequestType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
-import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 import dev.teamuts.payment.domain.pg.service.ExtPGServiceProvider;
-import dev.teamuts.payment.domain.pg.service.PGAccountService;
+import dev.teamuts.payment.domain.pg.service.PgAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class PaymentMethodSetupWebhookEventProcessor extends AbstractPGWebhookEv
   private final ExtPGServiceProvider pgServiceProvider;
   private final PaymentMethodFacade paymentMethodFacade;
   private final PaymentMethodService paymentMethodService;
-  private final PGAccountService pgAccountService;
+  private final PgAccountService pgAccountService;
 
   @Override
   public boolean supports(PGRequestType key) {
@@ -46,7 +46,7 @@ public class PaymentMethodSetupWebhookEventProcessor extends AbstractPGWebhookEv
     String pgPaymentMethodId = event.getPgProviderToken();
 
     // Retrieve the PGAccount Information from DB using the memberId
-    PGAccount pgAccount = pgAccountService.getPGAccountByMemberId(event.getMemberId());
+    PgAccount pgAccount = pgAccountService.getPGAccountByMemberId(event.getMemberId());
 
     // Retrieve the PG PaymentMethod Information from PG provider using the pgProviderToken
     // to get the necessary details to store a relevant Model (e.g., Card)

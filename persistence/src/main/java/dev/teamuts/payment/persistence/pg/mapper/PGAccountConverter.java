@@ -1,13 +1,13 @@
 package dev.teamuts.payment.persistence.pg.mapper;
 
-import dev.teamuts.payment.domain.pg.model.PGAccount;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
 import dev.teamuts.payment.persistence.pg.entity.PGAccountJpaEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PGAccountConverter {
-  public PGAccount covertToDomainModel(PGAccountJpaEntity entity) {
-    return PGAccount.fromDatabase(
+  public PgAccount covertToDomainModel(PGAccountJpaEntity entity) {
+    return PgAccount.fromDatabase(
         entity.getId(),
         entity.getMemberId(),
         entity.getPgAccountId(),
@@ -15,7 +15,7 @@ public class PGAccountConverter {
         entity.getStatus());
   }
 
-  public PGAccountJpaEntity covertToJpaEntity(PGAccount model) {
+  public PGAccountJpaEntity covertToJpaEntity(PgAccount model) {
     return PGAccountJpaEntity.newEntity(
         model.getMemberId(), model.getPgAccountId(), model.getPgProvider(), model.getStatus());
   }

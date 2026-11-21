@@ -9,10 +9,10 @@ import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
-import dev.teamuts.payment.domain.pg.constant.PGProviderType;
+import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
-import dev.teamuts.payment.domain.pg.model.PGAccount;
-import dev.teamuts.payment.domain.pg.port.infra.ExternalPGPaymentServicePort;
+import dev.teamuts.payment.domain.pg.model.PgAccount;
+import dev.teamuts.payment.domain.pg.port.infra.ExternalPgPaymentServicePort;
 import dev.teamuts.payment.infra.pg.constant.StripeCurrency;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import dev.teamuts.payment.infra.pg.constant.StripePaymentTransactionStatus;
@@ -22,14 +22,14 @@ import lombok.RequiredArgsConstructor;
 
 @InfraAdapter
 @RequiredArgsConstructor
-public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePort {
-  private static final PGProviderType PG_PROVIDER = PGProviderType.STRIPE;
+public class StripePgPaymentServiceAdapter implements ExternalPgPaymentServicePort {
+  private static final PgProviderType PG_PROVIDER = PgProviderType.STRIPE;
 
   private final StripeClient stripeClient;
   private final StripePayTransactionConverter stripePayTransactionConverter;
 
   @Override
-  public boolean supports(PGProviderType key) {
+  public boolean supports(PgProviderType key) {
     return key == PG_PROVIDER;
   }
 
@@ -52,13 +52,13 @@ public class StripePGPaymentServiceAdapter implements ExternalPGPaymentServicePo
   }
 
   /**
-   * @return Usually PaymentTransaction status would be {@link
-   *     StripePaymentTransactionStatus#REQUIRES_CONFIRMATION} in most cases. It could be {@link
-   *     StripePaymentTransactionStatus#REQUIRES_PAYMENT_METHOD}
+   * @return {@link ExtPgPaymentTransaction#getDomainStatus()} would be<br>
+   *     {@link StripePaymentTransactionStatus#REQUIRES_CONFIRMATION} in most cases.<br>
+   *     It could be {@link StripePaymentTransactionStatus#REQUIRES_PAYMENT_METHOD}
    */
   @Override
   public ExtPgPaymentTransaction createPGTransaction(
-      PaymentTransaction transaction, PGAccount pgAccount, PaymentMethod paymentMethod) {
+      PaymentTransaction transaction, PgAccount pgAccount, PaymentMethod paymentMethod) {
     return executeStripeHandlingException(
         StripeOperationType.CREATE_PAYMENT_INTENT,
         operationType -> {

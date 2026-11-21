@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.pg.constant;
 
-public enum PGAccountStatus {
+public enum PgAccountStatus {
   ACTIVATED,
   DEACTIVATED
 }

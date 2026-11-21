@@ -26,7 +26,7 @@ public class OrderService {
       Long memberId, AppServiceType serviceType, PayOrderCommand command) {
     Order order =
         orderReaderPort
-            .retrieveByExtOrderNumNullable(command.extOrderNum())
+            .retrieveOrNullByUnique(command.extOrderNum(), serviceType)
             .orElseGet(() -> {
               Order newOrder = Order.initPayment(memberId, serviceType, command);
 

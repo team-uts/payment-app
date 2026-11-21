@@ -2,7 +2,7 @@ package dev.teamuts.payment.domain.pg.facade;
 
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGWebhookEventDto;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
-import dev.teamuts.payment.domain.pg.service.PGExternalRequestService;
+import dev.teamuts.payment.domain.pg.service.PgExternalRequestService;
 import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PGExternalRequestFacade {
-  private final PGExternalRequestService pgExternalRequestService;
+  private final PgExternalRequestService pgExternalRequestService;
 
   @AppTransactional
   public PGExternalRequest getInitWebhookRequestOrRegisterInitWebhookRequest(
