@@ -4,18 +4,17 @@ import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.error.PaymentTransactionErrorCode;
+import dev.teamuts.shared.domain.model.BaseIdentifiableModelCollection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PaymentTransactions {
-  private List<PaymentTransaction> transactions;
+public class PaymentTransactions extends BaseIdentifiableModelCollection<Long, PaymentTransaction> {
+  private PaymentTransactions(List<PaymentTransaction> transactions) {
+    super(transactions);
+  }
 
   public static PaymentTransactions ofOrEmpty(List<PaymentTransaction> paymentTransactions) {
     return new PaymentTransactions(
@@ -60,7 +59,7 @@ public class PaymentTransactions {
   }
 
   public void processInSequence(Consumer<PaymentTransaction> processor) {
-    for (PaymentTransaction transaction : transactions) {
+    for (PaymentTransaction transaction : elements()) {
       processor.accept(transaction);
 
       // if the tx is not completed, stop processing the next txs.
@@ -70,19 +69,23 @@ public class PaymentTransactions {
     }
   }
 
-  public <E> List<E> mapToList(Function<PaymentTransaction, E> mapper) {
-    return transactions.stream().map(mapper).toList();
-  }
-
   public PaymentStatus resolvePaymentStatus() {
-    return PaymentStatusRuleResolver.resolve(transactions);
+    return PaymentStatusRuleResolver.resolve(elements());
   }
 
-  public boolean isEmpty() {
-    return transactions.isEmpty();
-  }
+  public Long getCommonPaymentId() {
+    if (elements().isEmpty()) {
+      throw new IllegalStateException("PaymentTransactions is empty");
+    }
 
-  public boolean isNotEmpty() {
-    return !isEmpty();
+    List<Long> paymentIds =
+        elements().stream().map(PaymentTransaction::getPaymentId).distinct().toList();
+
+    if (paymentIds.size() > 1) {
+      throw new IllegalStateException(
+          "PaymentTransactions contains different paymentIds: " + paymentIds);
+    }
+
+    return paymentIds.getFirst();
   }
 }

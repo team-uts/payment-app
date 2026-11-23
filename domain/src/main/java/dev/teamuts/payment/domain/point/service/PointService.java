@@ -11,5 +11,5 @@ public class PointService {
     // TODO: if the order has any point usage, validate the point status of the member.
   }
 
-  public void usePoint() {}
+  public void getPointEarningEligibility(Long memberId) {}
 }

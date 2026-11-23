@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS `payment_transactions`
     detail_message          VARCHAR(255)        NULL     COMMENT 'detail message',
     status                  VARCHAR(32)         NOT NULL COMMENT 'payment status',
     seq                     INT UNSIGNED        NOT NULL COMMENT 'payment transaction sequence',
-    outbox_event_id         BIGINT UNSIGNED     NULL     COMMENT 'associated outbox event ID',
     created_at              DATETIME(6)         NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updated_at              DATETIME(6)         NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

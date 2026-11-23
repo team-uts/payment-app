@@ -1,6 +1,5 @@
 package dev.teamuts.payment.domain.order.service;
 
-import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.error.OrderErrorCode;
 import dev.teamuts.payment.domain.order.error.OrderException;
@@ -8,11 +7,10 @@ import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.port.persistence.OrderReaderPort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderStorePort;
 import dev.teamuts.payment.domain.order.port.persistence.OrderUpdatePort;
-import dev.teamuts.payment.domain.payment.model.Payment;
+import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +19,13 @@ public class OrderService {
   private final OrderStorePort orderStorePort;
   private final OrderUpdatePort orderUpdatePort;
 
-  @AppTransactional(propagation = Propagation.REQUIRES_NEW)
-  public Order getPaymentOrderOrCreateInit(
-      Long memberId, AppServiceType serviceType, PayOrderCommand command) {
+  @AppTransactional
+  public Order getPaymentOrderOrCreateInit(Long memberId, PayOrderCommand command) {
     Order order =
         orderReaderPort
-            .retrieveOrNullByUnique(command.extOrderNum(), serviceType)
+            .retrieveOrNullByUnique(command.extOrderNum(), command.serviceType())
             .orElseGet(() -> {
-              Order newOrder = Order.initPayment(memberId, serviceType, command);
+              Order newOrder = Order.init(memberId, command);
 
               return orderStorePort.store(newOrder);
             });
@@ -40,7 +37,7 @@ public class OrderService {
     return order;
   }
 
-  @AppTransactional(propagation = Propagation.REQUIRES_NEW)
+  @AppTransactional
   public void prepareForPayment(Order order) {
     if (order.isPaymentPending()) {
       return;
@@ -51,9 +48,14 @@ public class OrderService {
     orderUpdatePort.updateStatus(order);
   }
 
-  public void updateStatusWithPayment(Order order, Payment payment) {
-    order.updateStatus(payment.resolveOrderStatus());
+  @AppTransactional
+  public void updateStatusWithPayment(Order order, Payments payments) {
+    // update order status based on the payment status
+    order.updateStatus(payments.resolveOrderStatus());
 
     orderUpdatePort.updateStatus(order);
+
+    // insert the payment into order.
+    order.insertPaymentsIfEmpty(payments, false);
   }
 }

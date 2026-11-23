@@ -4,9 +4,11 @@ import dev.teamuts.payment.domain.payment.facade.pay.PayTransactionProcessorProv
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
 import dev.teamuts.payment.domain.pg.error.ExtPgApiException;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 @Slf4j
 @Service
@@ -15,6 +17,7 @@ public class PaymentTransactionExecutor {
   private final PayTransactionProcessorProvider payTxProcessorProvider;
   private final PaymentTransactionService paymentTransactionService;
 
+  @AppTransactional(propagation = Propagation.NOT_SUPPORTED)
   public void executeProcessing(PaymentTransaction transaction) {
     // if the tx is already processed (COMPLETED or CANCELED), skip the processing.
     if (transaction.isNotProcessable()) {
@@ -29,11 +32,6 @@ public class PaymentTransactionExecutor {
     try {
       // execute Pay based on the pay type (PG or Point)
       payTxProcessorProvider.getInstance(transaction.getSequenceType()).pay(transaction);
-
-      // when the transaction is completed, call afterPay.
-      if (transaction.isCompleted()) {
-        payTxProcessorProvider.getInstance(transaction.getSequenceType()).afterPay(transaction);
-      }
 
       log.info(
           "Transaction (id: {}) processed successfully with status: {}",

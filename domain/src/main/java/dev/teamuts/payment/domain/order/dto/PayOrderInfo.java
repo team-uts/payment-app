@@ -17,7 +17,7 @@ public record PayOrderInfo(
         order.getExtOrderNum(),
         order.getStatus(),
         order.getAmount().getAmount(),
-        order.getCurrency(),
+        order.getAmount().getCurrency(),
         order.getServiceType());
   }
 }

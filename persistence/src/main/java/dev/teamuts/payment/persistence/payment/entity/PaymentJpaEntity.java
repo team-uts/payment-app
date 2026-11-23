@@ -10,16 +10,9 @@ import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
 import dev.teamuts.shared.domain.constant.Currency;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -84,6 +77,12 @@ public class PaymentJpaEntity extends BaseTimeEntity {
   @Column(name = "pg_provider", nullable = false)
   private PgProviderType pgProvider;
 
+  @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
+  private List<PaymentTransactionJpaEntity> transactions;
+
+  @Column(name = "outbox_event_id", comment = "associated outbox event ID")
+  private Long outboxEventId;
+
   public static PaymentJpaEntity fromDomain(Payment model) {
     return PaymentJpaEntity.builder()
         .orderId(model.getOrderId())
@@ -97,10 +96,15 @@ public class PaymentJpaEntity extends BaseTimeEntity {
         .payMethodId(model.getPayMethodId())
         .payMethodType(model.getPayMethodType())
         .pgProvider(model.getPgProvider())
+        .outboxEventId(model.getOutboxEventId())
         .build();
   }
 
   public void updateStatus(PaymentStatus status) {
     this.status = status;
+  }
+
+  public void updateOutboxEventId(Long outboxEventId) {
+    this.outboxEventId = outboxEventId;
   }
 }

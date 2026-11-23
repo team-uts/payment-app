@@ -4,4 +4,6 @@ import dev.teamuts.payment.domain.payment.model.Payment;
 
 public interface PaymentUpdatePort {
   void updateStatus(Payment payment);
+
+  void updateOutboxEvent(Payment payment);
 }

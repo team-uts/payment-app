@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.event.constant;
 
-import dev.teamuts.payment.domain.event.message.OrderEventMessage;
+import dev.teamuts.payment.domain.event.message.OrderEvent;
 import dev.teamuts.shared.event.EventMessagePublishable;
 import java.util.Arrays;
 import java.util.Map;
@@ -13,7 +13,7 @@ import lombok.NonNull;
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public enum EventType {
-  PAY_ORDER("payment-order-customerpay", OrderEventMessage.PayCustomerOrder.class),
+  PAY_ORDER("payment-order-customerpay", OrderEvent.PayCustomerCompleted.class),
   ;
 
   private final String topic;

@@ -45,8 +45,7 @@ public class PaymentTransactionFixtureFactory {
         null,
         null,
         status,
-        sequenceType.getSeqNumber(),
-        null);
+        sequenceType.getSeqNumber());
   }
 
   public static PaymentTransaction createSingleRandom(

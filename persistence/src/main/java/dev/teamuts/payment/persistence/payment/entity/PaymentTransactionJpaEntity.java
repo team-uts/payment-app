@@ -41,8 +41,9 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "member_id", nullable = false)
   private Long memberId;
 
-  @Column(name = "payment_id", nullable = false)
-  private Long paymentId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "payment_id", referencedColumnName = "id")
+  private PaymentJpaEntity payment;
 
   @Column(name = "order_id", nullable = false)
   private Long orderId;
@@ -95,20 +96,18 @@ public class PaymentTransactionJpaEntity extends BaseTimeEntity {
   @Column(name = "seq", nullable = false)
   private Integer sequence;
 
-  @Column(name = "outbox_event_id", comment = "associated outbox event ID")
-  private Long outboxEventId;
-
-  public static PaymentTransactionJpaEntity newEntity(PaymentTransaction paymentTransaction) {
+  public static PaymentTransactionJpaEntity newEntity(
+      PaymentTransaction paymentTransaction, PaymentJpaEntity payment) {
     return PaymentTransactionJpaEntity.builder()
         .memberId(paymentTransaction.getMemberId())
-        .paymentId(paymentTransaction.getPaymentId())
+        .payment(payment)
         .orderId(paymentTransaction.getOrderId())
         .payMethodId(paymentTransaction.getPayMethodId())
         .payMethodType(paymentTransaction.getPayMethodType())
         .serviceType(paymentTransaction.getServiceType())
         .paymentType(paymentTransaction.getPaymentType())
         .amount(paymentTransaction.getAmount().getAmount())
-        .currency(paymentTransaction.getCurrency())
+        .currency(paymentTransaction.getAmount().getCurrency())
         .pgProvider(paymentTransaction.getPgProvider())
         .pgTransactionId(paymentTransaction.getPgTransactionId())
         .pgResponseCode(paymentTransaction.getPgResponseCode())

@@ -5,7 +5,6 @@ import dev.teamuts.payment.app.api.dto.PayOrderRequestDto;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
 import dev.teamuts.payment.domain.order.usecase.PayOrderUseCase;
-import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.shared.http.response.ApiCommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,11 +25,9 @@ public class OrderTaxiApiController {
   @PostMapping("/pay")
   public ApiCommonResponse<PayOrderInfo> payOrder(
       @RequestParam Long memberId, @RequestBody PayOrderRequestDto request) {
-    var command = mapper.of(request);
+    var command = mapper.of(request, SERVICE_TYPE);
 
-    PayOrderInfo result =
-        payOrderUseCase.execute(
-            memberId, command, PaymentType.fromCustomerServiceType(SERVICE_TYPE));
+    PayOrderInfo result = payOrderUseCase.execute(memberId, command);
 
     return ApiCommonResponse.success(result);
   }

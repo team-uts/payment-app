@@ -3,10 +3,13 @@ package dev.teamuts.payment.persistence.payment.adapter;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.model.Payment;
+import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentReaderPort;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentConverter;
+import dev.teamuts.payment.persistence.payment.mapper.PaymentTransactionConverter;
 import dev.teamuts.payment.persistence.payment.repository.PaymentRepository;
 import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class PaymentReaderAdapter implements PaymentReaderPort {
   private final PaymentRepository paymentRepository;
   private final PaymentConverter paymentConverter;
+  private final PaymentTransactionConverter paymentTransactionConverter;
 
   @Override
   public Optional<Payment> retrievePaymentByOrderIdAndServiceType(
@@ -22,5 +26,20 @@ public class PaymentReaderAdapter implements PaymentReaderPort {
     return paymentRepository
         .findByOrderIdAndServiceTypeAndPayMethodType(orderId, serviceType, payMethodType)
         .map(paymentConverter::convertToDomainModel);
+  }
+
+  @Override
+  public Payments retrieveAllByOrderIdWithTransactions(Long orderId) {
+    List<Payment> payments =
+        paymentRepository.findAllByOrderIdJoiningTransactions(orderId).stream()
+            .map(payment ->
+                paymentConverter.convertToDomainModelWithFetch(
+                    payment,
+                    payment.getTransactions().stream()
+                        .map(paymentTransactionConverter::convertToDomainModel)
+                        .toList()))
+            .toList();
+
+    return Payments.of(payments);
   }
 }

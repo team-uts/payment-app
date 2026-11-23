@@ -1,7 +1,7 @@
 package dev.teamuts.payment.domain.payment.model;
 
+import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
-import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
@@ -14,6 +14,9 @@ import dev.teamuts.shared.domain.constant.Currency;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +36,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private PgProviderType pgProvider;
+  private Long outboxEventId;
 
   @Getter(AccessLevel.NONE)
   private PaymentTransactions transactions;
@@ -78,7 +82,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
         .serviceType(order.getServiceType())
         .paymentType(paymentType)
         .status(PaymentStatus.PROCESSING)
-        .payAmount(Money.zero(order.getCurrency()))
+        .payAmount(Money.zero(order.getAmount().getCurrency()))
         .pointAmount(pointAmount)
         .payMethodId(null)
         .payMethodType(PaymentMethodType.POINT)
@@ -98,7 +102,8 @@ public class Payment extends BaseIdentifiableModel<Long> {
       BigDecimal pointAmount,
       Currency currency,
       Long payMethodId,
-      PaymentMethodType payMethodType) {
+      PaymentMethodType payMethodType,
+      Long outboxEventId) {
     Payment payment =
         Payment.builder()
             .orderId(orderId)
@@ -111,6 +116,43 @@ public class Payment extends BaseIdentifiableModel<Long> {
             .pointAmount(Money.of(pointAmount, currency))
             .payMethodId(payMethodId)
             .payMethodType(payMethodType)
+            .outboxEventId(outboxEventId)
+            .build();
+
+    payment.setId(id);
+
+    return payment;
+  }
+
+  public static Payment fromDatabaseWithTransactions(
+      Long id,
+      Long orderId,
+      Long memberId,
+      AppServiceType serviceType,
+      PaymentType paymentType,
+      PaymentStatus status,
+      PgProviderType pgProvider,
+      BigDecimal payAmount,
+      BigDecimal pointAmount,
+      Currency currency,
+      Long payMethodId,
+      PaymentMethodType payMethodType,
+      Long outboxEventId,
+      List<PaymentTransaction> transactions) {
+    Payment payment =
+        Payment.builder()
+            .orderId(orderId)
+            .memberId(memberId)
+            .serviceType(serviceType)
+            .paymentType(paymentType)
+            .status(status)
+            .pgProvider(pgProvider)
+            .payAmount(Money.of(payAmount, currency))
+            .pointAmount(Money.of(pointAmount, currency))
+            .payMethodId(payMethodId)
+            .payMethodType(payMethodType)
+            .outboxEventId(outboxEventId)
+            .transactions(PaymentTransactions.of(transactions))
             .build();
 
     payment.setId(id);
@@ -140,6 +182,10 @@ public class Payment extends BaseIdentifiableModel<Long> {
     return !hasPointAmount();
   }
 
+  public boolean hasNoPayTransactions() {
+    return this.transactions == null || this.transactions.isEmpty();
+  }
+
   public void integrateTransactions(PaymentTransactions transactions) {
     this.status = transactions.resolvePaymentStatus();
     this.transactions = transactions;
@@ -149,12 +195,12 @@ public class Payment extends BaseIdentifiableModel<Long> {
     return status == PaymentStatus.PROCESSING;
   }
 
-  public boolean cannotProcessPayTransaction() {
-    return this.status.isFinal() || (hasNoPayAmount() && hasNoPointAmount());
+  public boolean isNotCompleted() {
+    return status != PaymentStatus.COMPLETED;
   }
 
-  public OrderStatus resolveOrderStatus() {
-    return status.getOrderStatus();
+  public boolean cannotProcessPayTransaction() {
+    return this.status.isFinal() || (hasNoPayAmount() && hasNoPointAmount());
   }
 
   public Currency getCurrency() {
@@ -163,5 +209,23 @@ public class Payment extends BaseIdentifiableModel<Long> {
     }
 
     return this.payAmount.getCurrency();
+  }
+
+  public <R> List<R> mapTransactions(Function<PaymentTransaction, R> mapper) {
+    if (hasNoPayTransactions()) {
+      return Collections.emptyList();
+    }
+
+    return this.transactions.mapToList(mapper);
+  }
+
+  public void updateOutboxEvent(OutboxEvent event) {
+    checkPersisted();
+
+    if (this.isNotCompleted() || event.isNotPersisted()) {
+      throw PaymentException.of(PaymentErrorCode.CANNOT_UPDATE_OUTBOX_EVENT, this.getId());
+    }
+
+    this.outboxEventId = event.getId();
   }
 }

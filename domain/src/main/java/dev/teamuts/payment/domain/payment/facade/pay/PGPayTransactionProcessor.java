@@ -1,8 +1,6 @@
 package dev.teamuts.payment.domain.payment.facade.pay;
 
 import dev.teamuts.payment.domain.common.process.DomainProcessStepPipeline;
-import dev.teamuts.payment.domain.event.message.OrderEventMessage;
-import dev.teamuts.payment.domain.event.service.OutboxEventPublisher;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.facade.pay.helper.PayTransactionHelperProcessor;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
@@ -14,6 +12,7 @@ import dev.teamuts.payment.domain.pg.service.PgAccountService;
 import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +20,6 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
   private final PayTransactionHelperProcessor payTransactionHelperProcessor;
   private final PgAccountService pgAccountService;
   private final PaymentMethodService paymentMethodService;
-  private final OutboxEventPublisher outboxEventPublisher;
 
   @Override
   public boolean supports(PaySequenceType key) {
@@ -37,6 +35,7 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
    * @param transaction the payment transaction to process
    */
   @Override
+  @AppTransactional(propagation = Propagation.NOT_SUPPORTED)
   public void pay(PaymentTransaction transaction) {
     // 1. retrieve tx from PG to check if the transaction is already created.
     // if the tx is already associated with PG, then execute synchronization with PG again.
@@ -77,17 +76,5 @@ public class PGPayTransactionProcessor implements PayTransactionProcessor {
               payTransactionHelperProcessor.callPgWithSync(
                   tx, pgService -> pgService.confirmPayment(tx));
             });
-  }
-
-  @Override
-  @AppTransactional
-  public void afterPay(PaymentTransaction transaction) {
-    // delegate to batch processing to publish the outbox events again
-    // if they were not processed yet.
-    if (transaction.alreadyHasOutboxEvent()) {
-      return;
-    }
-
-    outboxEventPublisher.publish(OrderEventMessage.PayCustomerOrder.of(transaction));
   }
 }

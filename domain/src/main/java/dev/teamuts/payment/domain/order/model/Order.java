@@ -5,11 +5,16 @@ import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.error.OrderErrorCode;
 import dev.teamuts.payment.domain.order.error.OrderException;
+import dev.teamuts.payment.domain.payment.model.Payment;
+import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.constant.Currency;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,14 +29,17 @@ public class Order extends BaseIdentifiableModel<Long> {
   private Money amount;
   private OrderStatus status;
 
-  public static Order initPayment(
-      Long memberId, AppServiceType serviceType, PayOrderCommand command) {
+  @Getter(AccessLevel.NONE)
+  private Payments payments;
+
+  public static Order init(Long memberId, PayOrderCommand command) {
     return Order.builder()
         .memberId(memberId)
         .extOrderNum(command.extOrderNum())
-        .serviceType(serviceType)
+        .serviceType(command.serviceType())
         .amount(command.totalAmount())
         .status(OrderStatus.INIT)
+        .payments(Payments.empty())
         .build();
   }
 
@@ -50,6 +58,7 @@ public class Order extends BaseIdentifiableModel<Long> {
             .memberId(memberId)
             .amount(Money.of(amount, currency))
             .status(status)
+            .payments(Payments.empty())
             .build();
 
     order.setId(id);
@@ -71,6 +80,10 @@ public class Order extends BaseIdentifiableModel<Long> {
 
   public boolean cannotProcessPayment() {
     return this.status.isFinal();
+  }
+
+  public boolean cannotPublishPayEvent() {
+    return this.status != OrderStatus.CONFIRMED;
   }
 
   public boolean hasLessAmountThan(Money amount) {
@@ -99,10 +112,6 @@ public class Order extends BaseIdentifiableModel<Long> {
     return this.amount.minus(amount);
   }
 
-  public Currency getCurrency() {
-    return amount.getCurrency();
-  }
-
   public void paymentPending() {
     this.checkPersisted();
 
@@ -115,5 +124,41 @@ public class Order extends BaseIdentifiableModel<Long> {
 
   public void updateStatus(OrderStatus newStatus) {
     this.status = newStatus;
+  }
+
+  public void insertPaymentsIfEmpty(Payments payments, boolean passCheck) {
+    if (this.payments.isNotEmpty()) {
+      return;
+    }
+
+    if (!passCheck && payments.resolveOrderStatus() != this.status) {
+      throw OrderException.of(
+          OrderErrorCode.PAYMENTS_STATUS_NOT_MATCH_ORDER_STATUS,
+          this.getId(),
+          this.status,
+          payments.resolveOrderStatus());
+    }
+
+    this.payments = payments;
+  }
+
+  public boolean hasNoPayments() {
+    return this.payments.isEmpty();
+  }
+
+  public <R> List<R> mapPayments(Function<Payment, R> mapper) {
+    if (hasNoPayments()) {
+      return List.of();
+    }
+
+    return this.payments.mapToList(mapper);
+  }
+
+  public void processAllPayments(Consumer<Payment> processor) {
+    if (hasNoPayments()) {
+      return;
+    }
+
+    this.payments.processEachPayment(processor);
   }
 }

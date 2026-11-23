@@ -6,12 +6,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import dev.teamuts.payment.domain.event.handler.OutboxEventPublisher;
+import dev.teamuts.payment.domain.event.message.OrderEvent;
+import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.order.OrderFixtureFactory;
+import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.error.OrderErrorCode;
@@ -21,14 +26,15 @@ import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
-import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.factory.PaymentFixtureFactory;
 import dev.teamuts.payment.domain.payment.factory.PaymentTransactionFixtureFactory;
 import dev.teamuts.payment.domain.payment.model.Payment;
+import dev.teamuts.payment.domain.payment.model.PaymentRequests;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
+import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.payment.domain.payment.service.PaymentService;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
 import dev.teamuts.shared.domain.constant.Currency;
@@ -41,8 +47,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -54,57 +60,59 @@ class OrderPaymentFacadeTest {
   private static final BigDecimal TOTAL_AMOUNT = BigDecimal.valueOf(10_000);
   private static final BigDecimal POINT_AMOUNT = BigDecimal.valueOf(2_000);
   private static final Long PAY_METHOD_ID = 1_000L;
-  private static final PaymentType TEST_PAYMENT_TYPE = PaymentType.TAXI_FARE;
 
   @Mock private InitPaymentFacade initPaymentFacade;
   @Mock private PaymentTransactionExecutor paymentTransactionExecutor;
   @Mock private OrderService orderService;
   @Mock private PaymentTransactionService paymentTransactionService;
   @Mock private PaymentService paymentService;
+  @Mock private OutboxEventPublisher outboxEventPublisher;
 
-  @InjectMocks private OrderPaymentFacade orderPaymentFacade;
-
-  private PayOrderCommand command;
+  private OrderPaymentFacade orderPaymentFacade;
+  private PaymentRequests paymentRequests;
 
   @BeforeEach
   void setup() {
-    command =
+    PaymentProcessor paymentProcessor =
+        new PaymentProcessor(paymentTransactionExecutor, paymentTransactionService, paymentService);
+    orderPaymentFacade =
+        new OrderPaymentFacade(
+            initPaymentFacade,
+            paymentProcessor,
+            orderService,
+            paymentService,
+            outboxEventPublisher);
+
+    PayOrderCommand command =
         new PayOrderCommand(
-            EXT_ORDER_NUM, PAY_METHOD_ID, Money.of(TOTAL_AMOUNT, CURRENCY), Money.zero(CURRENCY));
+            EXT_ORDER_NUM,
+            AppServiceType.TAXI,
+            PAY_METHOD_ID,
+            Money.of(TOTAL_AMOUNT, CURRENCY),
+            Money.zero(CURRENCY));
+
+    paymentRequests = PaymentRequests.createSingleCustomerRequest(command);
   }
 
   @Test
-  @DisplayName("processes every step in sequence and returns the resolved payment")
+  @DisplayName("processes every step in sequence and returns the processed payments")
   void processPaymentExecutesEachStepInOrder() {
-    // Given an givenOrder which is ready for givenPayment and a givenPayment in PROCESSING status
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.INIT);
     Payment givenPayment =
-        PaymentFixtureFactory.createSingle(
-            givenOrder.getId(),
-            givenOrder.getMemberId(),
-            PaymentStatus.PROCESSING,
-            TOTAL_AMOUNT,
-            BigDecimal.ZERO);
+        paymentFor(givenOrder, PaymentStatus.PROCESSING, TOTAL_AMOUNT, BigDecimal.ZERO);
     PaymentTransaction givenTransaction =
-        PaymentTransactionFixtureFactory.createSingleRandom(
-            givenPayment.getMemberId(),
-            givenPayment.getId(),
-            givenPayment.getOrderId(),
-            givenPayment.getPayMethodId(),
-            PaymentTransactionStatus.INIT,
-            PaySequenceType.PG_PAY);
+        transactionFor(givenPayment, PaymentTransactionStatus.INIT, PaySequenceType.PG_PAY);
     PaymentTransactions transactions = PaymentTransactions.of(List.of(givenTransaction));
+    Payments givenPayments = Payments.of(List.of(givenPayment));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
-        .thenReturn(givenPayment);
+    when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
+        .thenReturn(givenPayments);
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
     doAnswer(
             invocation -> {
-              PaymentTransaction argTransaction = invocation.getArgument(0);
-
               ReflectionTestUtils.setField(
-                  argTransaction, "status", PaymentTransactionStatus.COMPLETED);
+                  givenTransaction, "status", PaymentTransactionStatus.COMPLETED);
 
               return null;
             })
@@ -113,25 +121,18 @@ class OrderPaymentFacadeTest {
 
     doAnswer(
             invocation -> {
-              Payment argPayment = invocation.getArgument(0);
-              PaymentTransactions argTransactions = invocation.getArgument(1);
-
-              ReflectionTestUtils.setField(
-                  argPayment, "status", argTransactions.resolvePaymentStatus());
+              givenPayment.integrateTransactions(transactions);
 
               return null;
             })
         .when(paymentService)
         .integrateTransactions(givenPayment, transactions);
 
-    // When
-    Payment result = orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
+    Payments result = orderPaymentFacade.processPayOrder(givenOrder, paymentRequests);
 
-    // Then
-    assertThat(result).isSameAs(givenPayment);
-    assertThat(result.getStatus()).isEqualTo(PaymentStatus.COMPLETED);
+    assertThat(result).isSameAs(givenPayments);
+    assertThat(givenPayment.getStatus()).isEqualTo(PaymentStatus.COMPLETED);
 
-    // And every collaborator is called in the expected givenOrder
     InOrder inOrder =
         inOrder(
             initPaymentFacade,
@@ -140,12 +141,10 @@ class OrderPaymentFacadeTest {
             paymentTransactionExecutor,
             paymentService);
 
-    inOrder
-        .verify(initPaymentFacade)
-        .getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE);
+    inOrder.verify(initPaymentFacade).getProcessingPaymentsOrCreate(givenOrder, paymentRequests);
     inOrder.verify(orderService).prepareForPayment(givenOrder);
     inOrder.verify(paymentTransactionService).getTransactionsOrCreateInit(givenPayment);
-    inOrder.verify(paymentTransactionExecutor).executeProcessing(any(PaymentTransaction.class));
+    inOrder.verify(paymentTransactionExecutor).executeProcessing(givenTransaction);
     inOrder.verify(paymentService).integrateTransactions(givenPayment, transactions);
     inOrder.verifyNoMoreInteractions();
   }
@@ -153,45 +152,26 @@ class OrderPaymentFacadeTest {
   @Test
   @DisplayName("executes every transaction while the previous one is COMPLETED")
   void processPaymentExecutesEveryTransactionWhenPreviousOneIsCompleted() {
-    // Given a givenPayment having both pay and point transactions, where the first one is COMPLETED
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.INIT);
     Payment givenPayment =
-        PaymentFixtureFactory.createSingle(
-            givenOrder.getId(),
-            givenOrder.getMemberId(),
-            PaymentStatus.PROCESSING,
-            TOTAL_AMOUNT,
-            POINT_AMOUNT);
+        paymentFor(givenOrder, PaymentStatus.PROCESSING, TOTAL_AMOUNT, POINT_AMOUNT);
 
     PaymentTransaction givenPayTransaction =
-        PaymentTransactionFixtureFactory.createSingleRandom(
-            givenPayment.getMemberId(),
-            givenPayment.getId(),
-            givenPayment.getOrderId(),
-            givenPayment.getPayMethodId(),
-            PaymentTransactionStatus.COMPLETED,
-            PaySequenceType.PG_PAY);
+        transactionFor(givenPayment, PaymentTransactionStatus.COMPLETED, PaySequenceType.PG_PAY);
 
     PaymentTransaction givenPointTransaction =
-        PaymentTransactionFixtureFactory.createSingleRandom(
-            givenPayment.getMemberId(),
-            givenPayment.getId(),
-            givenPayment.getOrderId(),
-            givenPayment.getPayMethodId(),
-            PaymentTransactionStatus.COMPLETED,
-            PaySequenceType.POINT);
+        transactionFor(givenPayment, PaymentTransactionStatus.COMPLETED, PaySequenceType.POINT);
 
     PaymentTransactions transactions =
         PaymentTransactions.of(List.of(givenPayTransaction, givenPointTransaction));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
-        .thenReturn(givenPayment);
+    when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
+        .thenReturn(Payments.of(List.of(givenPayment)));
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
 
-    orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
+    orderPaymentFacade.processPayOrder(givenOrder, paymentRequests);
 
-    // Then both transactions are executed in the pay sequence givenOrder
     InOrder inOrder = inOrder(paymentTransactionExecutor);
     inOrder.verify(paymentTransactionExecutor).executeProcessing(givenPayTransaction);
     inOrder.verify(paymentTransactionExecutor).executeProcessing(givenPointTransaction);
@@ -202,82 +182,51 @@ class OrderPaymentFacadeTest {
   @Test
   @DisplayName("stops executing the following transactions once one is not COMPLETED")
   void processPaymentStopsAfterNotCompletedTransaction() {
-    // Given a givenPayment whose first transaction (PG_PAY) ends up FAILED
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.INIT);
     Payment givenPayment =
-        PaymentFixtureFactory.createSingle(
-            givenOrder.getId(),
-            givenOrder.getMemberId(),
-            PaymentStatus.PROCESSING,
-            TOTAL_AMOUNT,
-            POINT_AMOUNT);
+        paymentFor(givenOrder, PaymentStatus.PROCESSING, TOTAL_AMOUNT, POINT_AMOUNT);
 
     PaymentTransaction givenPayTransaction =
-        PaymentTransactionFixtureFactory.createSingleRandom(
-            givenPayment.getMemberId(),
-            givenPayment.getId(),
-            givenPayment.getOrderId(),
-            givenPayment.getPayMethodId(),
-            PaymentTransactionStatus.FAILED,
-            PaySequenceType.PG_PAY);
+        transactionFor(givenPayment, PaymentTransactionStatus.FAILED, PaySequenceType.PG_PAY);
 
     PaymentTransaction givenPointTransaction =
-        PaymentTransactionFixtureFactory.createSingleRandom(
-            givenPayment.getMemberId(),
-            givenPayment.getId(),
-            givenPayment.getOrderId(),
-            givenPayment.getPayMethodId(),
-            PaymentTransactionStatus.INIT,
-            PaySequenceType.POINT);
+        transactionFor(givenPayment, PaymentTransactionStatus.INIT, PaySequenceType.POINT);
 
     PaymentTransactions transactions =
         PaymentTransactions.of(List.of(givenPayTransaction, givenPointTransaction));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
-        .thenReturn(givenPayment);
+    when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
+        .thenReturn(Payments.of(List.of(givenPayment)));
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
 
-    orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
+    orderPaymentFacade.processPayOrder(givenOrder, paymentRequests);
 
-    // Then the following POINT transaction is never executed
     verify(paymentTransactionExecutor).executeProcessing(givenPayTransaction);
     verify(paymentTransactionExecutor, never()).executeProcessing(givenPointTransaction);
 
-    // And the result is still integrated into the givenPayment
     verify(paymentService).integrateTransactions(givenPayment, transactions);
   }
 
   @Test
   @DisplayName("processes the payment which has only point amount")
   void processPaymentWithOnlyPointAmount() {
-    // Given a givenPayment without pay amount but with point amount
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.PAYMENT_PENDING);
     Payment givenPayment =
-        PaymentFixtureFactory.createSingle(
-            givenOrder.getId(),
-            givenOrder.getMemberId(),
-            PaymentStatus.PROCESSING,
-            BigDecimal.ZERO,
-            POINT_AMOUNT);
+        paymentFor(givenOrder, PaymentStatus.PROCESSING, BigDecimal.ZERO, POINT_AMOUNT);
     PaymentTransaction pointTransaction =
-        PaymentTransactionFixtureFactory.createSingleRandom(
-            givenPayment.getMemberId(),
-            givenPayment.getId(),
-            givenPayment.getOrderId(),
-            givenPayment.getPayMethodId(),
-            PaymentTransactionStatus.COMPLETED,
-            PaySequenceType.POINT);
+        transactionFor(givenPayment, PaymentTransactionStatus.COMPLETED, PaySequenceType.POINT);
     PaymentTransactions transactions = PaymentTransactions.of(List.of(pointTransaction));
+    Payments givenPayments = Payments.of(List.of(givenPayment));
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
-        .thenReturn(givenPayment);
+    when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
+        .thenReturn(givenPayments);
     when(paymentTransactionService.getTransactionsOrCreateInit(givenPayment))
         .thenReturn(transactions);
 
-    Payment result = orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE);
+    Payments result = orderPaymentFacade.processPayOrder(givenOrder, paymentRequests);
 
-    assertThat(result).isSameAs(givenPayment);
+    assertThat(result).isSameAs(givenPayments);
     verify(paymentTransactionExecutor).executeProcessing(pointTransaction);
   }
 
@@ -287,14 +236,12 @@ class OrderPaymentFacadeTest {
       names = {"CONFIRMED", "CANCELED", "FAILED"})
   @DisplayName("throws when the order is already in a final status")
   void processPaymentThrowsWhenOrderIsFinal(OrderStatus finalStatus) {
-    // Given an order which is already closed
     Order order = OrderFixtureFactory.createSingle(finalStatus);
 
-    assertThatThrownBy(() -> orderPaymentFacade.processPayment(order, command, TEST_PAYMENT_TYPE))
+    assertThatThrownBy(() -> orderPaymentFacade.processPayOrder(order, paymentRequests))
         .isInstanceOf(OrderException.class)
         .hasMessageContaining(OrderErrorCode.CANNOT_PAY_PROCESS.name());
 
-    // Then nothing is processed at all
     verifyNoInteractions(
         initPaymentFacade,
         orderService,
@@ -309,76 +256,117 @@ class OrderPaymentFacadeTest {
       names = {"COMPLETED", "FAILED", "CANCELED"})
   @DisplayName("throws when the retrieved payment is already in a final status")
   void processPaymentThrowsWhenPaymentIsFinal(PaymentStatus finalStatus) {
-    // Given a givenPayment which has already been closed
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.PAYMENT_PENDING);
-    Payment givenPayment =
-        PaymentFixtureFactory.createSingle(
-            givenOrder.getId(),
-            givenOrder.getMemberId(),
-            finalStatus,
-            TOTAL_AMOUNT,
-            BigDecimal.ZERO);
+    Payment givenPayment = paymentFor(givenOrder, finalStatus, TOTAL_AMOUNT, BigDecimal.ZERO);
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
-        .thenReturn(givenPayment);
+    when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
+        .thenReturn(Payments.of(List.of(givenPayment)));
 
-    assertThatThrownBy(
-            () -> orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE))
+    assertThatThrownBy(() -> orderPaymentFacade.processPayOrder(givenOrder, paymentRequests))
         .isInstanceOf(PaymentException.class)
         .hasMessageContaining(PaymentErrorCode.CANNOT_PROCESS_PAY_TX.name());
 
-    // Then the givenOrder is never prepared and no transaction is processed
-    verifyNoInteractions(orderService, paymentTransactionService, paymentTransactionExecutor);
+    verify(orderService).prepareForPayment(givenOrder);
+    verifyNoInteractions(paymentTransactionService, paymentTransactionExecutor, paymentService);
   }
 
   @Test
   @DisplayName("throws when the payment has neither pay amount nor point amount")
   void processPaymentThrowsWhenPaymentHasNoAmount() {
-    // Given a PROCESSING givenPayment with zero amounts
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.INIT);
     Payment givenPayment =
-        PaymentFixtureFactory.createSingle(
-            givenOrder.getId(),
-            givenOrder.getMemberId(),
-            PaymentStatus.PROCESSING,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO);
+        paymentFor(givenOrder, PaymentStatus.PROCESSING, BigDecimal.ZERO, BigDecimal.ZERO);
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
-        .thenReturn(givenPayment);
+    when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
+        .thenReturn(Payments.of(List.of(givenPayment)));
 
-    assertThatThrownBy(
-            () -> orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE))
+    assertThatThrownBy(() -> orderPaymentFacade.processPayOrder(givenOrder, paymentRequests))
         .isInstanceOf(PaymentException.class)
         .hasMessageContaining(PaymentErrorCode.CANNOT_PROCESS_PAY_TX.name());
 
-    verifyNoInteractions(orderService, paymentTransactionService, paymentTransactionExecutor);
+    verify(orderService).prepareForPayment(givenOrder);
+    verifyNoInteractions(paymentTransactionService, paymentTransactionExecutor, paymentService);
   }
 
   @Test
   @DisplayName("does not process any transaction when preparing the order fails")
   void processPaymentStopsWhenPrepareForPaymentFails() {
-    // Given an givenOrder which cannot be changed into PAYMENT_PENDING
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.INIT);
     Payment givenPayment =
-        PaymentFixtureFactory.createSingle(
-            givenOrder.getId(),
-            givenOrder.getMemberId(),
-            PaymentStatus.PROCESSING,
-            TOTAL_AMOUNT,
-            BigDecimal.ZERO);
+        paymentFor(givenOrder, PaymentStatus.PROCESSING, TOTAL_AMOUNT, BigDecimal.ZERO);
 
-    when(initPaymentFacade.getProcessingPaymentOrCreate(givenOrder, command, TEST_PAYMENT_TYPE))
-        .thenReturn(givenPayment);
+    when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
+        .thenReturn(Payments.of(List.of(givenPayment)));
     doThrow(new RuntimeException("givenOrder status conflict"))
         .when(orderService)
         .prepareForPayment(givenOrder);
 
-    assertThatThrownBy(
-            () -> orderPaymentFacade.processPayment(givenOrder, command, TEST_PAYMENT_TYPE))
+    assertThatThrownBy(() -> orderPaymentFacade.processPayOrder(givenOrder, paymentRequests))
         .isInstanceOf(RuntimeException.class)
         .hasMessage("givenOrder status conflict");
 
     verifyNoInteractions(paymentTransactionService, paymentTransactionExecutor, paymentService);
+  }
+
+  @ParameterizedTest
+  @EnumSource(value = OrderStatus.class, names = "CONFIRMED", mode = EnumSource.Mode.EXCLUDE)
+  @DisplayName("skips event publication for orders that are not confirmed")
+  void skipsCompletedPaymentEventForUnconfirmedOrder(OrderStatus status) {
+    Order order = OrderFixtureFactory.createSingle(status);
+
+    orderPaymentFacade.publishCompletedPayOrderEvent(order);
+
+    verifyNoInteractions(paymentService, outboxEventPublisher);
+  }
+
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  @DisplayName("publishes the completed payment event and associates it with the payment")
+  void publishesCompletedPaymentEvent(boolean paymentsAlreadyLoaded) {
+    Order order = OrderFixtureFactory.createSingle(OrderStatus.CONFIRMED);
+    Payment payment = paymentFor(order, PaymentStatus.COMPLETED, TOTAL_AMOUNT, BigDecimal.ZERO);
+    PaymentTransaction transaction =
+        transactionFor(payment, PaymentTransactionStatus.COMPLETED, PaySequenceType.PG_PAY);
+    payment.integrateTransactions(PaymentTransactions.of(List.of(transaction)));
+    Payments payments = Payments.of(List.of(payment));
+
+    if (paymentsAlreadyLoaded) {
+      order.insertPaymentsIfEmpty(payments, false);
+    } else {
+      when(paymentService.getPaymentsWithTransactions(order)).thenReturn(payments);
+    }
+
+    OutboxEvent outboxEvent = mock(OutboxEvent.class);
+    when(outboxEventPublisher.publish(any(OrderEvent.PayCustomerCompleted.class)))
+        .thenReturn(outboxEvent);
+
+    orderPaymentFacade.publishCompletedPayOrderEvent(order);
+
+    assertThat(order.mapPayments(Payment::getId)).containsExactly(payment.getId());
+    InOrder inOrder = inOrder(paymentService, outboxEventPublisher);
+    if (paymentsAlreadyLoaded) {
+      verify(paymentService, never()).getPaymentsWithTransactions(order);
+    } else {
+      inOrder.verify(paymentService).getPaymentsWithTransactions(order);
+    }
+    inOrder.verify(outboxEventPublisher).publish(OrderEvent.PayCustomerCompleted.of(order));
+    inOrder.verify(paymentService).updateOutboxEvent(payment, outboxEvent);
+  }
+
+  private static Payment paymentFor(
+      Order order, PaymentStatus status, BigDecimal payAmount, BigDecimal pointAmount) {
+    return PaymentFixtureFactory.createSingle(
+        order.getId(), order.getMemberId(), status, payAmount, pointAmount);
+  }
+
+  private static PaymentTransaction transactionFor(
+      Payment payment, PaymentTransactionStatus status, PaySequenceType sequenceType) {
+    return PaymentTransactionFixtureFactory.createSingleRandom(
+        payment.getMemberId(),
+        payment.getId(),
+        payment.getOrderId(),
+        payment.getPayMethodId(),
+        status,
+        sequenceType);
   }
 }

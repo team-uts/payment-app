@@ -3,12 +3,14 @@ package dev.teamuts.payment.persistence.payment.repository;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.persistence.payment.entity.PaymentJpaEntity;
+import dev.teamuts.payment.persistence.payment.repository.custom.PaymentQueryRepository;
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 
-public interface PaymentRepository extends JpaRepository<PaymentJpaEntity, Long> {
+public interface PaymentRepository
+    extends JpaRepository<PaymentJpaEntity, Long>, PaymentQueryRepository {
   Optional<PaymentJpaEntity> findByOrderIdAndServiceTypeAndPayMethodType(
       Long orderId, AppServiceType serviceType, PaymentMethodType payMethodType);
 

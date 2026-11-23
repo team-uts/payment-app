@@ -1,66 +1,74 @@
 package dev.teamuts.payment.domain.payment.facade;
 
+import dev.teamuts.payment.domain.event.handler.OutboxEventPublisher;
+import dev.teamuts.payment.domain.event.message.OrderEvent;
+import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
-import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.error.OrderErrorCode;
 import dev.teamuts.payment.domain.order.error.OrderException;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
-import dev.teamuts.payment.domain.payment.constant.PaymentType;
-import dev.teamuts.payment.domain.payment.error.PaymentErrorCode;
-import dev.teamuts.payment.domain.payment.error.PaymentException;
-import dev.teamuts.payment.domain.payment.model.Payment;
-import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
+import dev.teamuts.payment.domain.payment.model.PaymentRequests;
+import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.payment.domain.payment.service.PaymentService;
-import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 @Service
 @RequiredArgsConstructor
 public class OrderPaymentFacade {
   private final InitPaymentFacade initPaymentFacade;
-  private final PaymentTransactionExecutor paymentTransactionExecutor;
+  private final PaymentProcessor paymentProcessor;
   private final OrderService orderService;
-  private final PaymentTransactionService paymentTransactionService;
   private final PaymentService paymentService;
+  private final OutboxEventPublisher outboxEventPublisher;
 
   /**
    * Process a payment for the given order.
    *
    * @param order only for Order with {@link OrderStatus#INIT} or {@link
    *     OrderStatus#PAYMENT_PENDING} status
-   * @param command request data for payment processing
-   * @param paymentType the type of payment to be processed
+   * @param paymentRequests the payment request details
    * @return result payment
    */
-  public Payment processPayment(Order order, PayOrderCommand command, PaymentType paymentType) {
+  @AppTransactional(propagation = Propagation.NOT_SUPPORTED)
+  public Payments processPayOrder(Order order, PaymentRequests paymentRequests) {
     if (order.cannotProcessPayment()) {
       throw OrderException.of(
           OrderErrorCode.CANNOT_PAY_PROCESS, order.getExtOrderNum(), order.getStatus());
     }
 
     // Retrieve or Create Payment (PROCESSING)
-    Payment payment = initPaymentFacade.getProcessingPaymentOrCreate(order, command, paymentType);
-
-    // Check if the payment can be processed
-    if (payment.cannotProcessPayTransaction()) {
-      throw PaymentException.of(PaymentErrorCode.CANNOT_PROCESS_PAY_TX, payment.getId());
-    }
+    Payments payments = initPaymentFacade.getProcessingPaymentsOrCreate(order, paymentRequests);
 
     // Prepare Order for Payment process
     orderService.prepareForPayment(order);
 
-    // Retrieve or Create multiple PaymentTransaction (should have at least one INIT tx)
-    PaymentTransactions transactions =
-        paymentTransactionService.getTransactionsOrCreateInit(payment);
+    // Process each payment
+    payments.processEachPayment(paymentProcessor::processPayment);
 
-    // **IMPORTANT** process transaction list in PaySequenceType sequence
-    transactions.processInSequence(paymentTransactionExecutor::executeProcessing);
+    return payments;
+  }
 
-    // update payment status based on the result txs
-    paymentService.integrateTransactions(payment, transactions);
+  @AppTransactional
+  public void publishCompletedPayOrderEvent(Order order) {
+    if (order.cannotPublishPayEvent()) {
+      return;
+    }
 
-    return payment;
+    // if the order needs to get payments, retrieve them and insert into order
+    if (order.hasNoPayments()) {
+      Payments payments = paymentService.getPaymentsWithTransactions(order);
+      order.insertPaymentsIfEmpty(payments, true);
+    }
+
+    // publish event for completed pay order
+    OutboxEvent outboxEvent =
+        outboxEventPublisher.publish(OrderEvent.PayCustomerCompleted.of(order));
+
+    // update payment with outbox event id
+    order.processAllPayments(payment -> paymentService.updateOutboxEvent(payment, outboxEvent));
   }
 }

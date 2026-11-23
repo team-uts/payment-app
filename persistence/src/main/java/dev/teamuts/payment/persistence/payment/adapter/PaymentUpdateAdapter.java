@@ -24,4 +24,14 @@ public class PaymentUpdateAdapter implements PaymentUpdatePort {
 
     entity.updateStatus(payment.getStatus());
   }
+
+  @Override
+  public void updateOutboxEvent(Payment payment) {
+    PaymentJpaEntity entity =
+        paymentRepository
+            .findLockById(payment.getId())
+            .orElseThrow(() -> PersistenceException.notFound(payment));
+
+    entity.updateOutboxEventId(payment.getOutboxEventId());
+  }
 }

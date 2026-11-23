@@ -62,7 +62,7 @@ public class StripePgPaymentServiceAdapter implements ExternalPgPaymentServicePo
     return executeStripeHandlingException(
         StripeOperationType.CREATE_PAYMENT_INTENT,
         operationType -> {
-          StripeCurrency currency = StripeCurrency.of(transaction.getCurrency());
+          StripeCurrency currency = StripeCurrency.of(transaction.getAmount().getCurrency());
 
           // return_url (setAllowRedirects) off
           PaymentIntentCreateParams params =

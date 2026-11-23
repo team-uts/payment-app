@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.event.service;
+package dev.teamuts.payment.domain.event.handler;
 
 import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.event.port.persistence.OutboxEventStorePort;
@@ -17,11 +17,13 @@ public class OutboxEventPublisher {
 
   /** require transactional context. {@link Propagation#MANDATORY} */
   @AppTransactional(propagation = Propagation.MANDATORY)
-  public void publish(EventMessagePublishable eventMessage) {
+  public OutboxEvent publish(EventMessagePublishable eventMessage) {
     OutboxEvent outboxEvent = OutboxEvent.init(eventMessage);
 
     OutboxEvent storedEvent = outboxEventStorePort.store(outboxEvent);
 
     eventPublisher.publishEvent(storedEvent);
+
+    return storedEvent;
   }
 }

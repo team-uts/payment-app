@@ -1,5 +1,6 @@
 package dev.teamuts.payment.app.api.dto;
 
+import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.shared.domain.model.Money;
 import org.mapstruct.InjectionStrategy;
@@ -14,11 +15,12 @@ import org.mapstruct.ReportingPolicy;
     unmappedTargetPolicy = ReportingPolicy.ERROR,
     imports = Money.class)
 public interface OrderDtoMapper {
+  @Mapping(target = "serviceType", source = "serviceType")
   @Mapping(
       target = "totalAmount",
       expression = "java(Money.of(request.totalAmount(), request.currency()))")
   @Mapping(
       target = "pointAmount",
       expression = "java(Money.of(request.pointAmount(), request.currency()))")
-  PayOrderCommand of(PayOrderRequestDto request);
+  PayOrderCommand of(PayOrderRequestDto request, AppServiceType serviceType);
 }

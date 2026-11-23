@@ -16,7 +16,7 @@ public enum OrderErrorCode implements ErrorCode {
   HAVE_NO_REMAINING_AMOUNT("ORD-0012", HttpStatus.BAD_REQUEST),
   STATUS_MUST_BE_INIT("ORD-0013", HttpStatus.BAD_REQUEST),
   CANNOT_PAY_PROCESS("ORD-0021", HttpStatus.BAD_REQUEST),
-  ;
+  PAYMENTS_STATUS_NOT_MATCH_ORDER_STATUS("ORD-0022", HttpStatus.BAD_REQUEST);
 
   private final String code;
   private final HttpStatus httpStatus;

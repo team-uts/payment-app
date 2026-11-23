@@ -6,6 +6,4 @@ import dev.teamuts.shared.utils.provider.ProviderService;
 
 public interface PayTransactionProcessor extends ProviderService<PaySequenceType> {
   void pay(PaymentTransaction transaction);
-
-  void afterPay(PaymentTransaction transaction);
 }

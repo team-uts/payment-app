@@ -39,7 +39,6 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
   private String detailMessage;
   private PaymentTransactionStatus status;
   private PaySequenceType sequenceType;
-  private Long outboxEventId;
 
   public static final int MAX_RESPONSE_CODE_LENGTH = 255;
   public static final int MAX_ERROR_CODE_LENGTH = 255;
@@ -106,8 +105,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
       String pgErrorMessage,
       String detailMessage,
       PaymentTransactionStatus status,
-      Integer sequence,
-      Long outboxEventId) {
+      Integer sequence) {
     PaymentTransaction pt =
         PaymentTransaction.builder()
             .memberId(memberId)
@@ -126,7 +124,6 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
             .detailMessage(detailMessage)
             .status(status)
             .sequenceType(PaySequenceType.of(sequence))
-            .outboxEventId(outboxEventId)
             .build();
 
     pt.setId(id);
@@ -186,13 +183,5 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
 
   public boolean canBeConfirmed() {
     return this.status == PaymentTransactionStatus.READY;
-  }
-
-  public Currency getCurrency() {
-    return this.amount.getCurrency();
-  }
-
-  public boolean alreadyHasOutboxEvent() {
-    return this.outboxEventId != null;
   }
 }

@@ -34,7 +34,8 @@ public class PaymentFixtureFactory {
         pointAmount,
         CURRENCY,
         PAY_METHOD_ID,
-        PaymentMethodType.CARD);
+        PaymentMethodType.CARD,
+        null);
   }
 
   public static Payment createSingleRandom(
