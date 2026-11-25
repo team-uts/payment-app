@@ -1,8 +1,6 @@
 package dev.teamuts.payment.domain.payment.facade;
 
 import dev.teamuts.payment.domain.event.handler.OutboxEventPublisher;
-import dev.teamuts.payment.domain.event.message.OrderEvent;
-import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.error.OrderErrorCode;
 import dev.teamuts.payment.domain.order.error.OrderException;
@@ -64,11 +62,7 @@ public class OrderPaymentFacade {
       order.insertPaymentsIfEmpty(payments, true);
     }
 
-    // publish event for completed pay order
-    OutboxEvent outboxEvent =
-        outboxEventPublisher.publish(OrderEvent.PayCustomerCompleted.of(order));
-
-    // update payment with outbox event id
-    order.processAllPayments(payment -> paymentService.updateOutboxEvent(payment, outboxEvent));
+    // publish events for all completed orders
+    order.processAllPaymentOutboxEvents(outboxEventPublisher::publish);
   }
 }

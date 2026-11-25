@@ -22,8 +22,18 @@ public class PaymentFixtureFactory {
       PaymentStatus status,
       BigDecimal payAmount,
       BigDecimal pointAmount) {
+    return createSingle(PAYMENT_ID, orderId, memberId, status, payAmount, pointAmount);
+  }
+
+  public static Payment createSingle(
+      Long paymentId,
+      Long orderId,
+      Long memberId,
+      PaymentStatus status,
+      BigDecimal payAmount,
+      BigDecimal pointAmount) {
     return Payment.fromDatabase(
-        PAYMENT_ID,
+        paymentId,
         orderId,
         memberId,
         AppServiceType.TAXI,
@@ -34,8 +44,7 @@ public class PaymentFixtureFactory {
         pointAmount,
         CURRENCY,
         PAY_METHOD_ID,
-        PaymentMethodType.CARD,
-        null);
+        PaymentMethodType.CARD);
   }
 
   public static Payment createSingleRandom(

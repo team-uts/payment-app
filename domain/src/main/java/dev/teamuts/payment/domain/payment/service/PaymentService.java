@@ -43,7 +43,13 @@ public class PaymentService {
   }
 
   public Payments getPaymentsWithTransactions(Order order) {
-    return paymentReaderPort.retrieveAllByOrderIdWithTransactions(order.getId());
+    Payments payments =
+        paymentReaderPort.retrieveAllByOrderIdWithTransactionsAndOutboxEvent(order.getId());
+
+    // validate all the payment transactions
+    payments.forEach(Payment::checkValidTransactions);
+
+    return payments;
   }
 
   @AppTransactional
@@ -65,8 +71,8 @@ public class PaymentService {
   }
 
   @AppTransactional
-  public void updateOutboxEvent(Payment payment, OutboxEvent event) {
-    payment.updateOutboxEvent(event);
+  public void linkOutboxEvent(Payment payment, OutboxEvent event) {
+    payment.linkOutboxEvent(event);
 
     paymentUpdatePort.updateOutboxEvent(payment);
   }

@@ -7,7 +7,7 @@ import dev.teamuts.shared.data.AppObjectMapperConfig;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.error.exception.SystemException;
-import dev.teamuts.shared.event.EventMessagePublishable;
+import dev.teamuts.shared.event.BaseEventMessage;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class OutboxEvent extends BaseIdentifiableModel<Long> {
 
   private static final ObjectMapper objectMapper = AppObjectMapperConfig.baseObjectMapper();
 
-  public static OutboxEvent init(EventMessagePublishable message) {
+  public static OutboxEvent init(BaseEventMessage message) {
     JsonNode jsonNode = objectMapper.convertValue(message, JsonNode.class);
 
     return OutboxEvent.builder()
@@ -48,9 +48,14 @@ public class OutboxEvent extends BaseIdentifiableModel<Long> {
     return outboxEvent;
   }
 
-  public EventMessagePublishable getEventMessage() {
+  public BaseEventMessage getEventMessage() {
     try {
-      return objectMapper.readValue(payload, eventType.getMessageClass());
+      BaseEventMessage baseEventMessage =
+          objectMapper.readValue(payload, eventType.getMessageClass());
+      // inject the outbox event id into its event message.
+      // this is for the idempotency in kafka consumer side.
+      baseEventMessage.setIdentifier(getId());
+      return baseEventMessage;
     } catch (Exception e) {
       log.error("Failed to parse payload to event message", e);
       throw SystemException.of(OutboxEventErrorCode.PAYLOAD_PARSING_ERROR);
@@ -67,5 +72,16 @@ public class OutboxEvent extends BaseIdentifiableModel<Long> {
     checkPersisted();
 
     this.status = OutboxEventStatus.PROCESSED;
+  }
+
+  public boolean isNotPaymentEvent() {
+    return !eventType.isPaymentEvent();
+  }
+
+  public OutboxEvent copy() {
+    OutboxEvent copy = this.toBuilder().build();
+    copy.setId(this.getId());
+
+    return copy;
   }
 }

@@ -1,5 +1,6 @@
 package dev.teamuts.payment.domain.order.model;
 
+import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
@@ -122,11 +123,18 @@ public class Order extends BaseIdentifiableModel<Long> {
     this.status = OrderStatus.PAYMENT_PENDING;
   }
 
-  public void updateStatus(OrderStatus newStatus) {
-    this.status = newStatus;
+  public void applyNewPayments(Payments payments) {
+    this.checkPersisted();
+
+    // change order status based on the payments
+    this.status = payments.resolveOrderStatus();
+    // insert the payment into order.
+    insertPaymentsIfEmpty(payments, false);
   }
 
   public void insertPaymentsIfEmpty(Payments payments, boolean passCheck) {
+    this.checkPersisted();
+
     if (this.payments.isNotEmpty()) {
       return;
     }
@@ -154,11 +162,12 @@ public class Order extends BaseIdentifiableModel<Long> {
     return this.payments.mapToList(mapper);
   }
 
-  public void processAllPayments(Consumer<Payment> processor) {
-    if (hasNoPayments()) {
-      return;
-    }
+  public void processAllPaymentOutboxEvents(Consumer<OutboxEvent> consumer) {
+    this.checkPersisted();
 
-    this.payments.processEachPayment(processor);
+    // check all the outbox events
+    payments.forEach(Payment::checkValidOutboxEvent);
+
+    this.payments.processOutboxEventForEachPayment(consumer);
   }
 }

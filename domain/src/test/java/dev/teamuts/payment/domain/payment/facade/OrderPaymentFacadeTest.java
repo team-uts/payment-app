@@ -2,18 +2,18 @@ package dev.teamuts.payment.domain.payment.facade;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import dev.teamuts.payment.domain.event.constant.EventType;
+import dev.teamuts.payment.domain.event.constant.OutboxEventStatus;
 import dev.teamuts.payment.domain.event.handler.OutboxEventPublisher;
-import dev.teamuts.payment.domain.event.message.OrderEvent;
 import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.order.OrderFixtureFactory;
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
@@ -48,6 +48,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -254,18 +255,19 @@ class OrderPaymentFacadeTest {
   @EnumSource(
       value = PaymentStatus.class,
       names = {"COMPLETED", "FAILED", "CANCELED"})
-  @DisplayName("throws when the retrieved payment is already in a final status")
-  void processPaymentThrowsWhenPaymentIsFinal(PaymentStatus finalStatus) {
+  @DisplayName("skips transaction processing for a finalized payment")
+  void processPaymentSkipsFinalizedPayment(PaymentStatus finalStatus) {
     Order givenOrder = OrderFixtureFactory.createSingle(OrderStatus.PAYMENT_PENDING);
     Payment givenPayment = paymentFor(givenOrder, finalStatus, TOTAL_AMOUNT, BigDecimal.ZERO);
 
+    Payments givenPayments = Payments.of(List.of(givenPayment));
     when(initPaymentFacade.getProcessingPaymentsOrCreate(givenOrder, paymentRequests))
-        .thenReturn(Payments.of(List.of(givenPayment)));
+        .thenReturn(givenPayments);
 
-    assertThatThrownBy(() -> orderPaymentFacade.processPayOrder(givenOrder, paymentRequests))
-        .isInstanceOf(PaymentException.class)
-        .hasMessageContaining(PaymentErrorCode.CANNOT_PROCESS_PAY_TX.name());
+    Payments result = orderPaymentFacade.processPayOrder(givenOrder, paymentRequests);
 
+    assertThat(result).isSameAs(givenPayments);
+    assertThat(givenPayment.getStatus()).isEqualTo(finalStatus);
     verify(orderService).prepareForPayment(givenOrder);
     verifyNoInteractions(paymentTransactionService, paymentTransactionExecutor, paymentService);
   }
@@ -321,14 +323,29 @@ class OrderPaymentFacadeTest {
 
   @ParameterizedTest
   @ValueSource(booleans = {true, false})
-  @DisplayName("publishes the completed payment event and associates it with the payment")
-  void publishesCompletedPaymentEvent(boolean paymentsAlreadyLoaded) {
+  @DisplayName("publishes the existing outbox event for each completed payment")
+  void publishesCompletedPaymentEvents(boolean paymentsAlreadyLoaded) {
     Order order = OrderFixtureFactory.createSingle(OrderStatus.CONFIRMED);
-    Payment payment = paymentFor(order, PaymentStatus.COMPLETED, TOTAL_AMOUNT, BigDecimal.ZERO);
-    PaymentTransaction transaction =
-        transactionFor(payment, PaymentTransactionStatus.COMPLETED, PaySequenceType.PG_PAY);
-    payment.integrateTransactions(PaymentTransactions.of(List.of(transaction)));
-    Payments payments = Payments.of(List.of(payment));
+    Payment firstPayment =
+        paymentFor(
+            order, PaymentStatus.COMPLETED, TOTAL_AMOUNT.subtract(POINT_AMOUNT), BigDecimal.ZERO);
+    Payment secondPayment =
+        PaymentFixtureFactory.createSingle(
+            11L,
+            order.getId(),
+            order.getMemberId(),
+            PaymentStatus.COMPLETED,
+            BigDecimal.ZERO,
+            POINT_AMOUNT);
+    OutboxEvent firstEvent =
+        OutboxEvent.fromDatabase(
+            101L, EventType.PAY_ORDER, "{\"payment_id\":10}", OutboxEventStatus.INIT);
+    OutboxEvent secondEvent =
+        OutboxEvent.fromDatabase(
+            102L, EventType.PAY_ORDER, "{\"payment_id\":11}", OutboxEventStatus.INIT);
+    firstPayment.linkOutboxEvent(firstEvent);
+    secondPayment.linkOutboxEvent(secondEvent);
+    Payments payments = Payments.of(List.of(firstPayment, secondPayment));
 
     if (paymentsAlreadyLoaded) {
       order.insertPaymentsIfEmpty(payments, false);
@@ -336,21 +353,48 @@ class OrderPaymentFacadeTest {
       when(paymentService.getPaymentsWithTransactions(order)).thenReturn(payments);
     }
 
-    OutboxEvent outboxEvent = mock(OutboxEvent.class);
-    when(outboxEventPublisher.publish(any(OrderEvent.PayCustomerCompleted.class)))
-        .thenReturn(outboxEvent);
-
     orderPaymentFacade.publishCompletedPayOrderEvent(order);
 
-    assertThat(order.mapPayments(Payment::getId)).containsExactly(payment.getId());
+    assertThat(order.mapPayments(Payment::getId))
+        .containsExactly(firstPayment.getId(), secondPayment.getId());
+    ArgumentCaptor<OutboxEvent> events = ArgumentCaptor.forClass(OutboxEvent.class);
     InOrder inOrder = inOrder(paymentService, outboxEventPublisher);
     if (paymentsAlreadyLoaded) {
-      verify(paymentService, never()).getPaymentsWithTransactions(order);
+      verifyNoInteractions(paymentService);
     } else {
       inOrder.verify(paymentService).getPaymentsWithTransactions(order);
     }
-    inOrder.verify(outboxEventPublisher).publish(OrderEvent.PayCustomerCompleted.of(order));
-    inOrder.verify(paymentService).updateOutboxEvent(payment, outboxEvent);
+    inOrder.verify(outboxEventPublisher, times(2)).publish(events.capture());
+    inOrder.verifyNoMoreInteractions();
+    assertThat(events.getAllValues())
+        .usingRecursiveFieldByFieldElementComparator()
+        .containsExactly(firstEvent, secondEvent);
+  }
+
+  @Test
+  @DisplayName("rejects a confirmed order with a missing outbox event before publishing any events")
+  void rejectsMissingPaymentOutboxEvent() {
+    Order order = OrderFixtureFactory.createSingle(OrderStatus.CONFIRMED);
+    Payment firstPayment =
+        paymentFor(
+            order, PaymentStatus.COMPLETED, TOTAL_AMOUNT.subtract(POINT_AMOUNT), BigDecimal.ZERO);
+    firstPayment.linkOutboxEvent(
+        OutboxEvent.fromDatabase(101L, EventType.PAY_ORDER, "{}", OutboxEventStatus.INIT));
+    Payment secondPayment =
+        PaymentFixtureFactory.createSingle(
+            11L,
+            order.getId(),
+            order.getMemberId(),
+            PaymentStatus.COMPLETED,
+            BigDecimal.ZERO,
+            POINT_AMOUNT);
+    order.insertPaymentsIfEmpty(Payments.of(List.of(firstPayment, secondPayment)), false);
+
+    assertThatThrownBy(() -> orderPaymentFacade.publishCompletedPayOrderEvent(order))
+        .isInstanceOf(PaymentException.class)
+        .hasMessageContaining(PaymentErrorCode.INVALID_OUTBOX_EVENT.name());
+
+    verifyNoInteractions(paymentService, outboxEventPublisher);
   }
 
   private static Payment paymentFor(

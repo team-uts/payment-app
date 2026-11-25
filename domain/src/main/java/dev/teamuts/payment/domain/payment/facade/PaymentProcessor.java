@@ -21,6 +21,11 @@ public class PaymentProcessor {
 
   @AppTransactional(propagation = NOT_SUPPORTED)
   public void processPayment(Payment payment) {
+    // if the payment was already finalized, just pass
+    if (payment.isFinalized()) {
+      return;
+    }
+
     // Check if the payment can be processed
     if (payment.cannotProcessPayTransaction()) {
       throw PaymentException.of(PaymentErrorCode.CANNOT_PROCESS_PAY_TX, payment.getId());

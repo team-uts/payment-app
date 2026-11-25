@@ -5,6 +5,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentReaderPort;
+import dev.teamuts.payment.persistence.event.mapper.OutboxEventConverter;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentConverter;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentTransactionConverter;
 import dev.teamuts.payment.persistence.payment.repository.PaymentRepository;
@@ -19,6 +20,7 @@ public class PaymentReaderAdapter implements PaymentReaderPort {
   private final PaymentRepository paymentRepository;
   private final PaymentConverter paymentConverter;
   private final PaymentTransactionConverter paymentTransactionConverter;
+  private final OutboxEventConverter outboxEventConverter;
 
   @Override
   public Optional<Payment> retrievePaymentByOrderIdAndServiceType(
@@ -29,7 +31,7 @@ public class PaymentReaderAdapter implements PaymentReaderPort {
   }
 
   @Override
-  public Payments retrieveAllByOrderIdWithTransactions(Long orderId) {
+  public Payments retrieveAllByOrderIdWithTransactionsAndOutboxEvent(Long orderId) {
     List<Payment> payments =
         paymentRepository.findAllByOrderIdJoiningTransactions(orderId).stream()
             .map(payment ->
@@ -37,7 +39,8 @@ public class PaymentReaderAdapter implements PaymentReaderPort {
                     payment,
                     payment.getTransactions().stream()
                         .map(paymentTransactionConverter::convertToDomainModel)
-                        .toList()))
+                        .toList(),
+                    outboxEventConverter.convertToDomainModel(payment.getOutboxEvent())))
             .toList();
 
     return Payments.of(payments);

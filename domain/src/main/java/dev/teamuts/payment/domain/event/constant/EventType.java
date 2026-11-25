@@ -1,9 +1,9 @@
 package dev.teamuts.payment.domain.event.constant;
 
-import dev.teamuts.payment.domain.event.message.OrderEvent;
-import dev.teamuts.shared.event.EventMessagePublishable;
-import java.util.Arrays;
-import java.util.Map;
+import dev.teamuts.payment.domain.event.message.PaymentEventMessage;
+import dev.teamuts.payment.domain.payment.model.Payment;
+import dev.teamuts.shared.event.BaseEventMessage;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -13,20 +13,21 @@ import lombok.NonNull;
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public enum EventType {
-  PAY_ORDER("payment-order-customerpay", OrderEvent.PayCustomerCompleted.class),
+  PAY_ORDER("payment-order-customerpay", PaymentEventMessage.PayCustomerCompleted.class),
   ;
 
   private final String topic;
-  private final Class<? extends EventMessagePublishable> messageClass;
+  private final Class<? extends BaseEventMessage> messageClass;
 
-  private static final Map<Class<? extends EventMessagePublishable>, EventType>
-      BY_MESSAGE_CLASS_MAP =
-          Arrays.stream(values())
-              .collect(
-                  Collectors.toUnmodifiableMap(EventType::getMessageClass, Function.identity()));
+  private static final Map<Class<? extends BaseEventMessage>, EventType> BY_MESSAGE_CLASS_MAP =
+      Arrays.stream(values())
+          .collect(Collectors.toUnmodifiableMap(EventType::getMessageClass, Function.identity()));
 
-  public static EventType fromMessage(@NonNull EventMessagePublishable message) {
-    Class<? extends EventMessagePublishable> messageClass = message.getClass();
+  /** All event types related to {@link Payment} */
+  private static final EnumSet<EventType> PAYMENT_EVENT_TYPES = EnumSet.of(EventType.PAY_ORDER);
+
+  public static EventType fromMessage(@NonNull BaseEventMessage message) {
+    Class<? extends BaseEventMessage> messageClass = message.getClass();
 
     EventType eventType = BY_MESSAGE_CLASS_MAP.get(messageClass);
 
@@ -36,5 +37,9 @@ public enum EventType {
     }
 
     return eventType;
+  }
+
+  public boolean isPaymentEvent() {
+    return PAYMENT_EVENT_TYPES.contains(this);
   }
 }

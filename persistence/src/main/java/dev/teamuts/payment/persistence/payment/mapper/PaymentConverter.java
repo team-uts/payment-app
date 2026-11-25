@@ -1,5 +1,6 @@
 package dev.teamuts.payment.persistence.payment.mapper;
 
+import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.persistence.payment.entity.PaymentJpaEntity;
@@ -25,13 +26,12 @@ public class PaymentConverter {
         entity.getPointAmount(),
         entity.getCurrency(),
         entity.getPayMethodId(),
-        entity.getPayMethodType(),
-        entity.getOutboxEventId());
+        entity.getPayMethodType());
   }
 
   public Payment convertToDomainModelWithFetch(
-      PaymentJpaEntity entity, List<PaymentTransaction> transactions) {
-    return Payment.fromDatabaseWithTransactions(
+      PaymentJpaEntity entity, List<PaymentTransaction> transactions, OutboxEvent outboxEvent) {
+    return Payment.fromDatabaseWithTransactionsAndOutBoxEvent(
         entity.getId(),
         entity.getOrderId(),
         entity.getMemberId(),
@@ -44,7 +44,7 @@ public class PaymentConverter {
         entity.getCurrency(),
         entity.getPayMethodId(),
         entity.getPayMethodType(),
-        entity.getOutboxEventId(),
+        outboxEvent,
         transactions);
   }
 }

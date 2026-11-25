@@ -5,6 +5,7 @@ import static dev.teamuts.shared.data.annotation.LockKeyPath.*;
 import dev.teamuts.payment.domain.common.lock.PaymentLockGroup;
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.payment.domain.order.dto.PayOrderInfo;
+import dev.teamuts.payment.domain.order.facade.OrderFacade;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.order.service.OrderService;
 import dev.teamuts.payment.domain.payment.facade.OrderPaymentFacade;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 public class PayOrderUseCase {
   private final OrderService orderService;
   private final OrderPaymentFacade orderPaymentFacade;
+  private final OrderFacade orderFacade;
 
   @TryLock(
       group = PaymentLockGroup.PAY_ORDER_NAME,
@@ -44,8 +46,8 @@ public class PayOrderUseCase {
         orderPaymentFacade.processPayOrder(
             order, PaymentRequests.createSingleCustomerRequest(command));
 
-    // Update Order status to "CONFIRMED"
-    orderService.updateStatusWithPayment(order, resultPayments);
+    // Finalize the order with the result payments
+    orderFacade.finalizePayOrder(order, resultPayments);
 
     // publish the completed pay order event.
     orderPaymentFacade.publishCompletedPayOrderEvent(order);

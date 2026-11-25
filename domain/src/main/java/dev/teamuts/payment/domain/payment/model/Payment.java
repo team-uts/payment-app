@@ -14,7 +14,6 @@ import dev.teamuts.shared.domain.constant.Currency;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import lombok.AccessLevel;
@@ -36,7 +35,9 @@ public class Payment extends BaseIdentifiableModel<Long> {
   private Long payMethodId;
   private PaymentMethodType payMethodType;
   private PgProviderType pgProvider;
-  private Long outboxEventId;
+
+  @Getter(AccessLevel.NONE)
+  private OutboxEvent outboxEvent;
 
   @Getter(AccessLevel.NONE)
   private PaymentTransactions transactions;
@@ -102,8 +103,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
       BigDecimal pointAmount,
       Currency currency,
       Long payMethodId,
-      PaymentMethodType payMethodType,
-      Long outboxEventId) {
+      PaymentMethodType payMethodType) {
     Payment payment =
         Payment.builder()
             .orderId(orderId)
@@ -116,7 +116,6 @@ public class Payment extends BaseIdentifiableModel<Long> {
             .pointAmount(Money.of(pointAmount, currency))
             .payMethodId(payMethodId)
             .payMethodType(payMethodType)
-            .outboxEventId(outboxEventId)
             .build();
 
     payment.setId(id);
@@ -124,7 +123,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
     return payment;
   }
 
-  public static Payment fromDatabaseWithTransactions(
+  public static Payment fromDatabaseWithTransactionsAndOutBoxEvent(
       Long id,
       Long orderId,
       Long memberId,
@@ -137,7 +136,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
       Currency currency,
       Long payMethodId,
       PaymentMethodType payMethodType,
-      Long outboxEventId,
+      OutboxEvent outboxEvent,
       List<PaymentTransaction> transactions) {
     Payment payment =
         Payment.builder()
@@ -151,7 +150,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
             .pointAmount(Money.of(pointAmount, currency))
             .payMethodId(payMethodId)
             .payMethodType(payMethodType)
-            .outboxEventId(outboxEventId)
+            .outboxEvent(outboxEvent)
             .transactions(PaymentTransactions.of(transactions))
             .build();
 
@@ -186,9 +185,24 @@ public class Payment extends BaseIdentifiableModel<Long> {
     return this.transactions == null || this.transactions.isEmpty();
   }
 
+  /** {@link PaymentTransactions} status > {@link PaymentStatus} status */
   public void integrateTransactions(PaymentTransactions transactions) {
     this.status = transactions.resolvePaymentStatus();
     this.transactions = transactions;
+  }
+
+  public void checkValidTransactions() {
+    if (hasNoPayTransactions() || this.status != transactions.resolvePaymentStatus()) {
+      throw PaymentException.of(PaymentErrorCode.INVALID_TRANSACTIONS, this.getId());
+    }
+  }
+
+  public void checkValidOutboxEvent() {
+    if (this.outboxEvent == null
+        || this.outboxEvent.isNotPersisted()
+        || this.outboxEvent.isNotPaymentEvent()) {
+      throw PaymentException.of(PaymentErrorCode.INVALID_OUTBOX_EVENT, this.getId());
+    }
   }
 
   public boolean isProcessing() {
@@ -199,8 +213,12 @@ public class Payment extends BaseIdentifiableModel<Long> {
     return status != PaymentStatus.COMPLETED;
   }
 
+  public boolean isFinalized() {
+    return this.status.isFinal();
+  }
+
   public boolean cannotProcessPayTransaction() {
-    return this.status.isFinal() || (hasNoPayAmount() && hasNoPointAmount());
+    return hasNoPayAmount() && hasNoPointAmount();
   }
 
   public Currency getCurrency() {
@@ -212,20 +230,32 @@ public class Payment extends BaseIdentifiableModel<Long> {
   }
 
   public <R> List<R> mapTransactions(Function<PaymentTransaction, R> mapper) {
-    if (hasNoPayTransactions()) {
-      return Collections.emptyList();
-    }
+    checkPersisted();
+    checkValidTransactions();
 
     return this.transactions.mapToList(mapper);
   }
 
-  public void updateOutboxEvent(OutboxEvent event) {
+  /** payment -> outbox event link */
+  public void linkOutboxEvent(OutboxEvent event) {
     checkPersisted();
 
-    if (this.isNotCompleted() || event.isNotPersisted()) {
+    // if it is not completed, cannot link outbox event to prevent publication later.
+    if (this.isNotCompleted()) {
       throw PaymentException.of(PaymentErrorCode.CANNOT_UPDATE_OUTBOX_EVENT, this.getId());
     }
 
-    this.outboxEventId = event.getId();
+    this.outboxEvent = event;
+
+    // check after linking
+    checkValidOutboxEvent();
+  }
+
+  public Long getOutboxEventId() {
+    return this.outboxEvent.getId();
+  }
+
+  public OutboxEvent getOutboxEvent() {
+    return this.outboxEvent.copy();
   }
 }

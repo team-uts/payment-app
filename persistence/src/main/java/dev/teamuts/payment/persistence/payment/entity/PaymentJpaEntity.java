@@ -9,6 +9,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.persistence.common.entity.BaseTimeEntity;
+import dev.teamuts.payment.persistence.event.entity.OutboxEventJpaEntity;
 import dev.teamuts.shared.domain.constant.Currency;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -80,8 +81,9 @@ public class PaymentJpaEntity extends BaseTimeEntity {
   @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
   private List<PaymentTransactionJpaEntity> transactions;
 
-  @Column(name = "outbox_event_id", comment = "associated outbox event ID")
-  private Long outboxEventId;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "outbox_event_id", comment = "associated outbox event ID")
+  private OutboxEventJpaEntity outboxEvent;
 
   public static PaymentJpaEntity fromDomain(Payment model) {
     return PaymentJpaEntity.builder()
@@ -96,7 +98,6 @@ public class PaymentJpaEntity extends BaseTimeEntity {
         .payMethodId(model.getPayMethodId())
         .payMethodType(model.getPayMethodType())
         .pgProvider(model.getPgProvider())
-        .outboxEventId(model.getOutboxEventId())
         .build();
   }
 
@@ -104,7 +105,7 @@ public class PaymentJpaEntity extends BaseTimeEntity {
     this.status = status;
   }
 
-  public void updateOutboxEventId(Long outboxEventId) {
-    this.outboxEventId = outboxEventId;
+  public void updateOutboxEvent(OutboxEventJpaEntity outboxEvent) {
+    this.outboxEvent = outboxEvent;
   }
 }

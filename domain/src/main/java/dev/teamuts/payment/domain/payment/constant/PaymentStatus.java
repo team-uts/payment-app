@@ -14,6 +14,6 @@ public enum PaymentStatus {
   CANCELED(OrderStatus.CANCELED, 5, true);
 
   private final OrderStatus orderStatus;
-  private int decideOrder;
+  private final int decideOrder;
   private final boolean isFinal;
 }

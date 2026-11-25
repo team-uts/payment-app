@@ -1,5 +1,6 @@
 package dev.teamuts.payment.domain.payment.model;
 
+import dev.teamuts.payment.domain.event.model.OutboxEvent;
 import dev.teamuts.payment.domain.order.constant.OrderStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModelCollection;
@@ -36,6 +37,29 @@ public class Payments extends BaseIdentifiableModelCollection<Long, Payment> {
     }
   }
 
+  public void processOutboxEventForEachPayment(Consumer<OutboxEvent> consumer) {
+    elements()
+        .forEach(payment -> {
+          payment.checkPersisted();
+          payment.checkValidOutboxEvent();
+
+          consumer.accept(payment.getOutboxEvent());
+        });
+  }
+
+  /**
+   * - If the payments are all {@link PaymentStatus#COMPLETED}, order status = {@link
+   * OrderStatus#CONFIRMED} <br>
+   * - If they have any {@link PaymentStatus#COMPLETED} payment with other status, then the order
+   * status is {@link OrderStatus#PAYMENT_PENDING}.<br>
+   * - If the first payment is not completed, order status is determined by the status of the first
+   * not completed payment.<br>
+   * <br>
+   * e.g., {@link PaymentStatus#COMPLETED}<br>
+   * > {@link PaymentStatus#PROCESSING}<br>
+   * > {@link PaymentStatus#FAILED}<br>
+   * = {@link OrderStatus#PAYMENT_PENDING}<br>
+   */
   public OrderStatus resolveOrderStatus() {
     List<Payment> sortedPayments =
         elements().stream()
@@ -48,6 +72,7 @@ public class Payments extends BaseIdentifiableModelCollection<Long, Payment> {
             .findFirst()
             .orElse(-1);
 
+    // all payments are completed
     if (firstNotCompletedIndex == -1) {
       return OrderStatus.CONFIRMED;
     }

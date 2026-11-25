@@ -49,13 +49,10 @@ public class OrderService {
   }
 
   @AppTransactional
-  public void updateStatusWithPayment(Order order, Payments payments) {
+  public void applyPaymentResults(Order order, Payments payments) {
     // update order status based on the payment status
-    order.updateStatus(payments.resolveOrderStatus());
+    order.applyNewPayments(payments);
 
     orderUpdatePort.updateStatus(order);
-
-    // insert the payment into order.
-    order.insertPaymentsIfEmpty(payments, false);
   }
 }
