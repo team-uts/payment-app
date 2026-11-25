@@ -168,6 +168,6 @@ public class Order extends BaseIdentifiableModel<Long> {
     // check all the outbox events
     payments.forEach(Payment::checkValidOutboxEvent);
 
-    this.payments.processOutboxEventForEachPayment(consumer);
+    payments.processOutboxEventForEachPayment(consumer);
   }
 }

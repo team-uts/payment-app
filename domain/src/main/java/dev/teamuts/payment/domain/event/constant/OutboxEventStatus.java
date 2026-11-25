@@ -7,7 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public enum OutboxEventStatus {
   INIT,
-  PENDING,
   PROCESSED,
   FAILED,
 }

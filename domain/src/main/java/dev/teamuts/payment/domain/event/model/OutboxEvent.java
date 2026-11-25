@@ -74,6 +74,10 @@ public class OutboxEvent extends BaseIdentifiableModel<Long> {
     this.status = OutboxEventStatus.PROCESSED;
   }
 
+  public boolean isProcessed() {
+    return this.status == OutboxEventStatus.PROCESSED;
+  }
+
   public boolean isNotPaymentEvent() {
     return !eventType.isPaymentEvent();
   }

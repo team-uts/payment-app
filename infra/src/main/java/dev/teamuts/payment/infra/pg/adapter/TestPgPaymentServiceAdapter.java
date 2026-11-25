@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Profile;
 @InfraAdapter
 @Profile(AppProfile.LOCAL)
 public class TestPgPaymentServiceAdapter implements ExternalPgPaymentServicePort {
+  private static final String TEST_PG_TRANSACTION_ID_PREFIX = "TEST_PG_";
+
   @Override
   public ExtPgPaymentTransaction retrievePGPaymentTransaction(PaymentTransaction transaction) {
     return ExtPgPaymentTransaction.fromPgTest(
@@ -33,7 +35,7 @@ public class TestPgPaymentServiceAdapter implements ExternalPgPaymentServicePort
       PaymentTransaction transaction, PgAccount pgAccount, PaymentMethod paymentMethod) {
     return ExtPgPaymentTransaction.fromPgTest(
         transaction,
-        "test_pg_" + UUID.randomUUID(),
+        TEST_PG_TRANSACTION_ID_PREFIX + UUID.randomUUID(),
         "200",
         null,
         null,
@@ -45,7 +47,7 @@ public class TestPgPaymentServiceAdapter implements ExternalPgPaymentServicePort
   public ExtPgPaymentTransaction confirmPayment(PaymentTransaction transaction) {
     return ExtPgPaymentTransaction.fromPgTest(
         transaction,
-        "test_pg" + UUID.randomUUID(),
+        TEST_PG_TRANSACTION_ID_PREFIX + UUID.randomUUID(),
         "200",
         null,
         null,

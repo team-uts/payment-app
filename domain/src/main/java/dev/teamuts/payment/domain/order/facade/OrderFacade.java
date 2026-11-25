@@ -21,6 +21,7 @@ public class OrderFacade {
     // apply the payment results to the order and update its status
     orderService.applyPaymentResults(order, payments);
 
+    // if the order is in invalid status to publish the pay order event, stop this process (return).
     if (order.cannotPublishPayEvent()) {
       return;
     }

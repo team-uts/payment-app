@@ -25,6 +25,12 @@ public class OutboxEventService {
   public void send(OutboxEvent outboxEvent) {
     OutboxEvent lockedEvent = outboxEventReaderPort.retrieveByIdWithLock(outboxEvent.getId());
 
+    // do not send the event which is already processed
+    if (lockedEvent.isProcessed()) {
+      log.info("Outbox event is already processed: {}", lockedEvent.getId());
+      return;
+    }
+
     try {
       eventMessageProducePort.produce(lockedEvent);
       lockedEvent.processed();

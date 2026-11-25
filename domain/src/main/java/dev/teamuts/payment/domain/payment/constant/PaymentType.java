@@ -1,5 +1,7 @@
 package dev.teamuts.payment.domain.payment.constant;
 
+import static dev.teamuts.payment.domain.order.constant.AppServiceType.*;
+
 import dev.teamuts.payment.domain.order.constant.AppServiceType;
 import java.util.Map;
 import lombok.Getter;
@@ -10,10 +12,10 @@ import lombok.Getter;
  */
 @Getter
 public enum PaymentType {
-  TAXI_FARE(AppServiceType.TAXI),
-  BUSINESS_TAXI_FARE(AppServiceType.TAXI),
-  DELIVERY_FEE(AppServiceType.DELIVERY),
-  FOOD_DELIVERY_FEE(AppServiceType.FOOD_DELIVERY),
+  TAXI_FARE(TAXI),
+  BUSINESS_TAXI_FARE(TAXI),
+  DELIVERY_FEE(DELIVERY),
+  FOOD_DELIVERY_FEE(FOOD_DELIVERY),
   ;
 
   private final AppServiceType serviceType;
@@ -24,9 +26,9 @@ public enum PaymentType {
 
   private static final Map<AppServiceType, PaymentType> PAYMENT_TYPE_MAP_FROM_CUSTOMER =
       Map.of(
-          AppServiceType.TAXI, TAXI_FARE,
-          AppServiceType.DELIVERY, DELIVERY_FEE,
-          AppServiceType.FOOD_DELIVERY, FOOD_DELIVERY_FEE);
+          TAXI, TAXI_FARE,
+          DELIVERY, DELIVERY_FEE,
+          FOOD_DELIVERY, FOOD_DELIVERY_FEE);
 
   public static PaymentType fromCustomerServiceType(AppServiceType serviceType) {
     return PAYMENT_TYPE_MAP_FROM_CUSTOMER.get(serviceType);

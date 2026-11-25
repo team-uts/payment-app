@@ -15,7 +15,6 @@ import org.mapstruct.ReportingPolicy;
     unmappedTargetPolicy = ReportingPolicy.ERROR,
     imports = Money.class)
 public interface OrderDtoMapper {
-  @Mapping(target = "serviceType", source = "serviceType")
   @Mapping(
       target = "totalAmount",
       expression = "java(Money.of(request.totalAmount(), request.currency()))")
