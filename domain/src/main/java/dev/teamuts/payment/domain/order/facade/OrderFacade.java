@@ -30,7 +30,7 @@ public class OrderFacade {
     payments.forEach(payment -> {
       // create init outbox event
       OutboxEvent storedEvent =
-          outboxEventService.createInitEvent(PaymentEventMessage.PayCustomerCompleted.of(payment));
+          outboxEventService.createInitEvent(PaymentEventMessage.of(order, payment));
 
       // link outbox event to payment
       paymentService.linkOutboxEvent(payment, storedEvent);

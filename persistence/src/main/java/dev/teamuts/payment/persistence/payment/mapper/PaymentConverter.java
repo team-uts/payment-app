@@ -31,7 +31,7 @@ public class PaymentConverter {
 
   public Payment convertToDomainModelWithFetch(
       PaymentJpaEntity entity, List<PaymentTransaction> transactions, OutboxEvent outboxEvent) {
-    return Payment.fromDatabaseWithTransactionsAndOutBoxEvent(
+    return Payment.fromDatabaseWithAllAssociations(
         entity.getId(),
         entity.getOrderId(),
         entity.getMemberId(),

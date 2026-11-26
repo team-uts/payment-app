@@ -1,6 +1,7 @@
 package dev.teamuts.payment.domain.payment.facade;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
@@ -350,7 +351,7 @@ class OrderPaymentFacadeTest {
     if (paymentsAlreadyLoaded) {
       order.insertPaymentsIfEmpty(payments, false);
     } else {
-      when(paymentService.getPaymentsWithTransactions(order)).thenReturn(payments);
+      when(paymentService.getPaymentsWithOutboxEvent(order)).thenReturn(payments);
     }
 
     orderPaymentFacade.publishCompletedPayOrderEvent(order);
@@ -362,7 +363,7 @@ class OrderPaymentFacadeTest {
     if (paymentsAlreadyLoaded) {
       verifyNoInteractions(paymentService);
     } else {
-      inOrder.verify(paymentService).getPaymentsWithTransactions(order);
+      inOrder.verify(paymentService).getPaymentsWithOutboxEvent(order);
     }
     inOrder.verify(outboxEventPublisher, times(2)).publish(events.capture());
     inOrder.verifyNoMoreInteractions();
@@ -372,8 +373,8 @@ class OrderPaymentFacadeTest {
   }
 
   @Test
-  @DisplayName("rejects a confirmed order with a missing outbox event before publishing any events")
-  void rejectsMissingPaymentOutboxEvent() {
+  @DisplayName("handles a missing outbox event without publishing or throwing")
+  void handlesMissingPaymentOutboxEvent() {
     Order order = OrderFixtureFactory.createSingle(OrderStatus.CONFIRMED);
     Payment firstPayment =
         paymentFor(
@@ -388,11 +389,11 @@ class OrderPaymentFacadeTest {
             PaymentStatus.COMPLETED,
             BigDecimal.ZERO,
             POINT_AMOUNT);
-    order.insertPaymentsIfEmpty(Payments.of(List.of(firstPayment, secondPayment)), false);
+    Payments payments = Payments.of(List.of(firstPayment, secondPayment));
+    order.insertPaymentsIfEmpty(payments, false);
 
-    assertThatThrownBy(() -> orderPaymentFacade.publishCompletedPayOrderEvent(order))
-        .isInstanceOf(PaymentException.class)
-        .hasMessageContaining(PaymentErrorCode.INVALID_OUTBOX_EVENT.name());
+    assertThatCode(() -> orderPaymentFacade.publishCompletedPayOrderEvent(order))
+        .doesNotThrowAnyException();
 
     verifyNoInteractions(paymentService, outboxEventPublisher);
   }

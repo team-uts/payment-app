@@ -42,12 +42,11 @@ public class PaymentService {
     return payment;
   }
 
-  public Payments getPaymentsWithTransactions(Order order) {
-    Payments payments =
-        paymentReaderPort.retrieveAllByOrderIdWithTransactionsAndOutboxEvent(order.getId());
+  public Payments getPaymentsWithOutboxEvent(Order order) {
+    Payments payments = paymentReaderPort.retrieveAllByOrderIdWithOutboxEvent(order.getId());
 
     // validate all the payment transactions
-    payments.forEach(Payment::checkValidTransactions);
+    payments.forEach(Payment::checkValidOutboxEvent);
 
     return payments;
   }

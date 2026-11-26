@@ -14,10 +14,10 @@ public class PaymentQueryRepositoryImpl implements PaymentQueryRepository {
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
-  public List<PaymentJpaEntity> findAllByOrderIdJoiningTransactions(Long orderId) {
+  public List<PaymentJpaEntity> findAllByOrderIdJoiningOutboxEvent(Long orderId) {
     return jpaQueryFactory
         .selectFrom(paymentJpaEntity)
-        .leftJoin(paymentJpaEntity.transactions)
+        .leftJoin(paymentJpaEntity.outboxEvent)
         .fetchJoin()
         .where(paymentJpaEntity.orderId.eq(orderId))
         .fetch();

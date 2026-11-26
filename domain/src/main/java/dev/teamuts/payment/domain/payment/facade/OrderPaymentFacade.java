@@ -11,9 +11,11 @@ import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.payment.domain.payment.service.PaymentService;
 import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderPaymentFacade {
@@ -50,19 +52,32 @@ public class OrderPaymentFacade {
     return payments;
   }
 
+  /**
+   * publish the completed pay order event for the given order.<br>
+   * When they have any exceptions here, just log the error to notify through other channels<br>
+   * (That would be Slack channels using Sentry for our projects)
+   */
   @AppTransactional
   public void publishCompletedPayOrderEvent(Order order) {
-    if (order.cannotPublishPayEvent()) {
-      return;
-    }
+    try {
+      if (order.cannotPublishPayEvent()) {
+        return;
+      }
 
-    // if the order needs to get payments, retrieve them and insert into order
-    if (order.hasNoPayments()) {
-      Payments payments = paymentService.getPaymentsWithTransactions(order);
-      order.insertPaymentsIfEmpty(payments, true);
-    }
+      // if the order needs to get payments, retrieve them and insert into order
+      if (order.hasNoPayments()) {
+        Payments payments = paymentService.getPaymentsWithOutboxEvent(order);
+        order.insertPaymentsIfEmpty(payments, true);
+      }
 
-    // publish events for all completed orders
-    order.processAllPaymentOutboxEvents(outboxEventPublisher::publish);
+      // publish events for all completed orders
+      order.processAllPaymentOutboxEvents(outboxEventPublisher::publish);
+    } catch (Exception e) {
+      log.error(
+          "Failed to publish completed pay order event for order: {}, error: {}",
+          order.getExtOrderNum(),
+          e.getMessage(),
+          e);
+    }
   }
 }

@@ -13,7 +13,7 @@ import lombok.NonNull;
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public enum EventType {
-  PAY_ORDER("payment-order-customerpay", PaymentEventMessage.PayCustomerCompleted.class),
+  PAY_ORDER("payment-order-pay", PaymentEventMessage.class),
   ;
 
   private final String topic;

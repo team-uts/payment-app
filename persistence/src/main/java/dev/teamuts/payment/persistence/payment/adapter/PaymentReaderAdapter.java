@@ -10,6 +10,7 @@ import dev.teamuts.payment.persistence.payment.mapper.PaymentConverter;
 import dev.teamuts.payment.persistence.payment.mapper.PaymentTransactionConverter;
 import dev.teamuts.payment.persistence.payment.repository.PaymentRepository;
 import dev.teamuts.shared.domain.annotation.PersistenceAdapter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,16 +32,16 @@ public class PaymentReaderAdapter implements PaymentReaderPort {
   }
 
   @Override
-  public Payments retrieveAllByOrderIdWithTransactionsAndOutboxEvent(Long orderId) {
+  public Payments retrieveAllByOrderIdWithOutboxEvent(Long orderId) {
     List<Payment> payments =
-        paymentRepository.findAllByOrderIdJoiningTransactions(orderId).stream()
+        paymentRepository.findAllByOrderIdJoiningOutboxEvent(orderId).stream()
             .map(payment ->
                 paymentConverter.convertToDomainModelWithFetch(
                     payment,
-                    payment.getTransactions().stream()
-                        .map(paymentTransactionConverter::convertToDomainModel)
-                        .toList(),
-                    outboxEventConverter.convertToDomainModel(payment.getOutboxEvent())))
+                    Collections.emptyList(),
+                    payment.getOutboxEvent() == null
+                        ? null
+                        : outboxEventConverter.convertToDomainModel(payment.getOutboxEvent())))
             .toList();
 
     return Payments.of(payments);

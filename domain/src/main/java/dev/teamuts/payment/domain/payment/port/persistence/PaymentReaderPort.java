@@ -10,5 +10,5 @@ public interface PaymentReaderPort {
   Optional<Payment> retrievePaymentByOrderIdAndServiceType(
       Long orderId, AppServiceType serviceType, PaymentMethodType payMethodType);
 
-  Payments retrieveAllByOrderIdWithTransactionsAndOutboxEvent(Long orderId);
+  Payments retrieveAllByOrderIdWithOutboxEvent(Long orderId);
 }

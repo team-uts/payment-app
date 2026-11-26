@@ -15,7 +15,6 @@ import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.function.Function;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -123,7 +122,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
     return payment;
   }
 
-  public static Payment fromDatabaseWithTransactionsAndOutBoxEvent(
+  public static Payment fromDatabaseWithAllAssociations(
       Long id,
       Long orderId,
       Long memberId,
@@ -151,7 +150,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
             .payMethodId(payMethodId)
             .payMethodType(payMethodType)
             .outboxEvent(outboxEvent)
-            .transactions(PaymentTransactions.of(transactions))
+            .transactions(PaymentTransactions.ofOrEmpty(transactions))
             .build();
 
     payment.setId(id);
@@ -227,13 +226,6 @@ public class Payment extends BaseIdentifiableModel<Long> {
     }
 
     return this.payAmount.getCurrency();
-  }
-
-  public <R> List<R> mapTransactions(Function<PaymentTransaction, R> mapper) {
-    checkPersisted();
-    checkValidTransactions();
-
-    return this.transactions.mapToList(mapper);
   }
 
   /** payment -> outbox event link */
