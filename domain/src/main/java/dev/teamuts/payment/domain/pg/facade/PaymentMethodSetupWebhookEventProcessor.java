@@ -42,7 +42,7 @@ public class PaymentMethodSetupWebhookEventProcessor extends AbstractPGWebhookEv
    *     {@link PaymentMethod#getProviderToken()}.
    */
   @Override
-  public void process(ExtPGWebhookEventDto event) {
+  protected void process(ExtPGWebhookEventDto event) {
     String pgPaymentMethodId = event.getPgProviderToken();
 
     // Retrieve the PGAccount Information from DB using the memberId

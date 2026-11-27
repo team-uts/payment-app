@@ -19,9 +19,10 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
   private final PGExternalRequestConverter pgExternalRequestConverter;
 
   /**
-   * Be careful not to lock by these parameters, because there may be multiple records with the same
-   * parameters. This could cause a deadlock because the pgRequestId is not unique, and the same
-   * pgRequestId can be used for multiple requests, which can lead to gap lock or unintended lock.
+   * Be careful not to lock by these parameters,<br>
+   * because there may be multiple records with the same parameters.<br>
+   * This could cause a deadlock because the pgRequestId is not unique, and the same pgRequestId can
+   * be used for multiple requests, which can lead to gap lock or unintended lock.
    */
   @Override
   public PGExternalRequest retrieveSingleByParameters(
@@ -37,7 +38,7 @@ public class PGExternalRequestReaderAdapter implements PGExternalRequestReaderPo
   }
 
   @Override
-  public Optional<PGExternalRequest> retrieveSingleByParametersNullable(
+  public Optional<PGExternalRequest> retrieveSingleOrNullByParameters(
       String pgRequestId,
       PgProviderType pgProvider,
       Long memberId,

@@ -6,6 +6,7 @@ import dev.teamuts.payment.domain.pg.facade.PGExternalRequestFacade;
 import dev.teamuts.payment.domain.pg.facade.PGWebhookEventProcessorProvider;
 import dev.teamuts.payment.domain.pg.model.PGExternalRequest;
 import dev.teamuts.payment.domain.pg.service.PgExternalRequestService;
+import dev.teamuts.shared.data.annotation.AppTransactional;
 import dev.teamuts.shared.domain.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class ProcessPGWebhookEventUseCase {
     // register new PGExternalRequest for the webhook event
     // Be careful here that REPEATABLE_READ isolation level of MySQL could cause issues.
     PGExternalRequest webhookRequest =
-        pgExternalRequestFacade.getInitWebhookRequestOrRegisterInitWebhookRequest(event);
+        pgExternalRequestFacade.getInitWebhookRequestOrCreateInitWebhookRequest(event);
 
     // For idempotency, skip processing the event if the webhook is already completed
     if (webhookRequest.isCompleted()) {
@@ -54,9 +55,9 @@ public class ProcessPGWebhookEventUseCase {
     // retrieve base PGExternalRequest of webhook event
     PGExternalRequest sourceRequest =
         pgExternalRequestService.getPGExternalRequest(
+            event.getPgRequestId(),
             event.getPgProvider(),
             event.getMemberId(),
-            event.getPgRequestId(),
             event.getPgBaseOperationName());
 
     // associate the new PGExternalRequest with the source PGExternalRequest

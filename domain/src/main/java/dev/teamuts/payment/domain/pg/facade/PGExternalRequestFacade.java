@@ -13,15 +13,15 @@ public class PGExternalRequestFacade {
   private final PgExternalRequestService pgExternalRequestService;
 
   @AppTransactional
-  public PGExternalRequest getInitWebhookRequestOrRegisterInitWebhookRequest(
+  public PGExternalRequest getInitWebhookRequestOrCreateInitWebhookRequest(
       ExtPGWebhookEventDto event) {
     return pgExternalRequestService
-        .getPGExternalRequestNullable(
+        .getPGExternalRequestOrNull(
             event.getPgProvider(),
             event.getMemberId(),
             event.getPgRequestId(),
             event.getPgOperationName(),
             event.getPgDetailedMessage())
-        .orElseGet(() -> pgExternalRequestService.registerInitWebhookRequest(event));
+        .orElseGet(() -> pgExternalRequestService.createInitWebhookRequest(event));
   }
 }

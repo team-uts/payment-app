@@ -8,7 +8,7 @@ public interface PGExternalRequestReaderPort {
   PGExternalRequest retrieveSingleByParameters(
       String pgRequestId, PgProviderType pgProvider, Long memberId, String extOperation);
 
-  Optional<PGExternalRequest> retrieveSingleByParametersNullable(
+  Optional<PGExternalRequest> retrieveSingleOrNullByParameters(
       String pgRequestId,
       PgProviderType pgProvider,
       Long memberId,

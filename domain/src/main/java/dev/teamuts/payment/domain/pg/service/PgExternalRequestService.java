@@ -35,18 +35,18 @@ public class PgExternalRequestService {
   }
 
   public PGExternalRequest getPGExternalRequest(
-      PgProviderType pgProvider, Long memberId, String pgRequestId, String extOperation) {
+      String pgRequestId, PgProviderType pgProvider, Long memberId, String extOperation) {
     return pgExternalRequestReaderPort.retrieveSingleByParameters(
         pgRequestId, pgProvider, memberId, extOperation);
   }
 
-  public Optional<PGExternalRequest> getPGExternalRequestNullable(
+  public Optional<PGExternalRequest> getPGExternalRequestOrNull(
       PgProviderType pgProvider,
       Long memberId,
       String pgRequestId,
       String extOperation,
       String extDetailedMessage) {
-    return pgExternalRequestReaderPort.retrieveSingleByParametersNullable(
+    return pgExternalRequestReaderPort.retrieveSingleOrNullByParameters(
         pgRequestId, pgProvider, memberId, extOperation, extDetailedMessage);
   }
 
@@ -56,7 +56,7 @@ public class PgExternalRequestService {
    * @param webhookEvent The webhook event data.
    * @return The newly created PGExternalRequest.
    */
-  public PGExternalRequest registerInitWebhookRequest(ExtPGWebhookEventDto webhookEvent) {
+  public PGExternalRequest createInitWebhookRequest(ExtPGWebhookEventDto webhookEvent) {
     PGExternalRequest newPgExternalRequest = PGExternalRequest.initWebhookEvent(webhookEvent);
 
     return pgExternalRequestStorePort.storeNew(newPgExternalRequest);
