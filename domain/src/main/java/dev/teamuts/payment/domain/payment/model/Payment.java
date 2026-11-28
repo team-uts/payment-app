@@ -11,6 +11,7 @@ import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.constant.ModelSourceType;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
@@ -21,7 +22,6 @@ import lombok.Getter;
 import org.springframework.util.Assert;
 
 @DomainModel
-@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class Payment extends BaseIdentifiableModel<Long> {
   private Long orderId;
@@ -41,9 +41,39 @@ public class Payment extends BaseIdentifiableModel<Long> {
   @Getter(AccessLevel.NONE)
   private PaymentTransactions transactions;
 
+  @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
+  private Payment(
+      @Builder.ObtainVia(method = "getId") Long id,
+      @Builder.ObtainVia(method = "getSourceType") ModelSourceType sourceType,
+      Long orderId,
+      Long memberId,
+      AppServiceType serviceType,
+      PaymentType paymentType,
+      PaymentStatus status,
+      Money payAmount,
+      Money pointAmount,
+      Long payMethodId,
+      PaymentMethodType payMethodType,
+      PgProviderType pgProvider,
+      OutboxEvent outboxEvent,
+      PaymentTransactions transactions) {
+    super(id, sourceType);
+    this.orderId = orderId;
+    this.memberId = memberId;
+    this.serviceType = serviceType;
+    this.paymentType = paymentType;
+    this.status = status;
+    this.payAmount = payAmount;
+    this.pointAmount = pointAmount;
+    this.payMethodId = payMethodId;
+    this.payMethodType = payMethodType;
+    this.pgProvider = pgProvider;
+    this.outboxEvent = outboxEvent;
+    this.transactions = transactions;
+  }
+
   public static Payment processing(
       Order order, PaymentMethod paymentMethod, Money pointAmount, PaymentType paymentType) {
-    // TODO: need refactoring
     Assert.notNull(order, "order cannot be null");
     Assert.notNull(paymentMethod, "paymentMethod cannot be null");
 
@@ -52,6 +82,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
     }
 
     return Payment.builder()
+        .sourceType(ModelSourceType.LOGIC)
         .orderId(order.getId())
         .memberId(order.getMemberId())
         .serviceType(order.getServiceType())
@@ -77,6 +108,7 @@ public class Payment extends BaseIdentifiableModel<Long> {
     }
 
     return Payment.builder()
+        .sourceType(ModelSourceType.LOGIC)
         .orderId(order.getId())
         .memberId(order.getMemberId())
         .serviceType(order.getServiceType())
@@ -103,23 +135,20 @@ public class Payment extends BaseIdentifiableModel<Long> {
       Currency currency,
       Long payMethodId,
       PaymentMethodType payMethodType) {
-    Payment payment =
-        Payment.builder()
-            .orderId(orderId)
-            .memberId(memberId)
-            .serviceType(serviceType)
-            .paymentType(paymentType)
-            .status(status)
-            .pgProvider(pgProvider)
-            .payAmount(Money.of(payAmount, currency))
-            .pointAmount(Money.of(pointAmount, currency))
-            .payMethodId(payMethodId)
-            .payMethodType(payMethodType)
-            .build();
-
-    payment.setId(id);
-
-    return payment;
+    return Payment.builder()
+        .id(id)
+        .sourceType(ModelSourceType.DATABASE)
+        .orderId(orderId)
+        .memberId(memberId)
+        .serviceType(serviceType)
+        .paymentType(paymentType)
+        .status(status)
+        .pgProvider(pgProvider)
+        .payAmount(Money.of(payAmount, currency))
+        .pointAmount(Money.of(pointAmount, currency))
+        .payMethodId(payMethodId)
+        .payMethodType(payMethodType)
+        .build();
   }
 
   public static Payment fromDatabaseWithAllAssociations(
@@ -137,25 +166,22 @@ public class Payment extends BaseIdentifiableModel<Long> {
       PaymentMethodType payMethodType,
       OutboxEvent outboxEvent,
       List<PaymentTransaction> transactions) {
-    Payment payment =
-        Payment.builder()
-            .orderId(orderId)
-            .memberId(memberId)
-            .serviceType(serviceType)
-            .paymentType(paymentType)
-            .status(status)
-            .pgProvider(pgProvider)
-            .payAmount(Money.of(payAmount, currency))
-            .pointAmount(Money.of(pointAmount, currency))
-            .payMethodId(payMethodId)
-            .payMethodType(payMethodType)
-            .outboxEvent(outboxEvent)
-            .transactions(PaymentTransactions.ofOrEmpty(transactions))
-            .build();
-
-    payment.setId(id);
-
-    return payment;
+    return Payment.builder()
+        .id(id)
+        .sourceType(ModelSourceType.DATABASE)
+        .orderId(orderId)
+        .memberId(memberId)
+        .serviceType(serviceType)
+        .paymentType(paymentType)
+        .status(status)
+        .pgProvider(pgProvider)
+        .payAmount(Money.of(payAmount, currency))
+        .pointAmount(Money.of(pointAmount, currency))
+        .payMethodId(payMethodId)
+        .payMethodType(payMethodType)
+        .outboxEvent(outboxEvent)
+        .transactions(PaymentTransactions.ofOrEmpty(transactions))
+        .build();
   }
 
   public void checkProcessingStatus() {

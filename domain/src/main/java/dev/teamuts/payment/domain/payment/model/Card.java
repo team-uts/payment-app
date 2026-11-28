@@ -4,11 +4,12 @@ import dev.teamuts.payment.domain.payment.constant.CardStatus;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGCardDetail;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto.ExtPGPaymentMethodDetail;
 import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.constant.ModelSourceType;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 @DomainModel
-@Builder(access = lombok.AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class Card extends PaymentMethodDetail {
   private Long memberId;
@@ -19,6 +20,26 @@ public class Card extends PaymentMethodDetail {
   private CardStatus status;
 
   private static final String STR_EXP_MONTH_FORMAT = "%02d";
+
+  @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
+  private Card(
+      @Builder.ObtainVia(method = "getId") Long id,
+      @Builder.ObtainVia(method = "getSourceType") ModelSourceType sourceType,
+      Long payMethodId,
+      Long memberId,
+      String last4,
+      String brand,
+      Integer expMonth,
+      Integer expYear,
+      CardStatus status) {
+    super(id, sourceType, payMethodId);
+    this.memberId = memberId;
+    this.last4 = last4;
+    this.brand = brand;
+    this.expMonth = expMonth;
+    this.expYear = expYear;
+    this.status = status;
+  }
 
   public static Card newActiveCard(PaymentMethod paymentMethod, ExtPGPaymentMethodDetail detail) {
     if (paymentMethod.getMethodType() != detail.methodType()) {
@@ -31,19 +52,16 @@ public class Card extends PaymentMethodDetail {
       throw new IllegalArgumentException("Invalid detail type for Card: " + detail.getClass());
     }
 
-    Card card =
-        Card.builder()
-            .memberId(paymentMethod.getMemberId())
-            .last4(cardDetail.getLast4())
-            .brand(cardDetail.getBrand())
-            .expMonth(cardDetail.getExpMonth())
-            .expYear(cardDetail.getExpYear())
-            .status(CardStatus.ACTIVE)
-            .build();
-
-    card.payMethodId = paymentMethod.getId();
-
-    return card;
+    return Card.builder()
+        .sourceType(ModelSourceType.LOGIC)
+        .payMethodId(paymentMethod.getId())
+        .memberId(paymentMethod.getMemberId())
+        .last4(cardDetail.getLast4())
+        .brand(cardDetail.getBrand())
+        .expMonth(cardDetail.getExpMonth())
+        .expYear(cardDetail.getExpYear())
+        .status(CardStatus.ACTIVE)
+        .build();
   }
 
   public static Card fromDatabase(
@@ -55,20 +73,17 @@ public class Card extends PaymentMethodDetail {
       Integer expMonth,
       Integer expYear,
       CardStatus status) {
-    Card card =
-        Card.builder()
-            .memberId(memberId)
-            .last4(last4)
-            .brand(brand)
-            .expMonth(expMonth)
-            .expYear(expYear)
-            .status(status)
-            .build();
-
-    card.setId(id);
-    card.payMethodId = payMethodId;
-
-    return card;
+    return Card.builder()
+        .id(id)
+        .sourceType(ModelSourceType.DATABASE)
+        .payMethodId(payMethodId)
+        .memberId(memberId)
+        .last4(last4)
+        .brand(brand)
+        .expMonth(expMonth)
+        .expYear(expYear)
+        .status(status)
+        .build();
   }
 
   public String getFormattedExpMonth() {
@@ -76,10 +91,6 @@ public class Card extends PaymentMethodDetail {
   }
 
   public Card copy() {
-    Card copy = this.toBuilder().build();
-    copy.setId(this.getId());
-    copy.payMethodId = this.payMethodId;
-
-    return copy;
+    return toBuilder().build();
   }
 }

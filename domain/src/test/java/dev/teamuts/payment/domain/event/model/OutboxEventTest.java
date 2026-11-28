@@ -12,6 +12,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.factory.PaymentFixtureFactory;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.shared.data.AppObjectMapperConfig;
+import dev.teamuts.shared.domain.constant.ModelSourceType;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.JsonNode;
@@ -28,6 +29,8 @@ class OutboxEventTest {
 
     OutboxEvent result = OutboxEvent.init(PaymentEventMessage.of(order, payment));
 
+    assertThat(result.getId()).isNull();
+    assertThat(result.getSourceType()).isEqualTo(ModelSourceType.LOGIC);
     assertThat(result.getEventType()).isEqualTo(EventType.PAY_ORDER);
     assertThat(result.getStatus()).isEqualTo(OutboxEventStatus.INIT);
 
@@ -38,14 +41,35 @@ class OutboxEventTest {
     assertThat(payload.path("member_id").asLong()).isEqualTo(order.getMemberId());
     assertThat(payload.path("service_type").asString()).isEqualTo(order.getServiceType().name());
     assertThat(payload.path("payment_type").asString()).isEqualTo(payment.getPaymentType().name());
-    assertThat(payload.path("status").asString()).isEqualTo(PaymentStatus.COMPLETED.name());
+    assertThat(payload.path("payment_status").asString()).isEqualTo(PaymentStatus.COMPLETED.name());
     assertThat(payload.path("pay_amount").decimalValue()).isEqualByComparingTo(payAmount);
     assertThat(payload.path("point_amount").decimalValue()).isEqualByComparingTo(pointAmount);
     assertThat(payload.path("currency").asString()).isEqualTo(payment.getCurrency().name());
-    assertThat(payload.path("pay_method_id").asLong()).isEqualTo(payment.getPayMethodId());
+    assertThat(payload.has("pay_method_id")).isFalse();
     assertThat(payload.path("pay_method_type").asString())
         .isEqualTo(payment.getPayMethodType().name());
     assertThat(payload.path("pg_provider").asString()).isEqualTo(payment.getPgProvider().name());
     assertThat(payload.has("transaction")).isFalse();
+  }
+
+  @Test
+  void copyPreservesPersistedEvent() {
+    long id = 42L;
+    OutboxEvent event =
+        OutboxEvent.fromDatabase(id, EventType.PAY_ORDER, "{}", OutboxEventStatus.INIT);
+
+    OutboxEvent copy = event.copy();
+
+    assertThat(copy).isNotSameAs(event);
+    assertThat(copy.getId()).isEqualTo(id);
+    assertThat(copy.getSourceType()).isEqualTo(ModelSourceType.DATABASE);
+    assertThat(copy.getEventType()).isEqualTo(event.getEventType());
+    assertThat(copy.getPayload()).isEqualTo(event.getPayload());
+    assertThat(copy.getStatus()).isEqualTo(OutboxEventStatus.INIT);
+
+    copy.processed();
+
+    assertThat(copy.getStatus()).isEqualTo(OutboxEventStatus.PROCESSED);
+    assertThat(event.getStatus()).isEqualTo(OutboxEventStatus.INIT);
   }
 }

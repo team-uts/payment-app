@@ -10,6 +10,7 @@ import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.payment.model.Payments;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.constant.ModelSourceType;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.domain.model.Money;
 import java.math.BigDecimal;
@@ -21,7 +22,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @DomainModel
-@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class Order extends BaseIdentifiableModel<Long> {
   private String extOrderNum;
@@ -33,8 +33,28 @@ public class Order extends BaseIdentifiableModel<Long> {
   @Getter(AccessLevel.NONE)
   private Payments payments;
 
+  @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
+  public Order(
+      @Builder.ObtainVia(method = "getId") Long id,
+      @Builder.ObtainVia(method = "getSourceType") ModelSourceType sourceType,
+      String extOrderNum,
+      AppServiceType serviceType,
+      Long memberId,
+      Money amount,
+      OrderStatus status,
+      Payments payments) {
+    super(id, sourceType);
+    this.extOrderNum = extOrderNum;
+    this.serviceType = serviceType;
+    this.memberId = memberId;
+    this.amount = amount;
+    this.status = status;
+    this.payments = payments;
+  }
+
   public static Order init(Long memberId, PayOrderCommand command) {
     return Order.builder()
+        .sourceType(ModelSourceType.LOGIC)
         .memberId(memberId)
         .extOrderNum(command.extOrderNum())
         .serviceType(command.serviceType())
@@ -52,19 +72,16 @@ public class Order extends BaseIdentifiableModel<Long> {
       BigDecimal amount,
       Currency currency,
       OrderStatus status) {
-    Order order =
-        Order.builder()
-            .extOrderNum(extOrderNum)
-            .serviceType(serviceType)
-            .memberId(memberId)
-            .amount(Money.of(amount, currency))
-            .status(status)
-            .payments(Payments.empty())
-            .build();
-
-    order.setId(id);
-
-    return order;
+    return Order.builder()
+        .id(id)
+        .sourceType(ModelSourceType.DATABASE)
+        .extOrderNum(extOrderNum)
+        .serviceType(serviceType)
+        .memberId(memberId)
+        .amount(Money.of(amount, currency))
+        .status(status)
+        .payments(Payments.empty())
+        .build();
   }
 
   public boolean isTheSameMember(Long memberId) {

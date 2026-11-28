@@ -11,6 +11,7 @@ import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.constant.Currency;
+import dev.teamuts.shared.domain.constant.ModelSourceType;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.domain.model.Money;
 import dev.teamuts.shared.utils.StringUtils;
@@ -20,7 +21,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @DomainModel
-@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class PaymentTransaction extends BaseIdentifiableModel<Long> {
   private Long memberId;
@@ -45,6 +45,45 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
   public static final int MAX_ERROR_MSG_LENGTH = 255;
   public static final int MAX_DETAIL_MSG_LENGTH = 255;
 
+  @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
+  private PaymentTransaction(
+      @Builder.ObtainVia(method = "getId") Long id,
+      @Builder.ObtainVia(method = "getSourceType") ModelSourceType sourceType,
+      Long memberId,
+      Long paymentId,
+      Long orderId,
+      Long payMethodId,
+      PaymentMethodType payMethodType,
+      AppServiceType serviceType,
+      PaymentType paymentType,
+      Money amount,
+      PgProviderType pgProvider,
+      String pgTransactionId,
+      String pgResponseCode,
+      String pgErrorCode,
+      String pgErrorMessage,
+      String detailMessage,
+      PaymentTransactionStatus status,
+      PaySequenceType sequenceType) {
+    super(id, sourceType);
+    this.memberId = memberId;
+    this.paymentId = paymentId;
+    this.orderId = orderId;
+    this.payMethodId = payMethodId;
+    this.payMethodType = payMethodType;
+    this.serviceType = serviceType;
+    this.paymentType = paymentType;
+    this.amount = amount;
+    this.pgProvider = pgProvider;
+    this.pgTransactionId = pgTransactionId;
+    this.pgResponseCode = pgResponseCode;
+    this.pgErrorCode = pgErrorCode;
+    this.pgErrorMessage = pgErrorMessage;
+    this.detailMessage = detailMessage;
+    this.status = status;
+    this.sequenceType = sequenceType;
+  }
+
   public static PaymentTransaction initPay(Payment payment) {
     if (payment.hasNoPayAmount()) {
       throw PaymentException.of(
@@ -52,6 +91,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
     }
 
     return PaymentTransaction.builder()
+        .sourceType(ModelSourceType.LOGIC)
         .memberId(payment.getMemberId())
         .paymentId(payment.getId())
         .orderId(payment.getOrderId())
@@ -73,6 +113,7 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
     }
 
     return PaymentTransaction.builder()
+        .sourceType(ModelSourceType.LOGIC)
         .memberId(payment.getMemberId())
         .paymentId(payment.getId())
         .orderId(payment.getOrderId())
@@ -106,29 +147,26 @@ public class PaymentTransaction extends BaseIdentifiableModel<Long> {
       String detailMessage,
       PaymentTransactionStatus status,
       Integer sequence) {
-    PaymentTransaction pt =
-        PaymentTransaction.builder()
-            .memberId(memberId)
-            .paymentId(paymentId)
-            .orderId(orderId)
-            .payMethodId(payMethodId)
-            .payMethodType(payMethodType)
-            .serviceType(serviceType)
-            .paymentType(paymentType)
-            .amount(Money.of(amount, currency))
-            .pgProvider(pgProvider)
-            .pgTransactionId(pgTransactionId)
-            .pgResponseCode(pgResponseCode)
-            .pgErrorCode(pgErrorCode)
-            .pgErrorMessage(pgErrorMessage)
-            .detailMessage(detailMessage)
-            .status(status)
-            .sequenceType(PaySequenceType.of(sequence))
-            .build();
-
-    pt.setId(id);
-
-    return pt;
+    return PaymentTransaction.builder()
+        .id(id)
+        .sourceType(ModelSourceType.DATABASE)
+        .memberId(memberId)
+        .paymentId(paymentId)
+        .orderId(orderId)
+        .payMethodId(payMethodId)
+        .payMethodType(payMethodType)
+        .serviceType(serviceType)
+        .paymentType(paymentType)
+        .amount(Money.of(amount, currency))
+        .pgProvider(pgProvider)
+        .pgTransactionId(pgTransactionId)
+        .pgResponseCode(pgResponseCode)
+        .pgErrorCode(pgErrorCode)
+        .pgErrorMessage(pgErrorMessage)
+        .detailMessage(detailMessage)
+        .status(status)
+        .sequenceType(PaySequenceType.of(sequence))
+        .build();
   }
 
   public boolean isInit() {

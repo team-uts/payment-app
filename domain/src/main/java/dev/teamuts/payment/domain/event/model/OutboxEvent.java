@@ -5,6 +5,7 @@ import dev.teamuts.payment.domain.event.constant.OutboxEventStatus;
 import dev.teamuts.payment.domain.event.error.OutboxEventErrorCode;
 import dev.teamuts.shared.data.AppObjectMapperConfig;
 import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.constant.ModelSourceType;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import dev.teamuts.shared.error.exception.SystemException;
 import dev.teamuts.shared.event.BaseEventMessage;
@@ -17,7 +18,6 @@ import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @DomainModel
-@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class OutboxEvent extends BaseIdentifiableModel<Long> {
   private EventType eventType;
@@ -28,10 +28,24 @@ public class OutboxEvent extends BaseIdentifiableModel<Long> {
 
   private static final ObjectMapper objectMapper = AppObjectMapperConfig.baseObjectMapper();
 
+  @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
+  private OutboxEvent(
+      @Builder.ObtainVia(method = "getId") Long id,
+      @Builder.ObtainVia(method = "getSourceType") ModelSourceType sourceType,
+      EventType eventType,
+      String payload,
+      OutboxEventStatus status) {
+    super(id, sourceType);
+    this.eventType = eventType;
+    this.payload = payload;
+    this.status = status;
+  }
+
   public static OutboxEvent init(BaseEventMessage message) {
     JsonNode jsonNode = objectMapper.convertValue(message, JsonNode.class);
 
     return OutboxEvent.builder()
+        .sourceType(ModelSourceType.LOGIC)
         .eventType(EventType.fromMessage(message))
         .payload(jsonNode.toString())
         .status(OutboxEventStatus.INIT)
@@ -40,12 +54,13 @@ public class OutboxEvent extends BaseIdentifiableModel<Long> {
 
   public static OutboxEvent fromDatabase(
       Long id, EventType eventType, String payload, OutboxEventStatus status) {
-    OutboxEvent outboxEvent =
-        OutboxEvent.builder().eventType(eventType).payload(payload).status(status).build();
-
-    outboxEvent.setId(id);
-
-    return outboxEvent;
+    return OutboxEvent.builder()
+        .id(id)
+        .sourceType(ModelSourceType.DATABASE)
+        .eventType(eventType)
+        .payload(payload)
+        .status(status)
+        .build();
   }
 
   public BaseEventMessage getEventMessage() {
@@ -83,9 +98,6 @@ public class OutboxEvent extends BaseIdentifiableModel<Long> {
   }
 
   public OutboxEvent copy() {
-    OutboxEvent copy = this.toBuilder().build();
-    copy.setId(this.getId());
-
-    return copy;
+    return toBuilder().build();
   }
 }

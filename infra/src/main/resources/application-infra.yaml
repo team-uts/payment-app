@@ -1,15 +1,23 @@
 spring:
   config:
     import:
-    - optional:file:.env.${spring.profiles.active}[.properties]
+      - optional:file:.env.${spring.profiles.active}[.properties]
 
   kafka:
     producer:
       acks: all
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
     properties:
+      enable.idempotence: true
+      max.in.flight.requests.per.connection: 5
       transaction.timeout.ms: 30000
+      # retry options
+      request.timeout.ms: 30000
+      delivery.timeout.ms: 120000
+      # batch options (compression)
+      linger.ms: 5
+      compression.type: lz4
 
 stripe:
   webhook:

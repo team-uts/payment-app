@@ -23,11 +23,10 @@ public class PaymentEventMessage extends BaseEventMessage {
   private String extOrderNum;
   private AppServiceType serviceType;
   private PaymentType paymentType;
-  private PaymentStatus status;
+  private PaymentStatus paymentStatus;
   private BigDecimal payAmount;
   private BigDecimal pointAmount;
   private Currency currency;
-  private Long payMethodId;
   private PaymentMethodType payMethodType;
   private PgProviderType pgProvider;
 
@@ -39,11 +38,10 @@ public class PaymentEventMessage extends BaseEventMessage {
         .memberId(order.getMemberId())
         .serviceType(order.getServiceType())
         .paymentType(payment.getPaymentType())
-        .status(payment.getStatus())
+        .paymentStatus(payment.getStatus())
         .payAmount(payment.getPayAmount().getAmount())
         .pointAmount(payment.getPointAmount().getAmount())
         .currency(payment.getCurrency())
-        .payMethodId(payment.getPayMethodId())
         .payMethodType(payment.getPayMethodType())
         .pgProvider(payment.getPgProvider())
         .build();

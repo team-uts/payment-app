@@ -5,13 +5,13 @@ import dev.teamuts.payment.domain.payment.constant.PaymentMethodType;
 import dev.teamuts.payment.domain.pg.constant.PgProviderType;
 import dev.teamuts.payment.domain.pg.dto.infra.ExtPGPaymentMethodDto;
 import dev.teamuts.shared.domain.annotation.DomainModel;
+import dev.teamuts.shared.domain.constant.ModelSourceType;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModel;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 @DomainModel
-@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 @Getter
 public class PaymentMethod extends BaseIdentifiableModel<Long> {
   private Long memberId;
@@ -24,9 +24,31 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
   @Getter(AccessLevel.NONE)
   private PaymentMethodDetail detail;
 
+  @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
+  private PaymentMethod(
+      @Builder.ObtainVia(method = "getId") Long id,
+      @Builder.ObtainVia(method = "getSourceType") ModelSourceType sourceType,
+      Long memberId,
+      PgProviderType pgProvider,
+      String providerToken,
+      PaymentMethodType methodType,
+      Boolean defaultMethod,
+      PaymentMethodStatus status,
+      PaymentMethodDetail detail) {
+    super(id, sourceType);
+    this.memberId = memberId;
+    this.pgProvider = pgProvider;
+    this.providerToken = providerToken;
+    this.methodType = methodType;
+    this.defaultMethod = defaultMethod;
+    this.status = status;
+    this.detail = detail;
+  }
+
   public static PaymentMethod newActiveMethod(ExtPGPaymentMethodDto extPGPaymentMethod) {
     PaymentMethodBuilder builder =
         PaymentMethod.builder()
+            .sourceType(ModelSourceType.LOGIC)
             .memberId(extPGPaymentMethod.getMemberId())
             .pgProvider(extPGPaymentMethod.getPgProvider())
             .providerToken(extPGPaymentMethod.getPgPaymentMethodId())
@@ -39,6 +61,7 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
 
   public static PaymentMethod point(Long memberId) {
     return PaymentMethod.builder()
+        .sourceType(ModelSourceType.LOGIC)
         .memberId(memberId)
         .pgProvider(PgProviderType.NONE)
         .providerToken(null)
@@ -57,20 +80,17 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
       Boolean defaultMethod,
       PaymentMethodStatus status,
       PaymentMethodDetail detail) {
-    PaymentMethod pm =
-        PaymentMethod.builder()
-            .memberId(memberId)
-            .pgProvider(pgProvider)
-            .providerToken(providerToken)
-            .methodType(methodType)
-            .defaultMethod(defaultMethod)
-            .status(status)
-            .detail(detail)
-            .build();
-
-    pm.setId(id);
-
-    return pm;
+    return PaymentMethod.builder()
+        .id(id)
+        .sourceType(ModelSourceType.DATABASE)
+        .memberId(memberId)
+        .pgProvider(pgProvider)
+        .providerToken(providerToken)
+        .methodType(methodType)
+        .defaultMethod(defaultMethod)
+        .status(status)
+        .detail(detail)
+        .build();
   }
 
   public void updateDetail(PaymentMethodDetail newDetail) {
