@@ -46,17 +46,15 @@ public class PaymentMethod extends BaseIdentifiableModel<Long> {
   }
 
   public static PaymentMethod newActiveMethod(ExtPGPaymentMethodDto extPGPaymentMethod) {
-    PaymentMethodBuilder builder =
-        PaymentMethod.builder()
-            .sourceType(ModelSourceType.LOGIC)
-            .memberId(extPGPaymentMethod.getMemberId())
-            .pgProvider(extPGPaymentMethod.getPgProvider())
-            .providerToken(extPGPaymentMethod.getPgPaymentMethodId())
-            .methodType(extPGPaymentMethod.getDetail().methodType())
-            .defaultMethod(true) // TODO: Set defaultMethod based on business logic
-            .status(PaymentMethodStatus.ACTIVE);
-
-    return builder.build();
+    return PaymentMethod.builder()
+        .sourceType(ModelSourceType.LOGIC)
+        .memberId(extPGPaymentMethod.getMemberId())
+        .pgProvider(extPGPaymentMethod.getPgProvider())
+        .providerToken(extPGPaymentMethod.getPgPaymentMethodId())
+        .methodType(extPGPaymentMethod.getDetail().methodType())
+        .defaultMethod(true) // TODO: Set defaultMethod based on business logic
+        .status(PaymentMethodStatus.ACTIVE)
+        .build();
   }
 
   public static PaymentMethod point(Long memberId) {

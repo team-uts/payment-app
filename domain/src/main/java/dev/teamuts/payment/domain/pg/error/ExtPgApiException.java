@@ -1,6 +1,6 @@
 package dev.teamuts.payment.domain.pg.error;
 
-import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.payment.domain.pg.model.sub.ExtPgPaymentTransaction;
 import dev.teamuts.shared.error.exception.ApiInternalException;
 import lombok.AccessLevel;
 import lombok.Builder;

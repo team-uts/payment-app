@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.payment.model;
+package dev.teamuts.payment.domain.payment.model.sub;
 
 import dev.teamuts.payment.domain.order.dto.PayOrderCommand;
 import dev.teamuts.shared.domain.model.BaseCollection;

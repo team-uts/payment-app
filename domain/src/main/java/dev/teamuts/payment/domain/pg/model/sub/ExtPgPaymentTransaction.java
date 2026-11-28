@@ -1,4 +1,4 @@
-package dev.teamuts.payment.domain.pg.model;
+package dev.teamuts.payment.domain.pg.model.sub;
 
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;

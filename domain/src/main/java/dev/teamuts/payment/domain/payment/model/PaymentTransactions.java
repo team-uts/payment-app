@@ -4,6 +4,7 @@ import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.error.PaymentTransactionErrorCode;
+import dev.teamuts.payment.domain.payment.model.sub.PaymentStatusRuleResolver;
 import dev.teamuts.shared.domain.model.BaseIdentifiableModelCollection;
 import java.util.Arrays;
 import java.util.Collections;

@@ -10,8 +10,8 @@ import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods.AllowR
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.pg.constant.PgProviderType;
-import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.model.PgAccount;
+import dev.teamuts.payment.domain.pg.model.sub.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPgPaymentServicePort;
 import dev.teamuts.payment.infra.pg.constant.StripeCurrency;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;

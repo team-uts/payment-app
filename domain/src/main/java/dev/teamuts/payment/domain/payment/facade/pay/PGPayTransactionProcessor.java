@@ -6,8 +6,8 @@ import dev.teamuts.payment.domain.payment.facade.pay.helper.PayTransactionHelper
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
-import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.model.PgAccount;
+import dev.teamuts.payment.domain.pg.model.sub.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.service.PgAccountService;
 import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;

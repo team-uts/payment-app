@@ -8,7 +8,7 @@ import dev.teamuts.payment.domain.payment.constant.PaymentType;
 import dev.teamuts.payment.domain.payment.error.PaymentException;
 import dev.teamuts.payment.domain.payment.error.PaymentTransactionErrorCode;
 import dev.teamuts.payment.domain.pg.constant.PgProviderType;
-import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.payment.domain.pg.model.sub.ExtPgPaymentTransaction;
 import dev.teamuts.shared.domain.annotation.DomainModel;
 import dev.teamuts.shared.domain.constant.Currency;
 import dev.teamuts.shared.domain.constant.ModelSourceType;

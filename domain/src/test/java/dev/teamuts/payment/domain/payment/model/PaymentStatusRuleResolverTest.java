@@ -8,6 +8,7 @@ import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
 import dev.teamuts.payment.domain.payment.factory.PaymentTransactionFixtureFactory;
+import dev.teamuts.payment.domain.payment.model.sub.PaymentStatusRuleResolver;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;

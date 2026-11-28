@@ -6,7 +6,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeError;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
-import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.payment.domain.pg.model.sub.ExtPgPaymentTransaction;
 import dev.teamuts.payment.infra.pg.constant.StripeOperationType;
 import dev.teamuts.payment.infra.pg.constant.StripePaymentTransactionStatus;
 import java.util.Optional;

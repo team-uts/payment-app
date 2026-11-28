@@ -3,9 +3,9 @@ package dev.teamuts.payment.domain.payment.facade;
 import dev.teamuts.payment.domain.order.model.Order;
 import dev.teamuts.payment.domain.payment.model.Payment;
 import dev.teamuts.payment.domain.payment.model.PaymentMethod;
-import dev.teamuts.payment.domain.payment.model.PaymentRequest;
-import dev.teamuts.payment.domain.payment.model.PaymentRequests;
 import dev.teamuts.payment.domain.payment.model.Payments;
+import dev.teamuts.payment.domain.payment.model.sub.PaymentRequest;
+import dev.teamuts.payment.domain.payment.model.sub.PaymentRequests;
 import dev.teamuts.payment.domain.payment.service.PaymentMethodService;
 import dev.teamuts.payment.domain.payment.service.PaymentService;
 import dev.teamuts.payment.domain.point.service.PointService;
@@ -36,6 +36,7 @@ public class InitPaymentFacade {
   private Payment getProcessingPaymentOrCreate(Order order, PaymentRequest paymentRequest) {
     // If it has any point usage, validate the point status of the member. (Request to Point API)
     if (paymentRequest.hasAnyPointUsage()) {
+      // TODO: need to implement
       pointService.checkPointStatus(order.getMemberId(), paymentRequest.getPointAmount());
     }
 

@@ -3,7 +3,7 @@ package dev.teamuts.payment.domain.payment.facade.pay.helper;
 import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import dev.teamuts.payment.domain.payment.service.PaymentTransactionService;
 import dev.teamuts.payment.domain.pg.error.ExtPgApiException;
-import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.payment.domain.pg.model.sub.ExtPgPaymentTransaction;
 import dev.teamuts.payment.domain.pg.port.infra.ExternalPgPaymentServicePort;
 import dev.teamuts.payment.domain.pg.service.ExtPGPaymentServiceProvider;
 import java.util.function.Function;

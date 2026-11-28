@@ -6,7 +6,7 @@ import dev.teamuts.payment.domain.payment.model.PaymentTransactions;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionReaderPort;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionStorePort;
 import dev.teamuts.payment.domain.payment.port.persistence.PaymentTransactionUpdatePort;
-import dev.teamuts.payment.domain.pg.model.ExtPgPaymentTransaction;
+import dev.teamuts.payment.domain.pg.model.sub.ExtPgPaymentTransaction;
 import dev.teamuts.shared.data.annotation.AppTransactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,9 @@
-package dev.teamuts.payment.domain.payment.model;
+package dev.teamuts.payment.domain.payment.model.sub;
 
 import dev.teamuts.payment.domain.payment.constant.PaySequenceType;
 import dev.teamuts.payment.domain.payment.constant.PaymentStatus;
 import dev.teamuts.payment.domain.payment.constant.PaymentTransactionStatus;
+import dev.teamuts.payment.domain.payment.model.PaymentTransaction;
 import java.util.List;
 import java.util.stream.IntStream;
 
